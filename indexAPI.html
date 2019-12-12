@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!--代表禁止浏览器从本地计算机的缓存中访问页面内容-->
+  <!--<meta http-equiv="pragram" content="no-cache">
+  &lt;!&ndash;请求和响应不缓存&ndash;&gt;
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <!--IE / Edge 自动给数字加下划线的问题-->
+  <meta name="format-detection" content="telephone=no,email=no,address=no">
+  <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon">
+  <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
+  <title>3D地图测试</title>
+
+  <link rel="stylesheet" type="text/css" href="static/map3d/css/widgets.css" />
+  <script>
+    document.write('<script src="./static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
+  </script>
+
+  <script src="static/map3d/libs/Cesium.js"></script>
+  <script src="static/map3d/utils/GIS/GisData.js"></script>
+  <script src="static/map3d/utils/GIS/light3D.js"></script>
+  <script src="static/map3d/utils/GIS/initLight3D.js"></script>
+  <script src="static/map3d/utils/GIS3D.js"></script>
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    gis3d = new GIS3D();
+    gis3d.initload("cesiumContainer", false);
+    gis3d.updateCameraPosition(121.17659986110053, 31.28070920407326, 39.142101722743725, 5.573718449729121, -0.23338301782710902, 6.281191529370343);
+
+
+    //初始化地图道路数据
+    GisData.initRoadDate(gis3d.cesium.viewer);
+    //初始化地图服务
+    GisData.initServer(gis3d.cesium.viewer);
+    //初始化模型数据
+    GisData.initThreeData(gis3d.cesium.viewer);
+
+    //初始化感知杆模型
+
+    var item = sessionStorage.getItem("sideList");
+    if (sessionStorage.getItem("sideList")) {
+      GisData.initPoleModelDate(gis3d.cesium.viewer);
+    }
+
+
+
+    //初始化红路灯模型
+    GisData.initLightModel(gis3d.cesium.viewer);
+    //初始化红路灯
+    initLight3D.initlight(gis3d.cesium.viewer);
+    // //更新红路灯
+    // initLight3D.updateLight(light)
+
+  </script>
+</body>
+<script>
+
+</script>
+
+</html>
