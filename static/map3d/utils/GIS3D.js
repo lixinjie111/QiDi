@@ -154,8 +154,8 @@ class GIS3D {
     }
     //定位地图
     updateCameraPosition(x, y, z, radius, pitch, yaw) {
-        var heading = Cesium.Math.toRadians(radius);
-        var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
+        // debugger Cesium.Math.toRadians(radius)
+        var hpr = new Cesium.HeadingPitchRoll(radius, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
             destination: Cesium.Cartesian3.fromDegrees(x, y, z),
             orientation: hpr
@@ -266,6 +266,6 @@ class GIS3D {
         this.cesium.viewer.scene.imageryLayers.removeAll()
         this.cesium.viewer.dataSources.removeAll();
         this.cesium.viewer.scene.primitives.removeAll();
-        this.cesium.viewer.entities.removeAll(); 
+        this.cesium.viewer.entities.removeAll();
     }
 }
