@@ -8,16 +8,16 @@ var GisData = {
      */
     initServer(viewer) {
         //业务数据
-        viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-            url: window.mapUrl,
-            maximumLevel: 22,
-            id: "layer1",
-            show: false
-        }));
+        // viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+        //     url: window.mapUrl,
+        //     maximumLevel: 22,
+        //     id: "layer1",
+        //     show: false
+        // }));
     },
     //地图矢量数据初始化
     initRoadDate(viewer) {
-        var promise = Cesium.GeoJsonDataSource.load('static/map3d/data/bs.geojson');
+        var promise = Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs.geojson');
         promise.then(function (dataSource) {
             viewer.dataSources.add(dataSource);
             //Get the array of entities
@@ -38,14 +38,14 @@ var GisData = {
         });
 
         // //标识（箭头）
-        // viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/bs.geojson', {
+        // viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs.geojson', {
         //     fill: Cesium.Color.ALICEBLUE.withAlpha(1).withAlpha(0.996),//.withAlpha(1)
         //     // stroke: Cesium.Color.fromCssColorString('#fff').withAlpha(0.996),// Cesium.Color.ORANGE, 
         //     // markerSymbol: '?',
         //     show: false
         // }));
         //绿化带
-        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/lhd.geojson', {
+        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/lhd.geojson', {
             fill: Cesium.Color.fromCssColorString('#758152').withAlpha(0.996),//.withAlpha(1)
             stroke: Cesium.Color.fromCssColorString('#758152').withAlpha(0.996),// Cesium.Color.ORANGE, 
             // markerSymbol: '?',
@@ -54,7 +54,7 @@ var GisData = {
         }));
 
         //斑马线
-        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/bmx.geojson', {
+        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/bmx.geojson', {
             fill: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),
             stroke: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),// Cesium.Color.ORANGE, 
             // markerSymbol: '?',
@@ -62,8 +62,8 @@ var GisData = {
             show: false
         }));
         //感知区域
-        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/gzqy.geojson', {
-            fill: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),//'static/images/login-bg.jpg',//.withAlpha(1)
+        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/gzqy.geojson', {
+            fill: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),//'../../static/images/login-bg.jpg',//.withAlpha(1)
             stroke: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),// Cesium.Color.ORANGE,  
             // markerSymbol: '?',
             // zIndex: 0,
@@ -71,7 +71,7 @@ var GisData = {
         }));
         //道路马路牙子
 
-        let dlwbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/mlyz.geojson', {
+        let dlwbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/mlyz.geojson', {
             fill: Cesium.Color.fromCssColorString('#c0c7c5').withAlpha(0.996),//.withAlpha(1)
             stroke: Cesium.Color.fromCssColorString('#c0c7c5').withAlpha(0.996),// Cesium.Color.ORANGE, 
             // markerSymbol: '?',
@@ -83,7 +83,7 @@ var GisData = {
         //     for (var i = 0; i < entities.length; i++) {
         //         var entity = entities[i];
         //         entity.polygon.material =   new Cesium.ImageMaterialProperty({
-        //                 image:'./static/images/36.png',
+        //                 image:'../../static/images/36.png',
         //                 color: Cesium.Color.fromCssColorString('#fff').withAlpha(0.8),
         //                 repeat : new Cesium.Cartesian2(4,4)
         //             })
@@ -93,7 +93,7 @@ var GisData = {
         //     //window.alert(error);
         // }); 
         // //道路面
-        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/dlm.geojson', {
+        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlm.geojson', {
             fill: Cesium.Color.fromCssColorString('#626669').withAlpha(1),//.withAlpha(1)
             stroke: Cesium.Color.fromCssColorString('#626669').withAlpha(1),// Cesium.Color.ORANGE, 
             // markerSymbol: '?',
@@ -101,7 +101,7 @@ var GisData = {
             show: false
         }));
         //道路 长虚线
-        let dcdx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/dlcxx.geojson', {
+        let dcdx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlcxx.geojson', {
             stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1) 
             strokeWidth: 1,
             // markerSymbol: '?',
@@ -124,7 +124,7 @@ var GisData = {
         });
 
         //道路短虚线
-        let dcxx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/dldxx.geojson', {
+        let dcxx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dldxx.geojson', {
             // stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
             strokeWidth: 1,
             // markerSymbol: '?',
@@ -145,14 +145,14 @@ var GisData = {
             //window.alert(error);
         });
         //停止线
-        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/step.geojson', {
+        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/step.geojson', {
             stroke: Cesium.Color.fromCssColorString('#c0c0c0').withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
             strokeWidth: 2,
             // markerSymbol: '?',
             show: false
         }));
         //道路直线
-        let dlzx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/dlzx.geojson', {
+        let dlzx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlzx.geojson', {
             stroke: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
             strokeWidth: 1,
             // markerSymbol: '?',
@@ -170,7 +170,7 @@ var GisData = {
             //window.alert(error);
         });
         //道路外边框
-        let dlbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('static/map3d/data/dlwbk.geojson', {
+        let dlbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlwbk.geojson', {
             stroke: Cesium.Color.fromCssColorString('#516b03').withAlpha(0.996),// Cesium.Color.ALICEBLUE.withAlpha(0.996),
             strokeWidth: 2,
             // markerSymbol: '?',
@@ -357,7 +357,7 @@ var GisData = {
     //             });
     //         }
     //         viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-    //             url: './static/map3d/model/street_lamp_two.glb',
+    //             url: '../../static/map3d/model/street_lamp_two.glb',
     //             instances: instances
     //         }));
     //     }
@@ -386,7 +386,7 @@ var GisData = {
                 });
             }
             viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: './static/map3d/model/' + name + '.glb',
+                url: '../../static/map3d/model/' + name + '.glb',
                 instances: instances
             }));
         }
@@ -428,7 +428,7 @@ var GisData = {
                 });
             }
             viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: './static/map3d/model/poleWith2Camera.glb',
+                url: '../../static/map3d/model/poleWith2Camera.glb',
                 instances: instances,
             }));
         }

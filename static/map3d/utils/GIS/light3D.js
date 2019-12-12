@@ -5,9 +5,9 @@ class light3D {
     constructor() {
         this.id;
         this.num = 0;
-        this.img1 = './static/images/light/cross-red.png';
-        this.img2 = './static/images/light/1.png';
-        this.img3 = './static/images/light/2.png';
+        this.img1 = '../../static/images/light/cross-red.png';
+        this.img2 = '../../static/images/light/1.png';
+        this.img3 = '../../static/images/light/2.png';
         this.primitive = {};
     }
     //增加红路灯

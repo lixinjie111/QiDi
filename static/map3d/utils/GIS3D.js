@@ -34,7 +34,7 @@ class GIS3D {
             infoBox: false, //是否显示点击要素之后显示的信息 
             scene3DOnly: true,
             imageryProvider: new Cesium.SingleTileImageryProvider({
-                url: 'static/map3d/images/back.png'//透明图片
+                url: '../../static/map3d/images/back.png'//透明图片
             }),
         });
         this.cesium.viewer.scene.globe.depthTestAgainstTerrain = false;
@@ -172,7 +172,7 @@ class GIS3D {
     //绘制面
     addPolygon(hierarchy, z) {
         // new Cesium.ImageMaterialProperty({
-        //     image:'./static/images/3.png',
+        //     image:'../../static/images/3.png',
         //     color: Cesium.Color.fromCssColorString('#fff').withAlpha(0.8),
         //     repeat : new Cesium.Cartesian2(4,4)
         // })
@@ -203,7 +203,7 @@ class GIS3D {
         let model = this.cesium.viewer.scene.primitives.add(Cesium.Model.fromGltf({
             id: d.vehicleId + name,
             modelMatrix: modelMatrix,
-            url: './static/map3d/model/' + glbName + '.glb',
+            url: '../../static/map3d/model/' + glbName + '.glb',
             minimumPixelSize: 1,
             show: true,
             maximumScale: 5,
@@ -255,7 +255,7 @@ class GIS3D {
                 });
             }
             this.cesium.viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: './static/map3d/model/car_close.glb',
+                url: '../../static/map3d/model/car_close.glb',
                 instances: instances,
                 scale: 10.0
             }));

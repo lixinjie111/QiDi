@@ -363,7 +363,7 @@ class PerceptionCars {
       let model = this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
         id: d.vehicleId + name,
         modelMatrix: modelMatrix,
-        url: './static/map3d/model/' + glbName + '.glb',
+        url: '../../static/map3d/model/' + glbName + '.glb',
         minimumPixelSize: 1,
         show: true,
         maximumScale: 5,
