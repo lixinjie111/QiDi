@@ -2,29 +2,35 @@
  * 地图数据及模型初始化
  */
 var GisData = {
-    //地图矢量数据初始化
-    initDate(viewer) {
+    /**
+     * 初始化地图服务
+     * @param {地图视图} viewer 
+     */
+    initServer(viewer) {
         //业务数据
-        // viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-        //     url: window.mapUrl,
-        //     maximumLevel: 22,
-        //     id: "layer1",
-        //     show: false
-        // }));
+        viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+            url: window.mapUrl,
+            maximumLevel: 22,
+            id: "layer1",
+            show: false
+        }));
+    },
+    //地图矢量数据初始化
+    initRoadDate(viewer) {
         var promise = Cesium.GeoJsonDataSource.load('static/map3d/data/bs.geojson');
         promise.then(function (dataSource) {
-            viewer.dataSources.add(dataSource); 
+            viewer.dataSources.add(dataSource);
             //Get the array of entities
-            var entities = dataSource.entities.values; 
+            var entities = dataSource.entities.values;
             for (var i = 0; i < entities.length; i++) {
                 //For each entity, create a random color based on the state name.
                 //Some states have multiple entities, so we store the color in a
                 //hash so that we use the same color for the entire state.
-                var entity = entities[i]; 
+                var entity = entities[i];
                 //Set the polygon material to our random color.
                 entity.polygon.material = Cesium.Color.ALICEBLUE.withAlpha(1).withAlpha(0.996);
                 //Remove the outlines.
-                entity.polygon.outline = false;  
+                entity.polygon.outline = false;
             }
         }).otherwise(function (error) {
             //Display any errrors encountered while loading.
@@ -194,10 +200,9 @@ var GisData = {
         //     //window.alert(error);
         // });
     },
-    //初始化模型
-    initModeData(viewer) {
+    //初始化树模型
+    initThreeData(viewer) {
 
-        this.initStreetLamp(viewer);
         let itemSide = [
             [121.17598714521128, 31.28088057501294],
             [121.175908342116941, 31.281047481951688],
@@ -266,97 +271,97 @@ var GisData = {
         ]
 
         this.initTree(itemSide, viewer, "Htree");
-
-        let itemSide2 = [[121.17551589465815, 31.281617738453047, 0.0]]
-
-        this.initTree(itemSide2, viewer, "traffic_light_yellow");
-
-
-
-
-
-        //         var billboards = viewer.scene.primitives.add(new Cesium.BillboardCollection());
-        // billboards.add({
-        //   position : new Cesium.Cartesian3(121.17551589465815,31.281617738453047, 10.0),
-        //   image : 'static/map3d/images/1.png'
-        // });
-        // billboards.add({
-        //   position : new Cesium.Cartesian3(121.17551589465815,31.281617738453047, 10.0),
-        //   image : 'static/map3d/images/1.png'
-        // });
-
     },
     /**
-     * 加载灯杆
+     * 初始化红路灯模型
      */
-    initStreetLamp(viewer) {
-        //添加路灯杆和信息牌
-        let itemSide = [[121.17070961131611, 31.285431834985424],
-        [121.17073199482752, 31.285150145980502],
-        [121.17096459641984, 31.285168614731074],
-        [121.17101335020133, 31.284874000996314],
-        [121.17216565958867, 31.284348054967808],
-        [121.17132056475575, 31.284276048390208],
-        [121.17062888598159, 31.284216686156945],
-        [121.17207633906403, 31.284239285633543],
-        [121.17033359249672, 31.284157141256838],
-        [121.1724246115773, 31.284181289535567],
-        [121.17273228554805, 31.28410708290532],
-        [121.17014346973389, 31.28410722054608],
-        [121.17127629880481, 31.284068493485837],
-        [121.16975107570983, 31.283968732825787],
-        [121.17071496967101, 31.284011572973593],
-        [121.17889298098785, 31.284066496892297],
-        [121.17308388024266, 31.283994517255138],
-        [121.17513316747507, 31.28202608387663],
-        [121.17507200103864, 31.2820481296404],
-        [121.17643623104242, 31.28201254302679],
-        [121.17608145380935, 31.28192863389644],
-        [121.17571194801135, 31.281806498814234],
-        [121.17554428210079, 31.281528392645594],
-        [121.17551565124025, 31.28127144704202],
-        [121.17596714717831, 31.280635936312137],
-        [121.1757986743549, 31.280924816290394],
-        [121.17617058471296, 31.280354153655722],
-        [121.17639732682561, 31.280095618450176],
-        [121.17656592321617, 31.279932812971882],
-        [121.17673851919542, 31.279782646028156],
-        [121.17626731462425, 31.279858345912515],
-        [121.17710489311077, 31.279497024499808],
-        [121.17692052173562, 31.27963787124529],
-        [121.17750680578966, 31.27916958914152],
-        [121.1775359306423, 31.27919272313663],
-        [121.17778939558842, 31.278952815954426],
-        [121.17781590654938, 31.2789796944684],
-        [121.1666703978575, 31.282784858344815],
-        [121.17477219004144, 31.28290573394953],
-        [121.17760398758145, 31.28286933091194],
-        [121.16578527647836, 31.282646589044464]]
-
-        // console.log(item)
-        if (itemSide != null && itemSide.length > 0) {
-            var entity = null;
-            //合并写法
-            var instances = [];
-            // var labels = viewer.scene.primitives.add(new Cesium.LabelCollection());
-            for (var i = 0; i < itemSide.length; i++) {
-                var position = Cesium.Cartesian3.fromDegrees(itemSide[i][0], itemSide[i][1], 0);
-                //  
-                var heading = Cesium.Math.toRadians(30);
-                var pitch = Cesium.Math.toRadians(0);
-                var roll = 0;
-                var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
-                instances.push({
-                    modelMatrix: modelMatrix
-                });
-            }
-            viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: './static/map3d/model/street_lamp_two.glb',
-                instances: instances
-            }));
-        }
+    initLightModel(viewer) {
+        let itemSide2 = [[121.17551589465815, 31.281617738453047, 0.0, 250],
+        [121.17510881207043, 31.281747510005268, 0.0, -10],
+        [121.17533995826606, 31.282071700494583, 0.0, 60]]
+        this.initTree(itemSide2, viewer, "traffic_light_yellow");
     },
+    /**
+     * 初始化感知杆模型
+     */
+    initPoleModelDate(item, viewer) {
+        //var item = sessionStorage.getItem("sideList"); 
+        if (item) {
+            this.initModel_pole(item, viewer);
+        }
+
+    },
+    // /**
+    //  * 加载灯杆
+    //  */
+    // initStreetLamp(viewer) {
+    //     //添加路灯杆和信息牌
+    //     let itemSide = [[121.17070961131611, 31.285431834985424],
+    //     [121.17073199482752, 31.285150145980502],
+    //     [121.17096459641984, 31.285168614731074],
+    //     [121.17101335020133, 31.284874000996314],
+    //     [121.17216565958867, 31.284348054967808],
+    //     [121.17132056475575, 31.284276048390208],
+    //     [121.17062888598159, 31.284216686156945],
+    //     [121.17207633906403, 31.284239285633543],
+    //     [121.17033359249672, 31.284157141256838],
+    //     [121.1724246115773, 31.284181289535567],
+    //     [121.17273228554805, 31.28410708290532],
+    //     [121.17014346973389, 31.28410722054608],
+    //     [121.17127629880481, 31.284068493485837],
+    //     [121.16975107570983, 31.283968732825787],
+    //     [121.17071496967101, 31.284011572973593],
+    //     [121.17889298098785, 31.284066496892297],
+    //     [121.17308388024266, 31.283994517255138],
+    //     [121.17513316747507, 31.28202608387663],
+    //     [121.17507200103864, 31.2820481296404],
+    //     [121.17643623104242, 31.28201254302679],
+    //     [121.17608145380935, 31.28192863389644],
+    //     [121.17571194801135, 31.281806498814234],
+    //     [121.17554428210079, 31.281528392645594],
+    //     [121.17551565124025, 31.28127144704202],
+    //     [121.17596714717831, 31.280635936312137],
+    //     [121.1757986743549, 31.280924816290394],
+    //     [121.17617058471296, 31.280354153655722],
+    //     [121.17639732682561, 31.280095618450176],
+    //     [121.17656592321617, 31.279932812971882],
+    //     [121.17673851919542, 31.279782646028156],
+    //     [121.17626731462425, 31.279858345912515],
+    //     [121.17710489311077, 31.279497024499808],
+    //     [121.17692052173562, 31.27963787124529],
+    //     [121.17750680578966, 31.27916958914152],
+    //     [121.1775359306423, 31.27919272313663],
+    //     [121.17778939558842, 31.278952815954426],
+    //     [121.17781590654938, 31.2789796944684],
+    //     [121.1666703978575, 31.282784858344815],
+    //     [121.17477219004144, 31.28290573394953],
+    //     [121.17760398758145, 31.28286933091194],
+    //     [121.16578527647836, 31.282646589044464]]
+
+    //     // console.log(item)
+    //     if (itemSide != null && itemSide.length > 0) {
+    //         var entity = null;
+    //         //合并写法
+    //         var instances = [];
+    //         // var labels = viewer.scene.primitives.add(new Cesium.LabelCollection());
+    //         for (var i = 0; i < itemSide.length; i++) {
+    //             var position = Cesium.Cartesian3.fromDegrees(itemSide[i][0], itemSide[i][1], 0);
+    //             //  
+    //             var heading = Cesium.Math.toRadians(30);
+    //             var pitch = Cesium.Math.toRadians(0);
+    //             var roll = 0;
+    //             var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+    //             var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+    //             instances.push({
+    //                 modelMatrix: modelMatrix
+    //             });
+    //         }
+    //         viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
+    //             url: './static/map3d/model/street_lamp_two.glb',
+    //             instances: instances
+    //         }));
+    //     }
+    // },
 
     /**
     * 加载灯杆
@@ -386,6 +391,47 @@ var GisData = {
             }));
         }
     },
-
+    /**
+       * 加载感知杆
+       */
+    initModel_pole(item, viewer)//初始化杆
+    {
+        var itemSide = JSON.parse(item);
+        // console.log(item)
+        if (itemSide != null && itemSide.length > 0) {
+            var entity = null;
+            //合并写法
+            var instances = [];
+            var labels = viewer.scene.primitives.add(new Cesium.LabelCollection());
+            for (var i = 0; i < itemSide.length; i++) {
+                labels.add({
+                    fillColor: Cesium.Color.BLACK,
+                    backgroundColor: Cesium.Color.fromCssColorString('#fff'),
+                    position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 10 + this.defualtZ),
+                    text: itemSide[i].devName,
+                    font: '14px sans-serif',
+                    showBackground: true,
+                    horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                    pixelOffset: new Cesium.Cartesian2(0.0, 0),
+                    // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.0),
+                    scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
+                });
+                var position = Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, this.defualtZ);
+                //  
+                var heading = Cesium.Math.toRadians(itemSide[i].heading + 90);
+                var pitch = Cesium.Math.toRadians(0);
+                var roll = 0;
+                var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+                instances.push({
+                    modelMatrix: modelMatrix
+                });
+            }
+            viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
+                url: './static/map3d/model/poleWith2Camera.glb',
+                instances: instances,
+            }));
+        }
+    }
 }
 // export default GisData;
