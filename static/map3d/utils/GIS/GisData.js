@@ -1,7 +1,7 @@
 /**
  * 地图数据及模型初始化
  */
-window.GisData = {
+var GisData = {
     //地图矢量数据初始化
     initDate(viewer) {
         //业务数据
