@@ -1,108 +1,51 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="utf-8">
-  <!--代表禁止浏览器从本地计算机的缓存中访问页面内容-->
-  <!--<meta http-equiv="pragram" content="no-cache">
-  &lt;!&ndash;请求和响应不缓存&ndash;&gt;
-  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">-->
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
-  <!--IE / Edge 自动给数字加下划线的问题-->
-  <meta name="format-detection" content="telephone=no,email=no,address=no">
-  <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon">
-  <!--<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
-  <title>3D地图测试</title>
-
-  <link rel="stylesheet" type="text/css" href="static/map3d/css/widgets.css" />
-  <script>
-    document.write('<script src="./static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
-  </script>
-
-  <script src="static/map3d/libs/Cesium.js"></script>
-  <script src="static/map3d/utils/GIS/GisData.js"></script>
-  <script src="static/map3d/utils/GIS/light3D.js"></script>
-  <script src="static/map3d/utils/GIS3D.js"></script>
-  <script src="static/map3d/utils/PerceptionCars.js"></script>
-  <style>
-  	html, body {margin: 0; padding: 0; width: 100%; height: 100%;}
-  	#cesiumContainer {width: 100%; height: 100%; background-color: #000;}
-  </style>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>3D地图目录</title>
+<meta name="viewport" content="minimal-ui,width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="description" content="">
+<meta name="keywords" content="">
 </head>
 <body>
-    <div id="cesiumContainer"></div>
-	<script>
-    var gis3d=new GIS3D();
-    var perceptionCars = new PerceptionCars();
-    var perceptionWebsocket = {};
-
-    gis3d.initload("cesiumContainer",false);
-    perceptionCars.viewer=gis3d.cesium.viewer; 
-
-
-    addEventListener('message', e => {
-        // e.data为父页面发送的数据
-       let eventData = e.data
-        if(eventData.type == "updateCam"){
-          gis3d.updateCameraPosition(eventData.data.x,eventData.data.y,eventData.data.z,eventData.data.radius,eventData.data.pitch,eventData.data.yaw);
-        }
-        if(eventData.type == "position"){
-          getData(eventData);
-        }
-        if(eventData.type == "addModel"){    
-          gis3d.addModeCar({
-            longitude:eventData.data.longitude,
-            latitude:eventData.data.latitude,
-            heading:eventData.data.heading,
-            vehicleId:eventData.data.vehicleId,
-          },
-          eventData.data.name,
-          eventData.data.glbName,
-          );
-        }
-    })
-
-
-    function getData(e) {
-          perceptionWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
-
-          perceptionWebsocket.addEventListener('open', function (event) { 
-            var perception = {
-              action:"road_real_data_per",
-              data:{
-                  type:1,
-                  // polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
-                  polygon:e.data.currentExtent
-                  }
-            }
-            var perceptionMsg = JSON.stringify(perception);
-            perceptionWebsocket.send(perceptionMsg);
-          });
-          perceptionWebsocket.addEventListener('message', function (event) {
-            let data = JSON.parse(event.data)
-            let maxGpsTime = 0;
-            let fiterData;
-            if(data.result.perList.length){
-              data.result.perList.map(item=>{
-                if(item.gpsTime > maxGpsTime){
-                  maxGpsTime = item.gpsTime;
-                  fiterData = item;
-                }
-              })        
-            }  
-            perceptionCars.addPerceptionData(fiterData.data,0);      
-          });
-          perceptionWebsocket.addEventListener('close', function (event) {
-            console.log("关闭链接")        
-          });
-          perceptionWebsocket.addEventListener('error', function (event) {
-            console.log("链接出错")      
-          });
-    }
-
-  </script>
+<div class="content">
+  <dl class="dl">
+    <dt>融合感知平台</dt>
+    <dd>
+      <ul class="list">
+        <li><a href="./fusionMonitor/perception.html?"><var class="file_icon"></var><span>路口</span></a></li>
+        <li><a href="./fusionMonitor/single.html?"><var class="file_icon"></var><span>单车</span></a></li>
+      </ul>
+    </dd>
+  </dl>
+  <dl class="dl">
+    <dt>监控平台</dt>
+    <dd>
+      <ul class="list">
+        <li><a href="./monPlatform/roadMonitor.html?"><var class="file_icon"></var><span>交通事件</span></a></li>
+        <li><a href="./monPlatform/sideDeviceMonitor.html?"><var class="file_icon"></var><span>路侧点</span></a></li>
+      </ul>
+    </dd>
+  </dl>
+  <dl class="dl">
+    <dt>运营平台</dt>
+    <dd>
+      <ul class="list">
+        <li><a href="./operationPlatform/index.html?"><var class="file_icon"></var><span></span></a></li>
+      </ul>
+    </dd>
+  </dl>
+  <dl class="dl">
+    <dt>数据平台</dt>
+    <dd>
+      <ul class="list">
+        <li><a href="./dataManage/percepDetail.html?serialNum=3402000005132000000901&startTime=20191212153033&endTime=20191212155843"><var class="file_icon"></var><span>感知数据</span></a></li>
+      </ul>
+    </dd>
+  </dl>
+</div>
 </body>
-<script>
-	
-</script>
 </html>
