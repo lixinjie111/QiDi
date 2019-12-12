@@ -270,7 +270,7 @@ var GisData = {
             [121.170097826441022, 31.284233602719066]
         ]
 
-        this.initTree(itemSide, viewer, "Htree");
+        this.initTree(itemSide, viewer, "Htree",false);
     },
     /**
      * 初始化红路灯模型
@@ -278,8 +278,8 @@ var GisData = {
     initLightModel(viewer) {
         let itemSide2 = [[121.17551589465815, 31.281617738453047, 0.0, 250],
         [121.17510881207043, 31.281747510005268, 0.0, -10],
-        [121.17533995826606, 31.282071700494583, 0.0, 60]]
-        this.initTree(itemSide2, viewer, "traffic_light_yellow");
+        [121.17533995826606, 31.282071700494583, 0.0, 60]] 
+        this.initTree(itemSide2, viewer, "traffic_light_yellow",true);
     },
     /**
      * 初始化感知杆模型
@@ -363,34 +363,38 @@ var GisData = {
     //     }
     // },
 
-    /**
+   /**
     * 加载灯杆
     */
-    initTree(itemSide, viewer, name) {
-        //添加路灯杆和信息牌 
-        // console.log(item)
-        if (itemSide != null && itemSide.length > 0) {
-            var entity = null;
-            //合并写法
-            var instances = [];
-            for (var i = 0; i < itemSide.length; i++) {
-                var position = Cesium.Cartesian3.fromDegrees(itemSide[i][0], itemSide[i][1], 0);
-                //  
-                var heading = Cesium.Math.toRadians(30);
-                var pitch = Cesium.Math.toRadians(0);
-                var roll = 0;
-                var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
-                instances.push({
-                    modelMatrix: modelMatrix
-                });
+   initTree(itemSide, viewer, name, isHeading) {
+    //添加路灯杆和信息牌 
+    // console.log(item)
+    if (itemSide != null && itemSide.length > 0) {
+        var entity = null;
+        //合并写法
+        var instances = [];
+        for (var i = 0; i < itemSide.length; i++) {
+            var position = Cesium.Cartesian3.fromDegrees(itemSide[i][0], itemSide[i][1], 0);
+            //  
+            var heading = Cesium.Math.toRadians(0);
+            //是否旋转
+            if (isHeading) {
+                heading = Cesium.Math.toRadians(itemSide[i][3]);
             }
-            viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: '../../static/map3d/model/' + name + '.glb',
-                instances: instances
-            }));
+            var pitch = Cesium.Math.toRadians(0);
+            var roll = 0;
+            var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+            var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+            instances.push({
+                modelMatrix: modelMatrix
+            });
         }
-    },
+        viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
+            url: './static/map3d/model/' + name + '.glb',
+            instances: instances
+        }));
+    }
+},
     /**
        * 加载感知杆
        */
