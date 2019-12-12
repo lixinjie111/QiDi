@@ -34,4 +34,3 @@ class TDate {
         return result;
     }
 }
-export default TDate;
