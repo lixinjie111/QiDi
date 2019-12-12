@@ -31,11 +31,11 @@ window.initLight3D = {
         this.light3DList.push(l275);
 
         let l277 = new light3D();
-        l277.addLight2(viewer, "277", 121.17510881207043, 31.281747510005268, -30);
+        l277.addLight2(viewer, "277", 121.17510881207043, 31.281747510005268, -10);
         this.light3DList.push(l277);
 
         let l278 = new light3D();
-        l278.addLight2(viewer, "278", 121.17512933327903, 31.28169112844802, -30);
+        l278.addLight2(viewer, "278", 121.17512933327903, 31.28169112844802, -10);
         this.light3DList.push(l278);
 
         let l282 = new light3D();
