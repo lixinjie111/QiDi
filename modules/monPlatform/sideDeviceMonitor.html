@@ -18,14 +18,15 @@
     document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
   </script>
 
+ 
+</head>
+<body>
+  <div id="cesiumContainer"></div>
   <script src="../../static/map3d/libs/Cesium.js"></script>
   <script src="../../static/map3d/utils/GIS/GisData.js"></script>
   <script src="../../static/map3d/utils/GIS/light3D.js"></script>
   <script src="../../static/map3d/utils/GIS3D.js"></script>
   <script src="../../static/map3d/utils/PerceptionCars.js"></script>
-</head>
-<body>
-    <div id="cesiumContainer"></div>
 	<script>
     var gis3d=new GIS3D();
     var perceptionCars = new PerceptionCars();
@@ -33,6 +34,13 @@
 
     gis3d.initload("cesiumContainer",false);
     perceptionCars.viewer=gis3d.cesium.viewer; 
+
+    //初始化地图--道路数据
+    GisData.initRoadDate(gis3d.cesium.viewer);
+    //初始化地图服务--上帝视角时使用
+    GisData.initServer(gis3d.cesium.viewer);
+    //初始化模型数据--树
+    GisData.initThreeData(gis3d.cesium.viewer);
 
 
     addEventListener('message', e => {
