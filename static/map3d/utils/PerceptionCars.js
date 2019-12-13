@@ -1,7 +1,7 @@
 // import DateFormat from '@/utils/date.js'
 class PerceptionCars {
     constructor() {
-      this.defualtZ = window.defualtZ;
+      window.defualtZ = window.defualtZ;
       this.cacheModelNum = 200,//初始化车辆总数
         this.carColor = 0x80f77a,//感知车颜色
         this.pitch = 0,
@@ -352,7 +352,7 @@ class PerceptionCars {
      * @param {数据} d 
      */
     addModeCar(d, name, glbName) {
-      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ);
+      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ);
       var heading = Cesium.Math.toRadians(d.heading);
       var pitch = 0;
       var roll = 0;
@@ -414,7 +414,7 @@ class PerceptionCars {
     }
     //移动模型
     moveModel(carmodel, d, name) {
-      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ);
+      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ);
       var heading = Cesium.Math.toRadians(d.heading);
       var pitch = 0;
       var roll = 0;
@@ -433,7 +433,7 @@ class PerceptionCars {
   
     }
     addModeCarLabel(d) {
-      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 5);
+      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ + 5);
       ///////////////增加文字
       let entityLabel = this.viewer.entities.add({
         id: d.vehicleId + "label",
@@ -460,7 +460,7 @@ class PerceptionCars {
      */
     moveModelLabel(carlabel, d) {
       //var carlabel = this.viewer.entities.getById( d.vehicleId + "label");
-      carlabel.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 3);
+      carlabel.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ + 3);
       let h = d.heading.toFixed(1);
       let s = d.speed.toFixed(1);
       let veh = d.vehicleId.substr(0,4);

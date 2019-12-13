@@ -5,7 +5,7 @@ class GIS3D {
     constructor() {
         this.cesium = { viewer: null };
         this.modelsInforLabel = {};
-        this.defualtZ = window.defualtZ;
+        window.defualtZ = window.defualtZ;
         this.isload = false;
     }
     //初始化地图
@@ -14,7 +14,7 @@ class GIS3D {
         let cesiumContainer = document.getElementById(id);
         this.initCesium(cesiumContainer); // Initialize Cesium renderer  
         if (!isFXAA) {
-            this.cesium.viewer.scene.screenSpaceCameraController.minimumZoomDistance = this.defualtZ + 5; //距离地形的距离？这个值可以多测试几个值，，我这不太好描述
+            this.cesium.viewer.scene.screenSpaceCameraController.minimumZoomDistance = window.defualtZ + 5; //距离地形的距离？这个值可以多测试几个值，，我这不太好描述
         }
     }
     initCesium(cesiumContainer) {
@@ -112,11 +112,11 @@ class GIS3D {
     //添加事件
     add3DInfoLabel(name, text, x, y, z) {
         let positions = [];
-        positions.push(Cesium.Cartesian3.fromDegrees(x, y, this.defualtZ + 0));
-        positions.push(Cesium.Cartesian3.fromDegrees(x, y, this.defualtZ + 10));
+        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
+        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 10));
         let lableModel = this.cesium.viewer.entities.add({
             id: name,
-            position: Cesium.Cartesian3.fromDegrees(x, y, this.defualtZ + 10),
+            position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 10),
             polyline: {
                 positions: positions,
                 width: 3,
@@ -192,7 +192,7 @@ class GIS3D {
      * @param {数据} d 
      */
     addModeCar(d, name, glbName) {
-        var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ);
+        var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ);
         var heading = Cesium.Math.toRadians(d.heading);
         var pitch = 0;
         var roll = 0;
