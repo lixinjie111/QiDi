@@ -418,7 +418,7 @@ var GisData = {
             });
         }
         viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-            url: './static/map3d/model/' + name + '.glb',
+            url: '../../static/map3d/model/' + name + '.glb',
             instances: instances
         }));
     }
