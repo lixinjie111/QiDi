@@ -8,7 +8,6 @@ class light3D {
         this.img1 = '../../static/images/light/cross-red.png';
         this.img2 = '../../static/images/light/1.png';
         this.img3 = '../../static/images/light/2.png';
-        this.primitive = {};
     }
     //增加红路灯
     addLight(viewer, id, x, y, angle, stRotation1, stRotation2, stRotation3) {
@@ -87,7 +86,7 @@ class light3D {
                 outline: false
             }
         });
-        // debugger
+        // 
         // let x3=x+Math.sin(angle * (Math.PI / 180)) *0.00006;
         // let y3=y+Math.cos(angle * (Math.PI / 180)) *0.00006
 
@@ -97,6 +96,7 @@ class light3D {
     }
     //增加红路灯
     addLight2(viewer, id, x, y, angle) {
+        this.id=id;
         //New color every time it's called
         let _this = this;
         let _img1 = function (time, result) {
