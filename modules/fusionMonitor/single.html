@@ -18,39 +18,19 @@
     document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
   </script>
 
-  <script src="../../static/map3d/libs/Cesium.js"></script>
-  <script src="../../static/map3d/utils/GIS/GisData.js"></script>
-  <script src="../../static/map3d/utils/GIS/light3D.js"></script>
-  <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
-  <script src="../../static/map3d/utils/GIS3D.js"></script>
 </head>
 <body>
     <div id="cesiumContainer"></div>
+    <script src="../../static/map3d/libs/Cesium.js"></script>
+    <script src="../../static/map3d/utils/GIS/GisData.js"></script>
+    <script src="../../static/map3d/utils/GIS/light3D.js"></script>
+    <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
+    <script src="../../static/map3d/utils/GIS3D.js"></script>
+    <script src="../../static/js/jquery.min.js"></script>
+    <script src="../../static/js/public.js"></script>
+    <!-- <script src="./js/single.js"></script> -->
     <script>
-      gis3d = new GIS3D();
-      gis3d.initload("cesiumContainer", false);
-      gis3d.updateCameraPosition(121.17659986110053,31.28070920407326,39.142101722743725,5.573718449729121,-0.23338301782710902,6.281191529370343);
-
-
-      //初始化地图--道路数据
-      GisData.initRoadDate(gis3d.cesium.viewer);
-      //初始化地图服务--上帝视角时使用
-      GisData.initServer(gis3d.cesium.viewer);
-      //初始化模型数据--树
-      GisData.initThreeData(gis3d.cesium.viewer);
-      //初始化感知模型--杆
-      var item = sessionStorage.getItem("sideList");
-      if (sessionStorage.getItem("sideList")) {
-        GisData.initPoleModelDate(item,gis3d.cesium.viewer);
-      } 
-
-      //初始化模型--红路灯
-      GisData.initLightModel(gis3d.cesium.viewer);
-      //初始化模型--红路灯牌
-      initLight3D.initlight(gis3d.cesium.viewer);
-      // //更新红路灯数据
-      // initLight3D.updateLight(light)
-
+      document.write('<script src="./js/single.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
 </body>
 </html>

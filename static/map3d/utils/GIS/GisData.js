@@ -428,7 +428,12 @@ var GisData = {
        */
     initModel_pole(item, viewer)//初始化杆
     {
-        var itemSide = JSON.parse(item);
+        var itemSide = null;
+        if(typeof item == 'string') {
+            itemSide = JSON.parse(item);
+        }else {
+            itemSide = item;
+        }
         // console.log(item)
         if (itemSide != null && itemSide.length > 0) {
             var entity = null;
@@ -450,11 +455,13 @@ var GisData = {
                 });
                 var position = Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, this.defualtZ);
                 //  
-                var heading = Cesium.Math.toRadians(itemSide[i].heading + 90);
+                var heading = Cesium.Math.toRadians(itemSide[i].heading);
                 var pitch = Cesium.Math.toRadians(0);
                 var roll = 0;
                 var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+                let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
+                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms)
+  
                 instances.push({
                     modelMatrix: modelMatrix
                 });
