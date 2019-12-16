@@ -21,6 +21,7 @@ class ProcessCarTrack {
         this.platObj = {};
         this.singleObj = {};
         this.billboards = {};//存储发射信号
+        this.sideList = [];//感知杆儿数据
     }
 
     //路口视角  平台车
@@ -243,8 +244,7 @@ class ProcessCarTrack {
      //检测感知杆和单车关联
      poleToCar(d) {
         let vid = d.vehicleId;
-        var item = sessionStorage.getItem("sideList");
-        var itemSide = JSON.parse(item);
+        var itemSide = this.sideList;
         // console.log(item)
         if (itemSide != null && itemSide.length > 0) {
 
