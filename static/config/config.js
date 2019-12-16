@@ -24,5 +24,29 @@ window.config = {
     version: 1.0,       // 版本号
 }
 
+//高德地图额外配置项添加
+window.mapOption = {
+    key: "8bf04484a44d846096c9ab84730e88b8",    //高德地图key
+    center: [121.17265957261286,31.284096076877844],    //上海-高德地图坐标点  感知右下角
+    mapStyleEmpty: "amap://styles/bc5a63d154ee0a5221a1ee7197607a00", // 纯灰色背景地图
+};
+//高德地图
+window.defaultMapOption = {
+    center: window.mapOption.center, //上海
+    zoom: 11,       // 默认：比例尺显示100m:zoom=17
+    resizeEnable: true, //是否监控地图容器尺寸变化
+    rotateEnable: true,
+    mapStyle: "amap://styles/3312a5b0f7d3e828edc4b2f523ba76d8"
+}
+//3d地图默认参数
+window.defaultMapParam = {
+    x: 121.17659986110053,
+    y: 31.28070920407326,
+    z: 39.142101722743725,
+    radius: 5.573718449729121,
+    pitch: -0.23338301782710902,
+    yaw: 6.281191529370343
+};
+
 window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shanghai_qcc:dl_shcsq_wgs84_zc_0709&STYLE=&FORMAT=image/png&TILEMATRIXSET=EPSG:900913&TileMatrix=EPSG:900913:{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
 window.defualtZ=0;

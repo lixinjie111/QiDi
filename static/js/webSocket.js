@@ -1,7 +1,7 @@
 /**
  * 实时接口发送
  */
-class webSocket {
+class WebSocket {
     constructor(url = '', params = {}, callback){
     	this.webSocketUrl = url;
     	this.params = params;
@@ -29,11 +29,11 @@ class webSocket {
         this.callback(message);
     },
     onClose(data){
-        console.log("平台车结束连接");
+        console.log("结束连接:"+this.params);
         this.reconnect();
     },
     onError(){
-        console.log("平台车连接error");
+        console.log("连接error:"+this.params);
         this.reconnect();
     },
     onOpen(){
