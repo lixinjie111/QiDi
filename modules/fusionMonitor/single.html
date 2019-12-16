@@ -97,6 +97,13 @@
     .brake-line .progress-bar {
       background-color: #c73610;
     }
+    .single-car {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -128,6 +135,7 @@
         </div>
       </div>
     </div>
+    <img class="single-car" src="./images/car.png"/>
     <script src="../../static/map3d/libs/Cesium.js"></script>
     <script src="../../static/map3d/utils/GIS/GisData.js"></script>
     <script src="../../static/map3d/utils/GIS/GisUtils.js"></script>
@@ -138,7 +146,7 @@
     <script src="../../static/map3d/utils/PerceptionCars.js"></script>
     <script src="../../static/map3d/utils/ProcessCarTrack.js"></script>
     <script src="../../static/map3d/utils/ProcessData.js"></script>
-    
+
     <script src="../../static/js/jquery.min.js"></script>
     <script src="../../static/js/public.js"></script>
     <script src="../../static/js/coordConvert.js"></script>

@@ -109,6 +109,22 @@ class GIS3D {
             delete this.modelsInforLabel[name];
         }
     }
+    /**
+      * 修改事件数值
+    */
+    update3DInfoLabel(id, text) {
+        let entities = this.cesium.viewer.entities.getById(id);
+        if (entities) {
+            this.cesium.viewer.entities.getById(id).label.text = text;
+        }
+    }
+    get3DInfoLabel(id) {
+        let entities = this.cesium.viewer.entities.getById(id);
+        if (entities) {
+            return this.cesium.viewer.entities.getById(id).label.text
+        }
+
+    }
     //添加事件
     add3DInfoLabel(name, text, x, y, z) {
         let positions = [];

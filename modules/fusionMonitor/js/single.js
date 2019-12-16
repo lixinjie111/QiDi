@@ -12,7 +12,7 @@ let urlConfig = {
 
 /** 参数管理 **/
 let vehicleId = getQueryVariable("vehicleId");
-let delayTime = getQueryVariable("delayTime");
+let delayTime = parseFloat(getQueryVariable("delayTime")).toFixed(3)*1000;
 //高德地图参数
 let distanceMap = null;
 let prevLastPoint = []; //上次请求的终点，
@@ -23,11 +23,40 @@ let markers = {
     markerEnd: null
 };
 //3d地图参数
-let gis3d;
+let gis3d = new GIS3D();
 let perceptionCars = new PerceptionCars();
 let platCars = new ProcessCarTrack();
 let processData = new ProcessData();
+
+let pulseWebsocket = null;
+let platformWebsocket = null;
+let perceptionWebsocket = null;
+let canWebSocket = null;
+let spatWebsocket = null;
+let warningWebsocket = null;
+let cancelWarningWebsocket = null;
+
 let pulseInterval = 40;
+let processDataTime = '';
+let pulseNowTime = '';
+let pulseCount = 0;
+let spatPulseCount = 0;
+let routePulseCount = 0;
+let warningPulseCount = 0;
+let staticPulseCount = 0;
+let computePulseCount = 0;
+let perCount = 0;
+let spatCount = 0;
+let warningCacheCount = 0;
+let staticCacheCount = 0;
+
+let warningData = {};
+let warningExist = [];//要进行距离计算
+let staticExist = [];//要进行距离计算
+let warningCount = 0;//要进行距离计算
+let lastLightObj = {};//要进行距离计算
+let tabIsExist = true;
+let removeWarning = [];
 
 /** 调用 **/
 $(function() {
@@ -43,6 +72,8 @@ $(function() {
     initWebsocketData();
     // 脉冲实时接口
     initPulseWebSocket();
+    //判断当前标签页是否被隐藏
+    document.addEventListener("visibilitychange",visiblityChange);
 });
 
 /** 方法 **/
@@ -157,7 +188,6 @@ function distanceMapEnd(point,heading){
     distanceMap.setFitView();
 }
 function init3DMap() {
-    gis3d = new GIS3D();
     gis3d.initload("cesiumContainer", false);
     let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
     gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
@@ -174,6 +204,9 @@ function init3DMap() {
     initLight3D.initlight(gis3d.cesium.viewer);
     // //更新红路灯数据
     // initLight3D.updateLight(light);
+
+    perceptionCars.viewer = gis3d.cesium.viewer;
+    platCars.viewer = gis3d.cesium.viewer;
 }
 function initWebsocketData() {
     //初始化车辆步长以及平台车阀域范围
@@ -207,5 +240,513 @@ function initWebsocketData() {
 }
 /** websocket **/
 function initPulseWebSocket() {
-    
+    let _params = {
+            "action":"pulse",
+            "data":{
+                "frequency":pulseInterval
+            }
+        };
+    pulseWebsocket = new WebSocketObj(window.config.socketUrl, _params, onPulseMessage);
+}
+function onPulseMessage(message){
+    let json = JSON.parse(message.data);
+    let result = json.result;
+    if(pulseNowTime==''){
+        initPlatformWebSocket();
+        initPerceptionWebSocket();
+        initCanWebSocket();
+        initWarningWebSocket();
+        initSpatWebSocket();
+        initCancelWarningWebSocket();
+    }
+    pulseNowTime = result.timestamp;
+    pulseCount++;
+
+    //缓存的时间
+    let pulseNum = delayTime*2/40;
+    let _delayTime = delayTime*2*0.6;
+    if (Object.keys(platCars.platObj).length > 0) {
+        for (let vehicleId in platCars.platObj) {
+            let dataList = platCars.platObj[vehicleId];
+            if (dataList.length > 0) {
+                //分割之前将车辆移动到上一个点
+                //将第一个点进行分割
+                let data = dataList.shift();
+                platCars.cacheAndInterpolatePlatformCar(data);
+            }
+        }
+    }
+
+    //取消告警
+    if(processData.cancelWarning.length>0){
+        let cancelData = [];
+        //查找现有告警是否有取消告警
+        processData.cancelWarning.forEach(warnId=>{
+            //如果有告警 则进行删除
+            if(warningData[warnId]){
+                cancelData.push(warnId);
+            }
+        })
+        if(cancelData.length>0){
+            processCancelWarn(cancelData);
+        }
+    }
+
+    //感知数据缓存次数控制
+    if(perCount>0){
+        perCount++;
+    }
+    if (Object.keys(perceptionCars.devObj).length > 0) {
+        //当有感知数据时
+        if(perCount==0){
+            perCount++;
+        }
+        for (let devId in perceptionCars.devObj) {
+            let devList = perceptionCars.devObj[devId];
+            if (devList.length > 0) {
+                //分割之前将车辆移动到上一个点
+                //将第一个点进行分割
+                let data = devList.shift();
+                perceptionCars.cacheAndInterpolatePerCar(data);
+            }
+        }
+    }
+
+    //红绿灯缓存次数控制
+    if(spatCount>0){
+        spatCount++;
+    }
+    if(Object.keys(processData.spatObj).length>0){
+        if(spatCount==0){
+            spatCount++;
+        }
+    }
+
+    //缓存次数控制
+    if(warningCacheCount>0){
+        warningCacheCount++;
+    }
+    //有告警事件开始缓存
+    if(Object.keys(processData.dynamicWarning).length>0){
+        if(warningCacheCount==0){
+            warningCacheCount++;
+        }
+    }
+
+    //缓存次数控制
+    if(staticCacheCount>0){
+        staticCacheCount++;
+    }
+    //有告警事件开始缓存
+    if(Object.keys(processData.staticWarning).length>0){
+        if(staticCacheCount==0){
+            staticCacheCount++;
+        }
+    }
+
+    let mainCar;
+    //平台车  缓存+40ms调用一次
+    if(pulseCount>=pulseNum) {
+        //当平台车开始插值时，调用其他接口
+        processDataTime = result.timestamp-_delayTime;
+//                    console.log(pulseCount,pulseCount%3,Object.keys(perceptionCars.devObj).length);
+        if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
+            let platCar = platCars.processPlatformCarsTrack(result.timestamp,_delayTime);
+            if(platCar&&platCar.mainCar){
+                mainCar = platCar.mainCar;
+            }
+        }
+        //距离计算次数的控制  1200ms计算一次
+        if(computePulseCount==0||computePulseCount>25){
+            computePulseCount=1;
+            //如果是主车 计算主车与告警事件之间的距离
+            if(mainCar){
+                //静态事件  查找框内的事件 staticExist  存储静态事件
+                let currentExtend = getExtend(mainCar.longitude,mainCar.latitude,0.005);
+                if(staticExist.length>0){
+                    staticExist.forEach((item,index)=>{
+                        if(item.longitude<currentExtend[1][0]&&item.latitude<currentExtend[1][1]&&item.longitude>currentExtend[3][0]&&item.latitude>currentExtend[3][1]){
+                            let s = computeDistance(mainCar,item);
+                            processWarn(item,s);
+                        }else{
+                            //如果不在区域内  不显示多少米  排查是否信息更新
+                            let msg = gis3d.get3DInfoLabel(item.warnId);
+                            if(msg&&msg._value.indexOf('米')!=-1){
+                                gis3d.update3DInfoLabel(item.warnId,item.warnMsg);
+                            }
+                        }
+                    })
+                }
+                //动态事件
+                if(warningExist.length>0){
+                    warningExist.forEach(item=>{
+                        let s = computeDistance(mainCar,item);
+                        processWarn(item,s);
+                    })
+                }
+            }
+        }
+        computePulseCount++;
+
+        if(routePulseCount==0||routePulseCount>=25){
+            routePulseCount=1;
+            if(mainCar){
+                mainCar.tabIsExist = tabIsExist;
+                drawLine(mainCar);
+            }
+            if(processData.canList.length>0){
+                let canData = processData.processCanData(result.timestamp,_delayTime);
+                if(canData){
+                    // 计算can数据
+                }
+            }
+        }
+        routePulseCount++;
+    }
+
+    //感知车 缓存+40ms调用一次
+    if(perCount>=pulseNum){
+        if(Object.keys(perceptionCars.devObj).length>0){
+            let processPerCar = perceptionCars.processPerTrack(result.timestamp,_delayTime);
+        }
+    }
+
+    //红绿灯  缓存+1200ms调用一次
+    if(spatCount>=pulseNum&&(spatPulseCount==0||spatPulseCount>=30)){
+        spatPulseCount=1;
+        if(Object.keys(processData.spatObj).length>0){
+            let spatData = processData.processSpatData(result.timestamp,_delayTime);
+            drawnSpat(spatData);
+        }
+    }
+    spatPulseCount++;
+
+    //执行告警
+    if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>=10)){
+        warningPulseCount=1;
+        if(Object.keys(processData.dynamicWarning).length>0){
+            warningExist = [];
+            for(let warnId in processData.dynamicWarning){
+                let data = processData.processWarningData(result.timestamp,_delayTime,warnId);
+                if(data){
+                    warningExist.push(warnId);
+                    processWarn(data);
+                }
+            }
+            if(warningExist.length>0){
+                if(Object.keys(warningData).length>0){
+                    for(let warnId in warningData){
+                        //如果历史告警不存在  进行删除
+                        if(warningExist.indexOf(warnId)==-1){
+                            delete warningData[warnId];
+                            gis3d.remove3DInforLabel(warnId);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    warningPulseCount++;
+
+    //执行静态告警
+    if(staticCacheCount>pulseNum&&(staticPulseCount==0||staticPulseCount>=10)){
+        staticPulseCount=1;
+        //静态事件的处理
+        if(Object.keys(processData.staticWarning).length>0){
+            let staticData = processData.processStaticData(result.timestamp,_delayTime);
+            if(staticData&&staticData.length>0){
+                staticExist.push.apply(staticExist,staticData);
+                //静态事件
+                staticData.forEach(item=>{
+                    //起始与车的距离计算
+                    processWarn(item);
+                })
+            }
+        }
+    }
+    staticPulseCount++;
+}
+function initPlatformWebSocket() {
+    let _params = {
+                    "action": "vehicle",
+                    "body": {
+                        "vehicleId": vehicleId
+                    },
+                    "type": 2
+                };
+    platformWebsocket = new WebSocketObj(window.config.socketUrl, _params, onPlatformMessage);
+}
+function onPlatformMessage(message) {
+    let json = JSON.parse(message.data);
+    platCars.receiveData(json, pulseNowTime, vehicleId);
+}
+function initPerceptionWebSocket() {
+    let _params = {
+                    "action": "road_real_data_per",
+                    "data": {
+                        "type": 2,
+                        "vehicleId": vehicleId
+                    }
+                };
+    perceptionWebsocket = new WebSocketObj(window.config.socketUrl, _params, onPerceptionMessage);
+}
+function onPerceptionMessage(message) {
+    let data = JSON.parse(message.data)
+    let sideList = data.result.perList;
+    perceptionCars.receiveData(sideList);
+}
+function initCanWebSocket() {
+    let _params = {
+                    'action': 'can_real_data',
+                    'vehicleIds': vehicleId
+                };
+    canWebSocket = new WebSocketObj(window.config.socketUrl, _params, onCanMessage);
+}
+function onCanMessage(message) {
+    let json = JSON.parse(message.data);
+    processData.receiveCanData(json.result);
+}
+function initWarningWebSocket() {
+    let _params = {
+                        "action": "warning",
+                        "body": {
+                            "vehicleId": vehicleId
+                        },
+                        "type":1
+                    };
+    warningWebsocket = new WebSocketObj(window.config.socketUrl, _params, onWarningMessage);
+}
+function onWarningMessage(message) {
+    let json = JSON.parse(message.data);
+    let data = json.result;
+    if(data&&data.length>0){
+        data.forEach(rcuItem=>{
+            let item = rcuItem.data;
+            let warnId = item.warnId.substring(0,item.warnId.lastIndexOf("_"));
+            //判断事件是否被取消 如果告警事件被画上 并且接收到取消 则不进行接收
+            if(removeWarning.indexOf(item.warnId)==-1){
+                //如果是静态事件
+                if(!item.isD){
+                    //如果是静态事件，收到确认
+                    let warning = {
+                        "action":"warning",
+                        "body":{
+                            "warnId": item.warnId,
+                            "status":1
+                        },
+                        "type":2
+                    }
+                    let warningMsg = JSON.stringify(warning);
+                    warningWebsocket.sendMsg(warningMsg);
+                    item.warnId = warnId;
+                    let array = processData.staticWarning[item.warnId];
+                    if(!array){
+                        processData.staticWarning[item.warnId] = new Object();
+                    }
+                    processData.staticWarning[item.warnId]=item;
+                }else{
+                    let array = processData.dynamicWarning[warnId];
+                    if(!array){
+                        processData.dynamicWarning[warnId] = new Array();
+                    }
+                    item.warnId = warnId;
+                    processData.dynamicWarning[warnId].push(item);
+
+                }
+            }
+        });
+    }
+}
+function initSpatWebSocket() {
+    let _params = {
+                    "action": "spat",
+                    "vehicleId": vehicleId,
+                    "type": 1
+                };
+    spatWebsocket = new WebSocketObj(window.config.socketUrl, _params, onSpatMessage);
+}
+function onSpatMessage(message) {
+    let json = JSON.parse(message.data);
+    let data = json.result.data;
+    processData.receiveLightData(data);
+}
+function initCancelWarningWebSocket() {
+    let _params = {
+                    "action": "event_cancel",
+                    "body": {},
+                    "type": 1
+                };
+    cancelWarningWebsocket = new WebSocketObj(window.config.socketUrl, _params, onCancelWarningMessage);
+}
+function onCancelWarningMessage(message) {
+    let json = JSON.parse(message.data);
+    let warnId = json.result;
+    let cancelWarning = {
+        "action": "event_cancel",
+        "body": {
+            "events": warnId,
+            "status": 1
+        },
+        "type":2
+    }
+    let cancelWarningMsg = JSON.stringify(cancelWarning);
+    cancelWarningWebsocket.sendMsg(cancelWarningMsg);
+    if(processData.cancelWarning.indexOf(warnId)==-1){
+        processData.cancelWarning.push(warnId);
+    }
+}
+
+function computeDistance(mainCar,warningItem){
+    let lat1 = mainCar.latitude;
+    let lat2 = warningItem.latitude;
+    let lng1 = mainCar.longitude;
+    let lng2 = warningItem.longitude;
+    let radLat1 = lat1*Math.PI / 180.0;
+    let radLat2 = lat2*Math.PI / 180.0;
+    let a = radLat1 - radLat2;
+    let  b = lng1*Math.PI / 180.0 - lng2*Math.PI / 180.0;
+    let s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a/2),2) +
+        Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
+    s = s *6378.137 ;// EARTH_RADIUS;
+    s = parseInt(Math.round(s * 10000) / 10);
+    return s;
+}
+function getExtend(x,y,r){
+    let currentExtent=[];
+    let x0=x+r;
+    let y0=y+r;
+    let x1=x-r;
+    let y1=y-r;
+    currentExtent.push([x1, y0]);
+    currentExtent.push([x0, y0]);
+    currentExtent.push([x0, y1/2]);
+    currentExtent.push([x1, y1/2]);
+    return currentExtent;
+}
+function processWarn(warningData,distance){
+    let warnId = warningData.warnId;
+    let warningMsg;
+    if(distance){
+        warningMsg = warningData.warnMsg + ' ' +distance+'米';
+    }
+    //如果告警第一次画
+    if(!warningData[warnId]){
+        warningCount++;
+        warningData[warnId] = {
+            warnId: warnId,
+            id:warnId,
+            warnMsg:warningData.warnMsg,
+            longitude:warningData.longitude,
+            latitude:warningData.latitude
+        }
+        gis3d.add3DInfoLabel(warnId,warningMsg,warningData.longitude,warningData.latitude,20);
+    }else{
+        gis3d.update3DInfoLabel(warnId,warningMsg);
+    }
+}
+function processCancelWarn(data){
+    data.forEach(warnId=>{
+        if (warningCount > 0) {
+            warningCount--;
+            $parent.warningCount = warningCount;
+            delete warningData[warnId];
+            gis3d.remove3DInforLabel(warnId);
+            removeWarning.push(warnId);
+            staticExist.forEach((item,index)=>{
+                if(item.warnId == warnId){
+                    staticExist.splice(index,1)
+                }
+            })
+            processData.cancelWarning.splice(processData.cancelWarning.indexOf(warnId),1);
+        }
+    })
+}
+function drawnSpat(data){
+    let resultData=[];
+    if(data&&data.length>0){
+        data.forEach(item=>{
+            let option={
+                leftTime: item.leftTime,
+                light: item.light,
+                direction: item.direction,
+                spatId: item.spatId
+
+            }
+            resultData.push(option);
+        });
+        resultData.forEach(function (item,index,arr) {
+            let light={
+            };
+            let array=(item.leftTime+"").split("");
+            if(array.length==1){
+                array=['0',array[0]]
+            }
+            let img1;
+            let img2;
+            let img3;
+            let lastItem;
+            let keys = Object.keys(lastLightObj);
+            if(keys&&keys.length>0){
+                lastItem = lastLightObj[item.spatId];
+            }
+
+            let _direction = '';
+            if(item.direction==1) {
+                _direction = 'cross';
+            }
+            if(item.direction==2) {
+                _direction = 'left';
+            }
+            if(item.direction==3) {
+                _direction = 'turn';
+            }
+            if(item.direction==4) {
+                _direction = 'right';
+            }
+            let _color = item.light.toLowerCase();
+            //每个路灯相位都是固定的
+            if(lastItem&&lastItem.light==item.light&&lastItem.direction==item.direction){
+                img1="";
+            }else{
+                img1='./images/light/'+_direction+'-'+_color+'.png';
+            }
+            if(lastItem&&lastItem.first==array[0]&&lastItem.light==item.light){
+                img2=''
+            }else {
+                img2 = getNumPng(_color,array[0]);
+            }
+            if(lastItem&&lastItem.second==array[1]&&lastItem.light==item.light){
+                img3=''
+            }else {
+                img3 = getNumPng(_color,array[1]);
+            }
+
+            light.id=item.spatId;
+            light.img1=img1;
+            light.img2=img2;
+            light.img3=img3;
+            initLight3D.updateLight(light);
+            let obj = {
+                direction:item.direction, //直行 左转 右转
+                light:item.light,
+                first:array[0],
+                second:array[1]
+
+            }
+            lastLightObj[item.spatId]=obj;
+        })
+    }
+}
+function getNumPng(color,num){
+    let _color = color.toLowerCase();
+    let img = './images/light/'+_color+'_'+num+'.png';
+    return img;
+
+}
+function visiblityChange() {
+    if(document.visibilityState == "hidden") {
+        tabIsExist=false;
+    } else if (document.visibilityState == "visible") {
+        tabIsExist=true;
+    }
 }
