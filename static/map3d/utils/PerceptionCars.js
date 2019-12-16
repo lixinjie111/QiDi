@@ -1,12 +1,11 @@
-// import DateFormat from '@/utils/date.js'
 class PerceptionCars {
     constructor() {
-      window.defualtZ = window.defualtZ;
+      this.defualtZ = window.defualtZ;
       this.cacheModelNum = 200,//初始化车辆总数
-        this.carColor = 0x80f77a,//感知车颜色
-        this.pitch = 0,
-        this.yaw = 0,
-        this.roll = Math.PI * (10 / 90);
+      this.carColor = 0x80f77a,//感知车颜色
+      this.pitch = 0,
+      this.yaw = 0,
+      this.roll = Math.PI * (10 / 90);
       this.deviceModels = { cars: {}, persons: [], texts: [] };
       this.cachePerceptionQueue = new Array(); //缓存感知数据
       this.lastPerceptionMessage = null;
@@ -14,6 +13,7 @@ class PerceptionCars {
       this.processPerceptionDataIntervalId = null;
       this.devObj = {};
       this.pulseInterval='';//阈值范围
+      this.perMaxValue='';
       this.cacheAndInterpolateDataByDevId={};
       this.stepTime='';
       this.drawnObj={};
@@ -31,9 +31,9 @@ class PerceptionCars {
         sideList.forEach(item=>{
           if(!this.devObj[item.devId]){
               this.devObj[item.devId]=new Array();
-          }else {
-            this.devObj[item.devId].push(item);
           }
+          this.devObj[item.devId].push(item);
+
       });
     }
     cacheAndInterpolatePerCar(device) {
@@ -98,17 +98,16 @@ class PerceptionCars {
         }
     }
     processPerTrack(time,delayTime){
+        let devList = [];
         for (let devId in this.cacheAndInterpolateDataByDevId) {
             let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
             if(devCacheData&&devCacheData.cacheData.length>0){
                 let devData = this.getMinValue(devId,time,delayTime,devCacheData.cacheData);
-                console.log("-----------")
                 if(!devData){
                     console.log("没有找到相应的值")
                     return;
                 }
                 if(this.drawnObj[devId]!=''&&devData.batchId==this.drawnObj[devId]){
-                    // console.log("重复绘制的点"+devId+"  ,"+DateFormat.formatTime(devData.batchId,'hh:mm:ss'))
                     return;
                 }
                 this.drawnObj[devId]=devData.batchId;
@@ -116,11 +115,12 @@ class PerceptionCars {
                 // console.log(devData)
                 // console.log("*****"+fusionList)
                 this.processPerceptionMesage(fusionList);
-                return devData;
+                devList.push(devData);
             }else{
-                console.log("缓存队列里没有值")
+                console.log(devId+"缓存队列里没有值")
             }
         }
+        return devList;
     }
     getMinValue(devId,time,delayTime,cacheData){
        /* let minDiff = Math.abs(time-minData.gpsTime-delayTime);*/
@@ -154,7 +154,7 @@ class PerceptionCars {
            }
            let minIndex=-1;
            let minData = {};
-           let obj={};
+           let minDiff;
            //如果能找到最小范围
            // console.log(rangeData)
            if(rangeData){
@@ -164,7 +164,7 @@ class PerceptionCars {
                console.log("plat***********************");
                minIndex = 0;
                minData = cacheData[0];
-               let minDiff = Math.abs(time-minData.gpsTime-delayTime);
+               minDiff = Math.abs(time-minData.gpsTime-delayTime);
                for(let i=0;i<cacheData.length;i++){
                    let diff = Math.abs(time-parseInt(cacheData[i].gpsTime)-delayTime);
                    // let diff = time-cacheData[i].gpsTime-insertTime;
@@ -177,7 +177,11 @@ class PerceptionCars {
                }
            }
 
-           console.log("最小索引:"+minIndex);
+           // console.log("最小索引:"+minIndex);
+           if(minDiff&&minDiff>this.perMaxValue){
+               console.log("per找到最小值无效")
+               return;
+           }
            //打印出被舍弃的点
            let lostData =  this.cacheAndInterpolateDataByDevId[devId].cacheData.filter((item,index)=>{
                return index<minIndex;
@@ -352,7 +356,7 @@ class PerceptionCars {
      * @param {数据} d 
      */
     addModeCar(d, name, glbName) {
-      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ);
+      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ);
       var heading = Cesium.Math.toRadians(d.heading);
       var pitch = 0;
       var roll = 0;
@@ -367,13 +371,14 @@ class PerceptionCars {
         minimumPixelSize: 1,
         show: true,
         maximumScale: 5,
-        // color : Cesium.Color.fromAlpha(Cesium.Color.CHARTREUSE  , parseFloat(1)),
+        // color : Cesium.Color.fromAlpha(Cesium.Color.CHARTREUSE  , parseFloat(0)),
         // silhouetteColor : Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1)),//轮廓线
         colorBlendMode: Cesium.ColorBlendMode.Mix
-        //   ,
-        //   scale : 3.0     //放大倍数
+          // ,
+          // scale : 30.0     //放大倍数
         // debugWireframe:true
       }));
+      
   
     }
     removeModelPrimitives(name) {
@@ -389,7 +394,7 @@ class PerceptionCars {
       var entities = this.viewer.entities._entities._array;
       for (var i = 0; i < entities.length; i++) {
         if (!entitie[i].show && entitie[i].id.search("label") != -1) {
-          this.viewer.entities.remove(entitie[i]);
+         // this.viewer.entities.remove(entitie[i]);
         }
       }
     }
@@ -414,7 +419,7 @@ class PerceptionCars {
     }
     //移动模型
     moveModel(carmodel, d, name) {
-      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ);
+      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ);
       var heading = Cesium.Math.toRadians(d.heading);
       var pitch = 0;
       var roll = 0;
@@ -428,12 +433,23 @@ class PerceptionCars {
       if (d.heading >= 360) {
         carmodel.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
       }
+      else
+      {
+        //清除第一次 出现360数据，第二次颜色问题
+        if(carmodel.color.green==0)
+        {
+          carmodel.color = new Cesium.Color(1, 1, 1, 1);
+        }
+      }
       let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
       Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carmodel.modelMatrix)
   
     }
     addModeCarLabel(d) {
-      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ + 5);
+      let h = d.heading.toFixed(1);
+      let s = d.speed.toFixed(1);
+      let veh = d.vehicleId.substr(0,4); 
+      var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 5);
       ///////////////增加文字
       let entityLabel = this.viewer.entities.add({
         id: d.vehicleId + "label",
@@ -443,7 +459,7 @@ class PerceptionCars {
         //   pixelSize: 0          //像素点大小
         // }, 
         label: {
-          text: "",
+          text:  "[" + h + ", " + s +", "+ veh+"]",
           fillColor: Cesium.Color.BLACK,
           backgroundColor: Cesium.Color.fromCssColorString('#fff'),
           font: '12px sans-serif',
@@ -460,7 +476,7 @@ class PerceptionCars {
      */
     moveModelLabel(carlabel, d) {
       //var carlabel = this.viewer.entities.getById( d.vehicleId + "label");
-      carlabel.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ + 3);
+      carlabel.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 3);
       let h = d.heading.toFixed(1);
       let s = d.speed.toFixed(1);
       let veh = d.vehicleId.substr(0,4);
@@ -475,7 +491,4 @@ class PerceptionCars {
         }
       }
     }
-  
-  
   }
-  // export default PerceptionCars

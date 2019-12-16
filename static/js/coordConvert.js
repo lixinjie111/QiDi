@@ -11,8 +11,6 @@ var ConvertCoord = {
      * Created by Wandergis on 2015/7/8.
      * 提供了百度坐标（BD09）、国测局坐标（火星坐标，GCJ02）、和WGS84坐标系之间的转换
      */
-
-
     /**
      * 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换
      * 即 百度 转 谷歌、高德
@@ -121,13 +119,5 @@ var ConvertCoord = {
     out_of_china(lng, lat) {
         return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false);
     }
-
-    // var array=wgs84togcj02(lng, lat);
-    // // var jsonArray={"N":array[1],"O":array[0],"lng":array[0],"lat":array[1]}
-    // var array1=gcj02tobd09(array[0],array[1]);
-    // var jsonArray={"lng":array1[0],"lat":array1[1]};
-    // // return jsonArray;
-    // return jsonArray;
 }
-export default  ConvertCoord;
 

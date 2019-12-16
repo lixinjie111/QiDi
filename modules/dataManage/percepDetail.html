@@ -23,33 +23,53 @@
   <script src="../../static/map3d/utils/GIS/light3D.js"></script>
   <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
   <script src="../../static/map3d/utils/GIS3D.js"></script>
+  <script src="../../static/map3d/utils/PerceptionCars.js"></script>
 </head>
 <body>
     <div id="cesiumContainer"></div>
   	<script>
-      gis3d = new GIS3D();
-      gis3d.initload("cesiumContainer", false);
-      gis3d.updateCameraPosition(121.17659986110053,31.28070920407326,39.142101722743725,5.573718449729121,-0.23338301782710902,6.281191529370343);
+  
+        var gis3d=new GIS3D();
+        var perceptionCars = new PerceptionCars();
+
+        gis3d.initload("cesiumContainer",false);
+        perceptionCars.viewer=gis3d.cesium.viewer; 
+
+        //初始化地图--道路数据
+        GisData.initRoadDate(gis3d.cesium.viewer);
+        //初始化地图服务--上帝视角时使用
+        GisData.initServer(gis3d.cesium.viewer);
+        //初始化模型数据--树
+        GisData.initThreeData(gis3d.cesium.viewer);
+
+        gis3d.updateCameraPosition(121.17659986110053,31.28070920407326,39.142101722743725,5.573718449729121,-0.23338301782710902,6.281191529370343);
 
 
-      //初始化地图--道路数据
-      GisData.initRoadDate(gis3d.cesium.viewer);
-      //初始化地图服务--上帝视角时使用
-      GisData.initServer(gis3d.cesium.viewer);
-      //初始化模型数据--树
-      GisData.initThreeData(gis3d.cesium.viewer);
-      //初始化感知模型--杆
-      var item = sessionStorage.getItem("sideList");
-      if (sessionStorage.getItem("sideList")) {
-        GisData.initPoleModelDate(item,gis3d.cesium.viewer);
-      } 
+        addEventListener('message', e => {
+            // e.data为父页面发送的数据
+          let eventData = e.data
+            if(eventData.type == "updateCam"){
+              gis3d.updateCameraPosition(eventData.data.x,eventData.data.y,eventData.data.z,eventData.data.radius,eventData.data.pitch,eventData.data.yaw);
+            }
+            if(eventData.type == "setPerData"){
+              getData(eventData);
+            }
+            if(eventData.type == "addModel"){    
+              gis3d.addModeCar({
+                longitude:eventData.data.longitude,
+                latitude:eventData.data.latitude,
+                heading:eventData.data.heading,
+                vehicleId:eventData.data.vehicleId,
+              },
+              eventData.data.name,
+              eventData.data.glbName,
+              );
+            }
+        })
 
-      //初始化模型--红路灯
-      GisData.initLightModel(gis3d.cesium.viewer);
-      //初始化模型--红路灯牌
-      initLight3D.initlight(gis3d.cesium.viewer);
-      // //更新红路灯数据
-      // initLight3D.updateLight(light)
+        function getData(e) {    
+            perceptionCars.addPerceptionData(e.data.row);      
+        }
 
     </script>
 </body>

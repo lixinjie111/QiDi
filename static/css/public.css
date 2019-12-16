@@ -1,2 +1,39 @@
-html, body {margin: 0; padding: 0; width: 100%; height: 100%;}
+
+@charset "utf-8";
+html{background-color:#fff;color:#000;}
+body,ul,ol,dl,dd,h1,h2,h3,h4,h5,h6,figure,form,fieldset,legend,input,textarea,button,p,blockquote,th,td,pre,xmp{margin:0;padding:0}
+body,input,textarea,button,select,pre,xmp,tt,code,kbd,samp{line-height:1.5;background: none;font-family: Helvetica Neue,Helvetica,STHeiTi,sans-serif;}
+h1,h2,h3,h4,h5,h6,small,big,input,textarea,button,select{font-size:100%}
+h1,h2,h3,h4,h5,h6{font-family: Helvetica Neue,Helvetica,STHeiTi,sans-serif;}
+address,cite,dfn,em,i,optgroup,var{font-style:normal;margin:0;padding:0;}
+// table{border-collapse:collapse;border-spacing:0;text-align:left}
+table{border-collapse:collapse;border-spacing:0;text-align:center}
+caption,th{text-align:inherit}
+ul,ol,menu{list-style:none}
+fieldset,img{border:0}
+img {
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+}
+article,aside,footer,header,section,nav,figure,figcaption,hgroup,details,menu{display:block}
+audio,canvas,video{display:inline-block;*display:inline;*zoom:1}
+blockquote:before,blockquote:after,q:before,q:after{content:"\0020"}
+textarea{overflow:auto;resize: none;word-break: break-all;word-wrap: break-word;}
+input,textarea,button,select,a{outline:0 none;border: none;}
+select{appearance: none;}
+button::-moz-focus-inner,input::-moz-focus-inner{padding:0;border:0}
+mark{background-color:transparent}
+a,ins,s,u,del{text-decoration:none}
+sup,sub{vertical-align:baseline}
+hr {height: 2px;margin: 1px 0;border: medium none;border-top: 2px solid #cacaca;}
+a {color: #25a4bb;text-decoration: none;}
+video {
+  object-fit: contain;
+  object-position: center center;
+}
+html {overflow-x: hidden;height: 100%;font-size: 14px;-webkit-tap-highlight-color: transparent;}
+body {font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;font-size: 14px;line-height:1.5;-webkit-text-size-adjust: none;
+    background-color: #f7f7f7;color: #000;-webkit-overflow-scrolling: touch;height: 100%;position: relative;}
+
 #cesiumContainer {width: 100%; height: 100%; background-color: #000;}

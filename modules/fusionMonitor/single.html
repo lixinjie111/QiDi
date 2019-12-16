@@ -14,22 +14,138 @@
 
   <link rel="stylesheet" type="text/css" href="../../static/css/public.css" />
   <link rel="stylesheet" type="text/css" href="../../static/map3d/css/widgets.css" />
+  <link rel="stylesheet" type="text/css" href="./css/style.css" />
   <script>
     document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
   </script>
-
+  <style>
+    .c-box {
+      height: 180px;
+      margin-bottom: 40px;
+    }
+    .vehicle-header {
+      padding: 9px 10px;
+      font-size: 16px;
+      line-height: 22px;
+    }
+    .vehicle-header .level {
+      float: left;
+      width: 24px;
+      height: 22px;
+      background: #0b5330;
+      border-radius: 2px;
+      letter-spacing: 2px;
+      padding-left: 2px;
+      text-align: center;
+      color: #fff;
+    }
+    .vehicle-num {
+      float: left;
+      color: #ddd9d1;
+      margin-left: 10px;
+    }
+    .arrow-wrap {
+      float: right;
+    }
+    .arrow-img {
+      display: inline-block;
+      vertical-align: top;
+      width: 22px;
+      height: 22px;
+      background-size: auto 18px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-image: url(./images/default-arrow.png);
+    }
+    .arrow-img:last-child {
+      transform: rotate(180deg);
+    }
+    .vehicle-img {
+      height: 110px;
+      margin: 0 auto;
+    }
+    .progress-wrap {
+      text-align: center;
+      margin-top: 10px;
+      line-height: 0;
+    }
+    .progress-line {
+      position: relative;
+      display: inline-block;
+      width: 80px;
+      height: 2px;
+      vertical-align: top;
+    }
+    .progress-bar {
+      position: absolute;
+      left: 0;
+      top: -50%;
+      margin-top: -6px;
+      width: 4px;
+      height: 16px;
+    }
+    .oil-line {
+      background-color: #23b318;
+    }
+    .brake-line {
+      background-color: #c73610;
+      margin-left: 30px;
+    }
+    .oil-line .progress-bar {
+      background-color: #23b318;
+    }
+    .brake-line .progress-bar {
+      background-color: #c73610;
+    }
+  </style>
 </head>
 <body>
     <div id="cesiumContainer"></div>
+    <div class="c-fusion-side c-fusion-left">
+      <div class="c-scroll-wrap">
+        <div class="c-scroll-inner">
+          <div class="c-box">
+            <div class="vehicle-header clearfix">
+              <span class="level">L<em class="level-num"></em></span>
+              <span class="vehicle-num"></span>
+              <div class="arrow-wrap">
+                  <!--左-->
+                  <span class="arrow-img"></span>
+                  <span class="arrow-img"></span>
+              </div>
+            </div>
+            <img src="" class="vehicle-img"/>
+            <div class="progress-wrap">
+              <span class="progress-line oil-line">
+                <em class="progress-bar"></em>
+              </span>
+              <span class="progress-line brake-line">
+                <em class="progress-bar"></em>
+              </span>
+            </div>
+          </div>
+          <div class="c-box" id="aMap"></div>
+        </div>
+      </div>
+    </div>
     <script src="../../static/map3d/libs/Cesium.js"></script>
     <script src="../../static/map3d/utils/GIS/GisData.js"></script>
+    <script src="../../static/map3d/utils/GIS/GisUtils.js"></script>
     <script src="../../static/map3d/utils/GIS/light3D.js"></script>
     <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
     <script src="../../static/map3d/utils/GIS3D.js"></script>
+    
+    <script src="../../static/map3d/utils/PerceptionCars.js"></script>
+    <script src="../../static/map3d/utils/ProcessCarTrack.js"></script>
+    <script src="../../static/map3d/utils/ProcessData.js"></script>
+    
     <script src="../../static/js/jquery.min.js"></script>
     <script src="../../static/js/public.js"></script>
+    <script src="../../static/js/coordConvert.js"></script>
+    <script src="../../static/js/webSocket.js"></script>
     <!-- <script src="./js/single.js"></script> -->
     <script>
+      document.write('<script src="https://webapi.amap.com/maps?v=1.4.14&key=' + window.mapOption.key + '&plugin=AMap.Geocoder"><\/script>');
       document.write('<script src="./js/single.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
 </body>
