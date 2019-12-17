@@ -1,22 +1,23 @@
 /**
  * 实时接口发送
  */
-class webSocket {
+class WebSocketObj {
     constructor(url = '', params = {}, callback){
     	this.webSocketUrl = url;
     	this.params = params;
     	this.callback = callback;
     	this.webSocket = null;
     	this.connectCount = 0;
+        this.initWebSocket();
     }
     initWebSocket(){
         try{
             if ('WebSocket' in window) {
                 this.webSocket = new WebSocket(this.webSocketUrl);  //获得WebSocket对象
-                this.webSocket.onmessage = this.onMessage;
-                this.webSocket.onclose = this.onClose;
-                this.webSocket.onopen = this.onOpen;
-                this.webSocket.onerror=this.onError;
+                this.webSocket.onmessage = this.onMessage.bind(this);
+                this.webSocket.onclose = this.onClose.bind(this);
+                this.webSocket.onopen = this.onOpen.bind(this);
+                this.webSocket.onerror=this.onError.bind(this);
             }else{
                 this.$message("此浏览器不支持websocket");
             }
@@ -24,22 +25,22 @@ class webSocket {
             this.reconnect();
         }
 
-    },
+    }
     onMessage(message){
         this.callback(message);
-    },
-    onClose(data){
-        console.log("平台车结束连接");
+    }
+    onClose(){
+        console.log("结束连接:"+this.params);
         this.reconnect();
-    },
+    }
     onError(){
-        console.log("平台车连接error");
+        console.log("连接error:"+this.params);
         this.reconnect();
-    },
+    }
     onOpen(){
         let _params = JSON.stringify(this.params);
         this.sendMsg(_params);
-    },
+    }
     sendMsg(params) {
         if(window.WebSocket){
             if(this.webSocket.readyState == WebSocket.OPEN) { //如果WebSocket是打开状态
@@ -49,7 +50,7 @@ class webSocket {
         }else{
             return;
         }
-    },
+    }
     reconnect(){
         //重连不能超过5次
         if(this.connectCount >= 5){
@@ -58,5 +59,5 @@ class webSocket {
         this.initWebSocket();
         //重连不能超过5次
         this.connectCount++;
-    },
+    }
 }
