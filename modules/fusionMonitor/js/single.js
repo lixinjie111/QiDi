@@ -415,7 +415,7 @@ function onPulseMessage(message){
                     // 油门和刹车
                     let _oilLeftWidth = oilLeftWidth(canData.oilDoor);
                     let _brakeLeftWidth = brakeLeftWidth(canData.brakePedal);
-                    console.log("canDada----",canData.oilDoor,canData.brakePedal,canData.turnLight,_oilLeftWidth,_brakeLeftWidth);
+                    // console.log("canDada----",canData.oilDoor,canData.brakePedal,canData.turnLight,_oilLeftWidth,_brakeLeftWidth);
                     document.querySelector(".oli-bar").style.left = _oilLeftWidth+"px";
                     document.querySelector(".brake-bar").style.left = _brakeLeftWidth+"px";
                 }
