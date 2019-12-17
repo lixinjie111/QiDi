@@ -26,8 +26,8 @@ class ProcessCarTrack {
 
     //路口视角  平台车
     onCarMessage(data, flag) {
-        console.log('----------')
-        console.log(data.time);
+        // console.log('----------')
+        // console.log(data.time);
         // this.cacheTrackCarData=data;
         this.thisMessage(flag, data);
     }
@@ -186,7 +186,8 @@ class ProcessCarTrack {
                 let lonStep = deltaLon / steps;
                 let latStep = deltaLat / steps;
                 let headStep;
-                if(delheading>270){
+                // if(delheading>270){
+                if(Math.ceil(delheading)>=270){
                     headStep = 0;
                 }else{
                     headStep = delheading / steps;
@@ -370,7 +371,7 @@ class ProcessCarTrack {
         }
         // console.log("平台车最小索引:"+minIndex);
         if (minDiff&&minDiff>this.platMaxValue){
-            console.log("plat找到最小值无效")
+            // console.log("plat找到最小值无效")
             return;
         }
         //打印出被舍弃的点

@@ -399,6 +399,25 @@ function onPulseMessage(message){
                 let canData = processData.processCanData(result.timestamp,_delayTime);
                 if(canData){
                     // 计算can数据
+                    document.querySelector(".travel-longitude").innerHTML = canData.longitude.toFixed(8);
+                    document.querySelector(".travel-latitude").innerHTML = canData.latitude.toFixed(8);
+                    document.querySelector(".travel-speed").innerHTML = canData.speed.toFixed(1);
+                    document.querySelector(".travel-heading").innerHTML = canData.headingAngle.toFixed(1);
+                    let _gpsTime = TDate.formatTime(canData.gpsTime).split(" ");
+                    document.querySelector(".travel-year").innerHTML = _gpsTime[0];
+                    document.querySelector(".travel-time").innerHTML = _gpsTime[1];
+                    // 方向盘
+                    document.querySelector(".arrow-wrap").classList.remove("left");
+                    document.querySelector(".arrow-wrap").classList.remove("right");
+                    if(canData.turnLight) {
+                        document.querySelector(".arrow-wrap").classList.add(canData.turnLight);
+                    }
+                    // 油门和刹车
+                    let _oilLeftWidth = oilLeftWidth(canData.oilDoor);
+                    let _brakeLeftWidth = brakeLeftWidth(canData.brakePedal);
+                    console.log("canDada----",canData.oilDoor,canData.brakePedal,canData.turnLight,_oilLeftWidth,_brakeLeftWidth);
+                    document.querySelector(".oli-bar").style.left = _oilLeftWidth+"px";
+                    document.querySelector(".brake-bar").style.left = _brakeLeftWidth+"px";
                 }
             }
         }
@@ -466,6 +485,20 @@ function onPulseMessage(message){
         }
     }
     staticPulseCount++;
+}
+function oilLeftWidth(data) {
+    let oilData = parseFloat(data/100);
+    if(oilData==0){
+       return 10;
+    }
+    return parseInt(oilData*80);
+}
+function brakeLeftWidth(data) {
+    let brakeData = parseFloat(data/100);
+    if(brakeData==0){
+        return 0;
+    }
+    return parseInt(brakeData*80);
 }
 function initPlatformWebSocket() {
     let _params = {
