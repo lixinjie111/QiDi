@@ -676,8 +676,7 @@ function drawnSpat(data){
             resultData.push(option);
         });
         resultData.forEach(function (item,index,arr) {
-            let light={
-            };
+            let light={};
             let array=(item.leftTime+"").split("");
             if(array.length==1){
                 array=['0',array[0]]
@@ -689,6 +688,10 @@ function drawnSpat(data){
             let keys = Object.keys(lastLightObj);
             if(keys&&keys.length>0){
                 lastItem = lastLightObj[item.spatId];
+            }
+
+            if(!tabIsExist){
+                lastItem={};
             }
 
             let _direction = '';
