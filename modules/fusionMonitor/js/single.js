@@ -36,7 +36,7 @@ let spatWebsocket = null;
 let warningWebsocket = null;
 let cancelWarningWebsocket = null;
 
-let pulseInterval = 40;
+let pulseInterval = 20;
 let processDataTime = '';
 let pulseNowTime = '';
 let pulseCount = 0;
