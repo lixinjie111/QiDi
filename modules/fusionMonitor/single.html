@@ -57,8 +57,14 @@
       background-position: center center;
       background-image: url(./images/default-arrow.png);
     }
-    .arrow-img:last-child {
+    .arrow-img.arrow-right {
       transform: rotate(180deg);
+    }
+    .arrow-wrap.left .arrow-left {
+      background-image: url(./images/active-arrow.png);
+    }
+    .arrow-wrap.right .arrow-right {
+      background-image: url(./images/active-arrow.png);
     }
     .vehicle-img {
       height: 110px;
@@ -104,6 +110,31 @@
       bottom: 0;
       width: 100%;
     }
+    .travel-detail {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 260px;
+      z-index: 1;
+      font-size: 16px;
+      line-height: 22px;
+      text-align: center;
+    }
+    .travel-detail span {
+      display: inline-block;
+      padding: 5px 10px;
+    }
+    .travel-detail em {
+      display: inline-block;
+      padding-right: 5px;
+      color: #fff;
+      vertical-align: middle;
+    }
+    .travel-detail i {
+      display: inline-block;
+      color: #37ba7b;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
@@ -117,17 +148,17 @@
               <span class="vehicle-num"></span>
               <div class="arrow-wrap">
                   <!--左-->
-                  <span class="arrow-img"></span>
-                  <span class="arrow-img"></span>
+                  <span class="arrow-img arrow-left"></span>
+                  <span class="arrow-img arrow-right"></span>
               </div>
             </div>
             <img src="" class="vehicle-img"/>
             <div class="progress-wrap">
               <span class="progress-line oil-line">
-                <em class="progress-bar"></em>
+                <em class="progress-bar oli-bar"></em>
               </span>
               <span class="progress-line brake-line">
-                <em class="progress-bar"></em>
+                <em class="progress-bar brake-bar"></em>
               </span>
             </div>
           </div>
@@ -136,6 +167,13 @@
       </div>
     </div>
     <img class="single-car" src="./images/car.png"/>
+    <div class="travel-detail">
+      <span><em class="travel-longitude">--</em><i>E</i></span>
+      <span><em class="travel-latitude">--</em><i>N</i></span>
+      <span><em class="travel-speed">--</em><i>km/h</i></span>
+      <span><em class="travel-heading">--</em><i>°</i></span>
+      <span><em class="travel-year">--</em><i class="travel-time">--</i></span>
+    </div>
     <script src="../../static/map3d/libs/Cesium.js"></script>
     <script src="../../static/map3d/utils/GIS/GisData.js"></script>
     <script src="../../static/map3d/utils/GIS/GisUtils.js"></script>
@@ -149,6 +187,7 @@
 
     <script src="../../static/js/jquery.min.js"></script>
     <script src="../../static/js/public.js"></script>
+    <script src="../../static/js/date.js"></script>
     <script src="../../static/js/coordConvert.js"></script>
     <script src="../../static/js/webSocket.js"></script>
     <!-- <script src="./js/single.js"></script> -->

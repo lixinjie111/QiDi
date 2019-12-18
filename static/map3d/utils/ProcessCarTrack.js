@@ -21,12 +21,13 @@ class ProcessCarTrack {
         this.platObj = {};
         this.singleObj = {};
         this.billboards = {};//存储发射信号
+        this.sideList = [];//感知杆儿数据
     }
 
     //路口视角  平台车
     onCarMessage(data, flag) {
-        console.log('----------')
-        console.log(data.time);
+        // console.log('----------')
+        // console.log(data.time);
         // this.cacheTrackCarData=data;
         this.thisMessage(flag, data);
     }
@@ -185,7 +186,8 @@ class ProcessCarTrack {
                 let lonStep = deltaLon / steps;
                 let latStep = deltaLat / steps;
                 let headStep;
-                if(delheading>270){
+                // if(delheading>270){
+                if(Math.ceil(delheading)>=270){
                     headStep = 0;
                 }else{
                     headStep = delheading / steps;
@@ -243,8 +245,7 @@ class ProcessCarTrack {
      //检测感知杆和单车关联
      poleToCar(d) {
         let vid = d.vehicleId;
-        var item = sessionStorage.getItem("sideList");
-        var itemSide = JSON.parse(item);
+        var itemSide = this.sideList;
         // console.log(item)
         if (itemSide != null && itemSide.length > 0) {
 
@@ -370,7 +371,7 @@ class ProcessCarTrack {
         }
         // console.log("平台车最小索引:"+minIndex);
         if (minDiff&&minDiff>this.platMaxValue){
-            console.log("plat找到最小值无效")
+            // console.log("plat找到最小值无效")
             return;
         }
         //打印出被舍弃的点

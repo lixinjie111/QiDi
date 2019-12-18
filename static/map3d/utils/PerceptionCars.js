@@ -104,7 +104,7 @@ class PerceptionCars {
             if(devCacheData&&devCacheData.cacheData.length>0){
                 let devData = this.getMinValue(devId,time,delayTime,devCacheData.cacheData);
                 if(!devData){
-                    console.log("没有找到相应的值")
+                    // console.log("没有找到相应的值")
                     return;
                 }
                 if(this.drawnObj[devId]!=''&&devData.batchId==this.drawnObj[devId]){
@@ -117,7 +117,7 @@ class PerceptionCars {
                 this.processPerceptionMesage(fusionList);
                 devList.push(devData);
             }else{
-                console.log(devId+"缓存队列里没有值")
+                // console.log(devId+"缓存队列里没有值")
             }
         }
         return devList;
@@ -179,7 +179,7 @@ class PerceptionCars {
 
            // console.log("最小索引:"+minIndex);
            if(minDiff&&minDiff>this.perMaxValue){
-               console.log("per找到最小值无效")
+               // console.log("per找到最小值无效")
                return;
            }
            //打印出被舍弃的点
