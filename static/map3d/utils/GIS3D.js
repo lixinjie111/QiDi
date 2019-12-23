@@ -101,6 +101,30 @@ class GIS3D {
             }
         })
     }
+    //路口显示范围
+    addRectangle(xmin,ymin,xmax,ymax)
+    { 
+        //路口显示范围
+        let rec=this.cesium.viewer.entities.getById("rectanglefw")
+        if(!rec)
+        {
+            this.cesium.viewer.entities.add({
+                id:"rectanglefw", 
+                rectangle: {
+                   coordinates: Cesium.Rectangle.fromDegrees(xmin,ymin,xmax,ymax),
+                    material: Cesium.Color.AZURE.withAlpha(0.1),
+                    outline: true,
+                    height :0,
+                   outlineColor: Cesium.Color.AZURE
+                }
+             });
+        }
+        else
+        {
+            this.cesium.viewer.entities.getById("rectanglefw").rectangle.coordinates=Cesium.Rectangle.fromDegrees(xmin,ymin,xmax,ymax);
+        }
+       
+    }
     //移除事件
     remove3DInforLabel(name) {
         let label = this.modelsInforLabel[name];

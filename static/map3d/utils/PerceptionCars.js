@@ -42,13 +42,14 @@ class PerceptionCars {
     let devId = device.devId;
     let cdata = this.cacheAndInterpolateDataByDevId[devId];
     let d = {
-      devId: devId,
-      devType: device.devType,
-      fuselType: device.fuselType,
-      gpsTime: device.gpsTime,
-      rcuId: device.rcuId,
-      batchId: device.gpsTime,
-      data: device.data
+        devId: devId,
+        devType: device.devType,
+        targetType: device.targetType,
+        type: device.type,
+        gpsTime: device.gpsTime,
+        rcuId: device.rcuId,
+        batchId: device.gpsTime,
+        data: device.data
     };
     if (cdata == null)//没有该车的数据
     {

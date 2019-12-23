@@ -19,10 +19,6 @@ let currentExtent = getExtend(longitude,latitude,extend);
 let center=[longitude ,latitude];
 let camParam = window.defaultMapParam;
 
-
-// statisticData
-// processPerData
-
 //3d地图参数
 let gis3d = new GIS3D();
 let perceptionCars = new PerceptionCars();
@@ -60,8 +56,6 @@ $(function() {
     getDevDis();
     // 接受数据
     getMessage();
-    // 发送数据
-    getPostMessage();
     // 初始化3D地图
     init3DMap(); 
     // 初始化动态数据
@@ -111,23 +105,6 @@ function getMessage() {
             gis3d.updatePosition(currentExtent[3][0],currentExtent[3][1],currentExtent[1][0],currentExtent[1][1]);
         }
     });
-}
-function getPostMessage() {
-    // window.addEventListener('message', e => {
-    //     // e.data为父页面发送的数据
-    //     let eventData = e.data;
-    //     if(eventData.type == 'updateCam') {
-    //         if(eventData.data) {
-    //             camParam = eventData.data;
-    //         }
-    //         // let {x, y, z, radius, pitch, yaw} = camParam;
-    //         let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-    //         gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
-    //     }
-    //     if(eventData.type == 'updatePosition') {
-    //         gis3d.updatePosition(currentExtent[3][0],currentExtent[3][1],currentExtent[1][0],currentExtent[1][1]);
-    //     }
-    // });
 }
 function init3DMap() {
     gis3d.initload("cesiumContainer", false);
@@ -250,12 +227,19 @@ function onPulseMessage(message){
     if(pulseCount>=pulseNum) {
 
         //当平台车开始插值时，调用其他接口
-        processDataTime = result.timestamp-delayTime;
+        // processDataTime = result.timestamp-delayTime;
+        processDataTime = TDate.formatTime(result.timestamp-delayTime,'yy-mm-dd hh:mm:ss:ms');
+        document.querySelector('.c-pulse-time').innerHTML = processDataTime;
         //平台车
         if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
            let platCar =  platCars.processPlatformCarsTrack(result.timestamp,delayTime);
            if(platCar){
-               // $parent.vehData = platCar['vehData'];
+                let _camData = {
+                    isParent: true,
+                    type: 'vehData',
+                    data: platCar['vehData']
+                }
+                parent.postMessage(_camData,"*");
            }
         }
 
@@ -321,7 +305,12 @@ function onPulseMessage(message){
                     perData['veh']=pernum;
                     perData['person'] = persons;
                     perData['noMotor'] = nonNum;
-                    // $parent.perceptionData = perData;
+                    let _camData = {
+                        isParent: true,
+                        type: 'perceptionData',
+                        data: perData
+                    }
+                    parent.postMessage(_camData,"*");
                 }
             }
         }
@@ -339,7 +328,12 @@ function onPulseMessage(message){
                 }
             }
             //此次告警结束，将总数传递出去
-            // $parent.warningCount = warningCount;
+            let _camData = {
+                isParent: true,
+                type: 'warningCount',
+                data: warningCount
+            }
+            parent.postMessage(_camData,"*");
         }
     }
     warningPulseCount++;
@@ -360,7 +354,12 @@ function onPulseMessage(message){
                 }
             }
             //此次告警结束，将总数传递出去
-            // $parent.warningCount = warningCount;
+            let _camData = {
+                isParent: true,
+                type: 'warningCount',
+                data: warningCount
+            }
+            parent.postMessage(_camData,"*");
         }
     }
     staticPulseCount++;
@@ -510,7 +509,11 @@ function processPerData(data){
                 pcarnum++;
             }
         }
-        statisticData = "当前数据包：" + cars.length + "=" + zcarnum + "(平台车)+" + pcarnum + "(感知)+" + persons + "(人)";
+        let _camData = {
+            type: 'statisticData',
+            data: "当前数据包：" + cars.length + "=" + zcarnum + "(平台车)+" + pcarnum + "(感知)+" + persons + "(人)"
+        }
+        parent.postMessage(_camData,"*");
     }
 }
 function getExtend(x,y,r){
@@ -552,7 +555,14 @@ function processCancelWarn(data){
     data.forEach(warnId=>{
         if (warningCount > 0) {
             warningCount--;
-            // $parent.warningCount = warningCount;
+
+            let _camData = {
+                isParent: true,
+                type: 'warningCount',
+                data: warningCount
+            }
+            parent.postMessage(_camData,"*");
+
             delete warningData[warnId];
             console.log("移除事件"+warnId)
             gis3d.remove3DInforLabel(warnId);
