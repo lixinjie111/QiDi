@@ -254,7 +254,10 @@ class ProcessCarTrack {
      poleToCar(d) {
         let vid = d.vehicleId;
         var item = this.sideList;
-        var itemSide = JSON.parse(item);
+        var itemSide = this.sideList;
+        if(typeof itemSide == 'string') {
+            itemSide = JSON.parse(item);
+        }
         // console.log(item)
         if (itemSide != null && itemSide.length > 0) {
 
