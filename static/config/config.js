@@ -40,12 +40,12 @@ window.defaultMapOption = {
 }
 //3d地图默认参数
 window.defaultMapParam = {
-    x:121.17189012030006,
-    y:31.28424335432177,
-    z:42.04324015786383,
-    radius:4.923826250046569,
-    pitch:-0.47497105011983054,
-    yaw:6.2799121282993475
+    x: 121.1699386622949,
+    y: 31.284092542279375,
+    z: 27.905189179951215,
+    radius: 0.020793534130557255,
+    pitch: -0.16098557943632485,
+    yaw: 0.002801250443556391
 };
 
 window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shanghai_qcc:dl_shcsq_wgs84_zc_0709&STYLE=&FORMAT=image/png&TILEMATRIXSET=EPSG:900913&TileMatrix=EPSG:900913:{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"

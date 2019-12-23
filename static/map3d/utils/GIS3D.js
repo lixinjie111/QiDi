@@ -216,7 +216,7 @@ class GIS3D {
     }
     //定位地图
     updateCameraPosition(x, y, z, radius, pitch, yaw) {
-        var heading = Cesium.Math.toRadians(radius);
+        var heading = Cesium.Math.toDegrees(radius);
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
             destination: Cesium.Cartesian3.fromDegrees(x, y, z),
