@@ -42,10 +42,12 @@ let pulseNowTime = '';
 let pulseCount = 0;
 let spatPulseCount = 0;
 let routePulseCount = 0;
+let canPulseCount = 0;
 let warningPulseCount = 0;
 let staticPulseCount = 0;
 let computePulseCount = 0;
-let perCount = 0;
+let perPulseCount = 0;
+let perCacheCount = 0;
 let spatCount = 0;
 let warningCacheCount = 0;
 let staticCacheCount = 0;
@@ -219,7 +221,7 @@ function initWebsocketData() {
     perceptionCars.pulseInterval = parseInt(pulseInterval)*0.8;
     perceptionCars.perMaxValue = perceptionCars.pulseInterval*1.5;
 
-    let spatPulse = pulseInterval*30;
+    let spatPulse = pulseInterval*10;
     processData.spatPulseInterval = spatPulse*0.8;
     processData.spatMaxValue =  processData.pulseInterval*1.5;
 
@@ -227,7 +229,7 @@ function initWebsocketData() {
     processData.routePulseInterval = routePulse*0.8;
     processData.routeMaxValue =  processData.routePulseInterval*1.5;
 
-    let canPulse = pulseInterval*25;
+    let canPulse = pulseInterval*10;
     processData.canPulseInterval = canPulse*0.8;
     processData.canMaxValue =  processData.canPulseInterval*1.5;
 
@@ -237,7 +239,7 @@ function initWebsocketData() {
 
     let cancelPulse = pulseInterval;
     processData.cancelPulseInterval = cancelPulse*0.8;
-    processData.cancelMaxValue = cancelPulse*1.5; 
+    processData.cancelMaxValue = cancelPulse*1.5;
 }
 /** websocket **/
 function initPulseWebSocket() {
@@ -294,13 +296,13 @@ function onPulseMessage(message){
     }
 
     //感知数据缓存次数控制
-    if(perCount>0){
-        perCount++;
+    if(perCacheCount>0){
+        perCacheCount++;
     }
     if (Object.keys(perceptionCars.devObj).length > 0) {
         //当有感知数据时
-        if(perCount==0){
-            perCount++;
+        if(perCacheCount==0){
+            perCacheCount++;
         }
         for (let devId in perceptionCars.devObj) {
             let devList = perceptionCars.devObj[devId];
@@ -389,14 +391,21 @@ function onPulseMessage(message){
         }
         computePulseCount++;
 
+
+
         if(routePulseCount==0||routePulseCount>=25){
             routePulseCount=1;
             if(mainCar){
                 mainCar.tabIsExist = tabIsExist;
                 drawLine(mainCar);
             }
+        }
+        routePulseCount++;
+
+        if(canPulseCount==0||canPulseCount>=10){
+            canPulseCount=1;
             if(processData.canList.length>0){
-                let canData = processData.processCanData(result.timestamp,_delayTime);
+                let canData = processData.processCanData(result.timestamp,delayTime);
                 if(canData){
                     // 计算can数据
                     document.querySelector(".travel-longitude").innerHTML = canData.longitude.toFixed(8);
@@ -421,18 +430,20 @@ function onPulseMessage(message){
                 }
             }
         }
-        routePulseCount++;
+        canPulseCount++;
     }
 
-    //感知车 缓存+40ms调用一次
-    if(perCount>=pulseNum){
+    //感知车 缓存+80ms调用一次
+    if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>=2){
+        perPulseCount=1;
         if(Object.keys(perceptionCars.devObj).length>0){
-            let processPerCar = perceptionCars.processPerTrack(result.timestamp,_delayTime);
+            let processPerCar = perceptionCars.processPerTrack(result.timestamp,delayTime);
         }
     }
+    perPulseCount++;
 
     //红绿灯  缓存+1200ms调用一次
-    if(spatCount>=pulseNum&&(spatPulseCount==0||spatPulseCount>=30)){
+    if(spatCount>=pulseNum&&(spatPulseCount==0||spatPulseCount>=10)){
         spatPulseCount=1;
         if(Object.keys(processData.spatObj).length>0){
             let spatData = processData.processSpatData(result.timestamp,_delayTime);

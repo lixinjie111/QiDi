@@ -56,9 +56,9 @@ class ProcessData {
         for(let i=0;i<cacheData.length;i++){
             let diff = Math.abs(time-cacheData[i].spatTime-delayTime);
             // console.log("-----"+cacheData[i])
-            // console.log(spatId,cacheData.length,time,parseInt(cacheData[i].spatTime),delayTime,diff,i)
+            console.log(spatId,cacheData.length,time,parseInt(cacheData[i].spatTime),delayTime,diff,i)
             if(diff<this.spatPulseInterval){
-                if(startIndex !=-1 && i != startIndex+1) {
+                if(startIndex !=-1 && i != startIndex+1){
                     break;
                 }
                 if(!rangeData || (rangeData && diff < rangeData.delayTime)) {
@@ -70,6 +70,7 @@ class ProcessData {
                         diff:diff
                     }
                     rangeData = obj;
+                    minDiff=diff;
                 }else {
                     break;
                 }
@@ -101,7 +102,7 @@ class ProcessData {
 
             }
         }
-        // console.log("红绿灯最小索引:",minIndex);
+        console.log("红绿灯最小索引:",minIndex);
         //找出的最小值无效
         if(minDiff&&minDiff>this.spatMaxValue){
             // console.log("spat找到的最小值无效")
@@ -115,10 +116,8 @@ class ProcessData {
             
         }*/
         lostData.forEach(item=>{
-            let minDiff = Math.abs(time-cacheData[minIndex].spatTime);
-            // console.log("插值最小的索引"+minIndex,minDiff);
-            let d =  Math.abs(time-item.spatTime);
-            // console.log("##"+d);
+            //最小的值
+            console.log("#spat:",minDiff,item.leftTime,item.status,item.spatTime)
         })
 
 
@@ -147,6 +146,7 @@ class ProcessData {
             for(let i=0;i<cacheData.length;i++){
                 let diff = Math.abs(time-cacheData[i].timestamp-delayTime);
                 let currentTime = time-delayTime;
+                // console.log(DateFormat.formatTime(currentTime,'hh:mm:ss:ms'),DateFormat.formatTime(cacheData.timestamp,'hh:mm:ss:ms'),diff,i);
                 if(diff<this.warnPulseInterval){
                     if(startIndex !=-1 && i != startIndex+1){
                         break;
@@ -189,9 +189,9 @@ class ProcessData {
 
                 }
             }
-            // console.log("实时告警最小索引:"+minIndex);
+            console.log("实时告警最小索引:"+minIndex);
             if (minDiff&&minDiff>this.warnMaxValue){
-                // console.log("warn找到最小值无效")
+                console.log("warn找到最小值无效")
                 return;
             }
             //打印出被舍弃的点
@@ -235,6 +235,7 @@ class ProcessData {
             let cacheData = this.staticWarning[warnId];
             let currentTime = time-delayTime;
             let diff = currentTime - cacheData.timestamp;
+            // console.log(DateFormat.formatTime(currentTime,'hh:mm:ss:ms'),DateFormat.formatTime(cacheData.timestamp,'hh:mm:ss:ms'),diff);
             if(cacheData.timestamp<currentTime){
                 rangeData.push(cacheData);
                 delete this.staticWarning[warnId];
@@ -251,7 +252,7 @@ class ProcessData {
                 return;
             }
         }else {
-            // console.log("can没有数据")
+            console.log("can没有数据")
         }
         return canData;
     }
@@ -294,7 +295,7 @@ class ProcessData {
             minIndex = rangeData.index;
             minData = rangeData.data;
         }else{
-            // console.log("can***********************");
+            console.log("can***********************");
             minIndex = 0;
             minData = this.canList[0];
             minDiff = Math.abs(time-minData.gpsTime-delayTime);
@@ -313,7 +314,7 @@ class ProcessData {
         // console.log("can最小索引:"+minIndex);
         //找出的最小值无效
         if(minDiff&&minDiff>this.canMaxValue){
-            // console.log("route找到的最小值无效")
+            console.log("route找到的最小值无效")
             return;
         }
         //打印出被舍弃的点

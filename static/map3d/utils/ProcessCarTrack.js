@@ -21,13 +21,12 @@ class ProcessCarTrack {
         this.platObj = {};
         this.singleObj = {};
         this.billboards = {};//存储发射信号
-        this.sideList = [];//感知杆儿数据
     }
 
     //路口视角  平台车
     onCarMessage(data, flag) {
-        // console.log('----------')
-        // console.log(data.time);
+        console.log('----------')
+        console.log(data.time);
         // this.cacheTrackCarData=data;
         this.thisMessage(flag, data);
     }
@@ -133,6 +132,7 @@ class ProcessCarTrack {
                 latitude: car.latitude,
                 gpsTime: car.gpsTime,
                 heading: car.heading,
+                devType:car.devType
             };
             cdata.cacheData.push(d);
             cdata.lastReceiveData = d;
@@ -147,6 +147,7 @@ class ProcessCarTrack {
                 gpsTime: car.gpsTime,
                 plateNo: car.plateNo,
                 heading: car.heading,
+                devType:car.devType
             };
             cdata.nowReceiveData = d;
             // console.log("积压长度")
@@ -186,8 +187,7 @@ class ProcessCarTrack {
                 let lonStep = deltaLon / steps;
                 let latStep = deltaLat / steps;
                 let headStep;
-                // if(delheading>270){
-                if(Math.ceil(delheading)>=270){
+                if(delheading>270){
                     headStep = 0;
                 }else{
                     headStep = delheading / steps;
@@ -199,7 +199,9 @@ class ProcessCarTrack {
                     d2.gpsTime = cdata.lastReceiveData.gpsTime + timeStep * i;
                     d2.heading = cdata.lastReceiveData.heading+headStep*i;
                     d2.vehicleId = cdata.nowReceiveData.vehicleId;
-                    d2.plateNo = cdata.nowReceiveData.plateNo,
+                    d2.plateNo = cdata.nowReceiveData.plateNo;
+                    d2.devType = cdata.nowReceiveData.devType;
+
                     d2.steps=i;
                     cdata.cacheData.push(d2);
                 }
@@ -210,10 +212,13 @@ class ProcessCarTrack {
     processPlatformCarsTrack(time,delayTime) {
         // console.log("-------")
         let _this=this;
-        let mainCar = {};
+        let platVeh = 0;
+        let v2xVeh = 0;
+        let vehData = {};
+
         let platCar = {
             'mainCar':{},
-            'sideCar':new Array()
+            'vehData':new Object()
         };
         for (var vid in _this.cacheAndInterpolateDataByVid) {
             let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
@@ -228,9 +233,15 @@ class ProcessCarTrack {
                     if (!cardata) {
                         return;
                     }
+                    // console.log(cardata)
+                    if(cardata.devType==1){
+                        platVeh++;
+                    }
+                    if(cardata.devType==2){
+                        v2xVeh++;
+                    }
                     _this.moveCar(cardata);
                     _this.poleToCar(cardata);
-                    platCar['sideCar'].push(cardata);
                     if (_this.mainCarVID == cardata.vehicleId) {
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata
@@ -240,12 +251,16 @@ class ProcessCarTrack {
                 }
             }
         }
+        vehData.platVeh = platVeh;
+        vehData.v2xVeh = v2xVeh;
+        platCar['vehData'] = vehData;
         return platCar;
     }
      //检测感知杆和单车关联
      poleToCar(d) {
         let vid = d.vehicleId;
-        var itemSide = this.sideList;
+        var item = sessionStorage.getItem("sideList");
+        var itemSide = JSON.parse(item);
         // console.log(item)
         if (itemSide != null && itemSide.length > 0) {
 
@@ -253,7 +268,7 @@ class ProcessCarTrack {
                 let x = itemSide[i].longitude;
                 let y = itemSide[i].latitude;
                 let _line = function line(result) {
-                    return Cesium.Cartesian3.fromDegreesArrayHeights([d.longitude, d.latitude, 1, x, y, 10], Cesium.Ellipsoid.WGS84, result);
+                    return Cesium.Cartesian3.fromDegreesArrayHeights([d.longitude, d.latitude, 1, x, y, 6.3], Cesium.Ellipsoid.WGS84, result);
                 }
 
                 if (Math.abs(GisUtils.getDistance(itemSide[i].latitude, itemSide[i].longitude, d.latitude, d.longitude)) > 0.1)
@@ -290,7 +305,7 @@ class ProcessCarTrack {
                             id:vid + "billboard" + itemSide[i].deviceId,
                             position : Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2),
                             billboard : {
-                                image : '../../static/map3d/images/signal.png',
+                                image : 'static/map3d/images/signal.png',
                                 scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
                             }
 
@@ -319,6 +334,9 @@ class ProcessCarTrack {
         let cacheData = this.cacheAndInterpolateDataByVid[vid].cacheData;
         let rangeData=null;
         let startIndex=-1;
+        let minIndex=-1;
+        let minData = {};
+        let minDiff;
         // console.log("找到最小值前："+cacheData.length);
         //找到满足条件的范围
         for(let i=0;i<cacheData.length;i++){
@@ -333,9 +351,11 @@ class ProcessCarTrack {
                     let obj={
                         index:i,
                         delayTime: diff,
-                        data:cacheData[i]
+                        data:cacheData[i],
+                        diff:diff
                     }
                     rangeData = obj;
+                    minDiff=diff;
                 }else {
                     break;
                 }
@@ -345,9 +365,6 @@ class ProcessCarTrack {
                 }
             }
         }
-        let minIndex=-1;
-        let minData = {};
-        let minDiff;
         //如果能找到最小范围
         // console.log(rangeData)
         if(rangeData){
@@ -365,11 +382,13 @@ class ProcessCarTrack {
                 if(diff<minDiff){
                     minData = cacheData[i];
                     minIndex = i;
+                    minDiff = diff;
                 }
 
             }
         }
-        // console.log("平台车最小索引:"+minIndex);
+        // console.log("平台车最小索引:",vid,minIndex)
+        // console.log("平台车最小索引:",vid,minIndex,cacheData.length,minDiff,DateFormat.formatTime(time,'hh:mm:ss:ms'),DateFormat.formatTime((minData.gpsTime+delayTime),'hh:mm:ss:ms'),DateFormat.formatTime(new Date().getTime(),'hh:mm:ss:ms'));
         if (minDiff&&minDiff>this.platMaxValue){
             // console.log("plat找到最小值无效")
             return;
@@ -494,7 +513,7 @@ class ProcessCarTrack {
         }
     }
      //添加光环
-     addEllipse(vid,position){
+    addEllipse(vid,position){
          //光环
          var r1 = 0, r2 = 3, r3 = 6;
          function changeR1(){ //这是callback，参数不能内传
