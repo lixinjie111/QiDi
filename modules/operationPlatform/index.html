@@ -54,15 +54,23 @@
           }
           
           if(eventData.type == "addModel"){    
-            gis3d.addModeCar({
-              longitude:eventData.data.longitude,
-              latitude:eventData.data.latitude,
-              heading:eventData.data.heading,
-              vehicleId:eventData.data.vehicleId,
-            },
-            eventData.data.name,
-            eventData.data.glbName,
-            );
+            // gis3d.addModeCar({
+            //   longitude:eventData.data.longitude,
+            //   latitude:eventData.data.latitude,
+            //   heading:eventData.data.heading,
+            //   vehicleId:eventData.data.vehicleId,
+            // },
+            // eventData.data.name,
+            // eventData.data.glbName,
+            // );      
+            gis3d.addModel(
+              eventData.data.name,
+              '../../static/map3d/model/' + eventData.data.glbName + '.glb',
+              eventData.data.longitude,
+              eventData.data.latitude,
+              window.defualtZ,
+              eventData.data.labelName
+            )
           }
       })
 
