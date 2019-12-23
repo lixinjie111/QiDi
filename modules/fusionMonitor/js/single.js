@@ -695,7 +695,6 @@ function processCancelWarn(data){
     data.forEach(warnId=>{
         if (warningCount > 0) {
             warningCount--;
-            $parent.warningCount = warningCount;
             delete warningData[warnId];
             gis3d.remove3DInforLabel(warnId);
             removeWarning.push(warnId);
