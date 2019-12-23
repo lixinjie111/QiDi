@@ -36,7 +36,7 @@ let spatWebsocket = null;
 let warningWebsocket = null;
 let cancelWarningWebsocket = null;
 
-let pulseInterval = 40;
+let pulseInterval = 20;
 let processDataTime = '';
 let pulseNowTime = '';
 let pulseCount = 0;
@@ -62,8 +62,15 @@ let removeWarning = [];
 
 /** 调用 **/
 $(function() {
-    // 获取路侧点位置
-    getDevDis();
+    if(top.location == self.location){  
+        console.log("是顶层窗口");
+        // 获取路侧点位置
+        getDevDis();
+    }else {
+        console.log("不是顶层窗口");
+    }
+    // 接受数据
+    getMessage();
     // 获取车辆基本信息
     getVehicleBaseData(); 
     // 初始化高德地图
@@ -100,6 +107,22 @@ function getDevDis() {
             console.log("获取路侧点位置失败",err);
         }
     })
+}
+
+function getMessage() {
+    window.addEventListener('message', e => {
+        // e.data为父页面发送的数据
+        let eventData = e.data;
+        if(eventData.type == 'updateSideList') {
+            if(eventData.data) {
+                platCars.sideList = eventData.data;
+                GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer);
+            }else {
+                // 获取路侧点位置
+                getDevDis();
+            }
+        }
+    });
 }
 function getVehicleBaseData() {
     let _params = JSON.stringify({
