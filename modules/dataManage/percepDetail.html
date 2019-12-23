@@ -42,18 +42,21 @@
         //初始化模型数据--树
         GisData.initThreeData(gis3d.cesium.viewer);
 
-        gis3d.updateCameraPosition(121.17659986110053,31.28070920407326,39.142101722743725,5.573718449729121,-0.23338301782710902,6.281191529370343);
-
+        let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+        gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
 
         addEventListener('message', e => {
             // e.data为父页面发送的数据
           let eventData = e.data
             if(eventData.type == "updateCam"){
-              gis3d.updateCameraPosition(eventData.data.x,eventData.data.y,eventData.data.z,eventData.data.radius,eventData.data.pitch,eventData.data.yaw);
+              let {x, y, z, radius, pitch, yaw} = eventData.data;
+              gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
             }
+
             if(eventData.type == "setPerData"){
               getData(eventData);
             }
+            
             if(eventData.type == "addModel"){    
               gis3d.addModeCar({
                 longitude:eventData.data.longitude,
