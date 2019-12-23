@@ -47,7 +47,8 @@
         // e.data为父页面发送的数据
        let eventData = e.data
         if(eventData.type == "updateCam"){
-          gis3d.updateCameraPosition(eventData.data.x,eventData.data.y,eventData.data.z,eventData.data.radius,eventData.data.pitch,eventData.data.yaw);
+          let {x, y, z, radius, pitch, yaw} = eventData.data;
+          gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
         }
         if(eventData.type == "position"){
           getData(eventData);
