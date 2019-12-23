@@ -351,7 +351,9 @@ function onPulseMessage(message){
     //平台车  缓存+40ms调用一次
     if(pulseCount>=pulseNum) {
         //当平台车开始插值时，调用其他接口
-        processDataTime = result.timestamp-_delayTime;
+        // processDataTime = result.timestamp-_delayTime;
+        processDataTime = TDate.formatTime(result.timestamp-_delayTime,'yy-mm-dd hh:mm:ss:ms');
+        document.querySelector('.c-pulse-time').innerHTML = processDataTime;
 //                    console.log(pulseCount,pulseCount%3,Object.keys(perceptionCars.devObj).length);
         if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
             let platCar = platCars.processPlatformCarsTrack(result.timestamp,_delayTime);
