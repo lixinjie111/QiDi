@@ -30,11 +30,12 @@ class PerceptionCars {
   receiveData(sideList) {
     sideList.forEach(item => {
       // if(item.devId=='RCU_2046A10433DB_3100000000132000002801'){
-      if (!this.devObj[item.devId]) {
-        this.devObj[item.devId] = new Array();
+      if(!item.$ref){
+        if (!this.devObj[item.devId]) {
+            this.devObj[item.devId] = new Array();
+        }
+        this.devObj[item.devId].push(item);
       }
-      this.devObj[item.devId].push(item);
-
       // }
     });
   }
@@ -196,11 +197,11 @@ class PerceptionCars {
     }
     // console.log("最小索引:",devId,minIndex,minDiff,DateFormat.formatTime(time,'hh:mm:ss:ms'));
     // console.log(this.cacheAndInterpolateDataByDevId[devId].isFirst);
-    // if(minData){
-    //     minData.data.forEach(item=>{
-    //         console.log(parseInt(minData.gpsTime),item.vehicleId,item.targetType);
-    //     });
-    // }
+    if(minData){
+        minData.data.forEach(item=>{
+            console.log(parseInt(minData.gpsTime),item.vehicleId,item.targetType);
+        });
+    }
     //对其后，找不到符合范围的  最小值保留
     if (minDiff && minDiff > this.perMaxValue && this.cacheAndInterpolateDataByDevId[devId].isFirst) {
       // console.log(devId,"不在范围内")
