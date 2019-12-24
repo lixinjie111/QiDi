@@ -182,9 +182,9 @@
     <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
     <script src="../../static/map3d/utils/GIS3D.js"></script>
     
-    <script src="../../static/map3d/utils/PerceptionCars.js"></script>
+    <!-- <script src="../../static/map3d/utils/PerceptionCars.js"></script>
     <script src="../../static/map3d/utils/ProcessCarTrack.js"></script>
-    <script src="../../static/map3d/utils/ProcessData.js"></script>
+    <script src="../../static/map3d/utils/ProcessData.js"></script> -->
 
     <script src="../../static/js/jquery.min.js"></script>
     <script src="../../static/js/public.js"></script>
@@ -194,6 +194,9 @@
     <!-- <script src="./js/single.js"></script> -->
     <script>
       document.write('<script src="https://webapi.amap.com/maps?v=1.4.14&key=' + window.mapOption.key + '&plugin=AMap.Geocoder"><\/script>');
+      document.write('<script src="../../static/map3d/utils/PerceptionCars.js?v=' + new Date().getTime() + '"><\/script>');
+      document.write('<script src="../../static/map3d/utils/ProcessCarTrack.js?v=' + new Date().getTime() + '"><\/script>');
+      document.write('<script src="../../static/map3d/utils/ProcessData.js?v=' + new Date().getTime() + '"><\/script>');
       document.write('<script src="./js/single.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
 </body>

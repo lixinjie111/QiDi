@@ -8,12 +8,12 @@ var GisData = {
      */
     initServer(viewer) {
         //业务数据
-        // viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-        //     url: window.mapUrl,
-        //     maximumLevel: 22,
-        //     id: "layer1",
-        //     show: false
-        // }));
+        viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+            url: window.mapUrl,
+            maximumLevel: 22,
+            id: "layer1",
+            show: false
+        }));
     },
     //地图矢量数据初始化
     initRoadDate(viewer) {

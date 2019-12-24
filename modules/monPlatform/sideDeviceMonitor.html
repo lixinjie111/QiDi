@@ -17,16 +17,17 @@
   <script>
     document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
   </script>
-
- 
-</head>
-<body>
-  <div id="cesiumContainer"></div>
   <script src="../../static/map3d/libs/Cesium.js"></script>
   <script src="../../static/map3d/utils/GIS/GisData.js"></script>
   <script src="../../static/map3d/utils/GIS/light3D.js"></script>
   <script src="../../static/map3d/utils/GIS3D.js"></script>
-  <script src="../../static/map3d/utils/PerceptionCars.js"></script>
+  <!-- <script src="../../static/map3d/utils/PerceptionCars.js"></script> -->
+  <script>
+    document.write('<script src="../../static/map3d/utils/PerceptionCars.js?v=' + new Date().getTime() + '"><\/script>');
+  </script>  
+</head>
+<body>
+  <div id="cesiumContainer"></div>
 	<script>
     var gis3d=new GIS3D();
     var perceptionCars = new PerceptionCars();

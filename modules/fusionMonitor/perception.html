@@ -32,17 +32,19 @@
     <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
     <script src="../../static/map3d/utils/GIS3D.js"></script>
     
-    <script src="../../static/map3d/utils/PerceptionCars.js"></script>
+    <!-- <script src="../../static/map3d/utils/PerceptionCars.js"></script>
     <script src="../../static/map3d/utils/ProcessCarTrack.js"></script>
-    <script src="../../static/map3d/utils/ProcessData.js"></script>
+    <script src="../../static/map3d/utils/ProcessData.js"></script> -->
 
     <script src="../../static/js/jquery.min.js"></script>
     <script src="../../static/js/public.js"></script>
     <script src="../../static/js/date.js"></script>
-    <script src="../../static/js/coordConvert.js"></script>
     <script src="../../static/js/webSocket.js"></script>
-    <!-- <script src="./js/perception.js"></script> -->
+    <!-- <script src="./js/perception.js?"></script> -->
     <script>
+      document.write('<script src="../../static/map3d/utils/PerceptionCars.js?v=' + new Date().getTime() + '"><\/script>');
+      document.write('<script src="../../static/map3d/utils/ProcessCarTrack.js?v=' + new Date().getTime() + '"><\/script>');
+      document.write('<script src="../../static/map3d/utils/ProcessData.js?v=' + new Date().getTime() + '"><\/script>');
       document.write('<script src="./js/perception.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
 </body>
