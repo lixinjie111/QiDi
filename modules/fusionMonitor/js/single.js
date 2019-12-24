@@ -240,9 +240,9 @@ function initWebsocketData() {
     platCars.pulseInterval = pulseInterval*0.8;//设置阀域范围 脉冲时间的100%
     platCars.platMaxValue = platCars.pulseInterval*1.5;
 
-    perceptionCars.stepTime = pulseInterval;
-    perceptionCars.pulseInterval = parseInt(pulseInterval)*0.8;
-    perceptionCars.perMaxValue = perceptionCars.pulseInterval*1.5;
+    perceptionCars.stepTime = pulseInterval*2;
+    perceptionCars.pulseInterval = parseInt(pulseInterval)*2*0.8;
+    perceptionCars.perMaxValue = perceptionCars.pulseInterval*2*1.5;
 
     let spatPulse = pulseInterval*10;
     processData.spatPulseInterval = spatPulse*0.8;
@@ -459,7 +459,7 @@ function onPulseMessage(message){
     }
 
     //感知车 缓存+80ms调用一次
-    if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>=2){
+    if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>2){
         perPulseCount=1;
         if(Object.keys(perceptionCars.devObj).length>0){
             let processPerCar = perceptionCars.processPerTrack(result.timestamp,delayTime);
@@ -468,7 +468,7 @@ function onPulseMessage(message){
     perPulseCount++;
 
     //红绿灯  缓存+1200ms调用一次
-    if(spatCount>=pulseNum&&(spatPulseCount==0||spatPulseCount>=10)){
+    if(spatCount>=pulseNum&&(spatPulseCount==0||spatPulseCount>10)){
         spatPulseCount=1;
         if(Object.keys(processData.spatObj).length>0){
             let spatData = processData.processSpatData(result.timestamp,_delayTime);
@@ -478,7 +478,7 @@ function onPulseMessage(message){
     spatPulseCount++;
 
     //执行告警
-    if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>=10)){
+    if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>10)){
         warningPulseCount=1;
         if(Object.keys(processData.dynamicWarning).length>0){
             warningExist = [];
@@ -505,7 +505,7 @@ function onPulseMessage(message){
     warningPulseCount++;
 
     //执行静态告警
-    if(staticCacheCount>pulseNum&&(staticPulseCount==0||staticPulseCount>=10)){
+    if(staticCacheCount>pulseNum&&(staticPulseCount==0||staticPulseCount>10)){
         staticPulseCount=1;
         //静态事件的处理
         if(Object.keys(processData.staticWarning).length>0){

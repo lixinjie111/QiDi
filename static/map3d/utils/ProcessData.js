@@ -56,7 +56,7 @@ class ProcessData {
         for(let i=0;i<cacheData.length;i++){
             let diff = Math.abs(time-cacheData[i].spatTime-delayTime);
             // console.log("-----"+cacheData[i])
-            console.log(spatId,cacheData.length,time,parseInt(cacheData[i].spatTime),delayTime,diff,i)
+            // console.log(spatId,cacheData.length,time,parseInt(cacheData[i].spatTime),delayTime,diff,i)
             if(diff<this.spatPulseInterval){
                 if(startIndex !=-1 && i != startIndex+1){
                     break;
@@ -102,7 +102,7 @@ class ProcessData {
 
             }
         }
-        console.log("红绿灯最小索引:",minIndex);
+        // console.log("红绿灯最小索引:",minIndex);
         //找出的最小值无效
         if(minDiff&&minDiff>this.spatMaxValue){
             // console.log("spat找到的最小值无效")
@@ -117,7 +117,7 @@ class ProcessData {
         }*/
         lostData.forEach(item=>{
             //最小的值
-            console.log("#spat:",minDiff,item.leftTime,item.status,item.spatTime)
+            // console.log("#spat:",minDiff,item.leftTime,item.status,item.spatTime)
         })
 
 
@@ -189,9 +189,9 @@ class ProcessData {
 
                 }
             }
-            console.log("实时告警最小索引:"+minIndex);
+            // console.log("实时告警最小索引:"+minIndex);
             if (minDiff&&minDiff>this.warnMaxValue){
-                console.log("warn找到最小值无效")
+                // console.log("warn找到最小值无效")
                 return;
             }
             //打印出被舍弃的点
@@ -252,7 +252,7 @@ class ProcessData {
                 return;
             }
         }else {
-            console.log("can没有数据")
+            // console.log("can没有数据")
         }
         return canData;
     }
@@ -295,7 +295,7 @@ class ProcessData {
             minIndex = rangeData.index;
             minData = rangeData.data;
         }else{
-            console.log("can***********************");
+            // console.log("can***********************");
             minIndex = 0;
             minData = this.canList[0];
             minDiff = Math.abs(time-minData.gpsTime-delayTime);
@@ -314,7 +314,7 @@ class ProcessData {
         // console.log("can最小索引:"+minIndex);
         //找出的最小值无效
         if(minDiff&&minDiff>this.canMaxValue){
-            console.log("route找到的最小值无效")
+            // console.log("route找到的最小值无效")
             return;
         }
         //打印出被舍弃的点
