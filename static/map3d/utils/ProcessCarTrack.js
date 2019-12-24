@@ -26,8 +26,8 @@ class ProcessCarTrack {
 
     //路口视角  平台车
     onCarMessage(data, flag) {
-        console.log('----------')
-        console.log(data.time);
+        // console.log('----------')
+        // console.log(data.time);
         // this.cacheTrackCarData=data;
         this.thisMessage(flag, data);
     }

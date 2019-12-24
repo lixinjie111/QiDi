@@ -104,7 +104,7 @@ class PerceptionCars {
   processPerTrack(time, delayTime) {
     let devList = [];
     let list = [];
-    console.log("-----------");
+    // console.log("-----------");
     for (let devId in this.cacheAndInterpolateDataByDevId) {
       let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
       if (devCacheData && devCacheData.cacheData.length > 0) {
@@ -129,7 +129,7 @@ class PerceptionCars {
       //     this.clearAllModel();
       // }
       this.processPerceptionMesage(list);
-    console.log("**************")
+    // console.log("**************")
     return devList;
   }
   getMinValue(devId, time, delayTime, cacheData) {
