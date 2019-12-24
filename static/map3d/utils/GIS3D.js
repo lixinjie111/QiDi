@@ -101,6 +101,30 @@ class GIS3D {
             }
         })
     }
+    //路口显示范围
+    addRectangle(xmin,ymin,xmax,ymax)
+    { 
+        //路口显示范围
+        let rec=this.cesium.viewer.entities.getById("rectanglefw")
+        if(!rec)
+        {
+            this.cesium.viewer.entities.add({
+                id:"rectanglefw", 
+                rectangle: {
+                   coordinates: Cesium.Rectangle.fromDegrees(xmin,ymin,xmax,ymax),
+                    material: Cesium.Color.AZURE.withAlpha(0.1),
+                    outline: true,
+                    height :0,
+                   outlineColor: Cesium.Color.AZURE
+                }
+             });
+        }
+        else
+        {
+            this.cesium.viewer.entities.getById("rectanglefw").rectangle.coordinates=Cesium.Rectangle.fromDegrees(xmin,ymin,xmax,ymax);
+        }
+       
+    }
     //移除事件
     remove3DInforLabel(name) {
         let label = this.modelsInforLabel[name];
@@ -168,14 +192,14 @@ class GIS3D {
             x: lng,
             y: lat,
             z: alt,
-            radius: this.cesium.viewer.camera.heading,
+            radius:  Cesium.Math.toDegrees(this.cesium.viewer.camera.heading),
             pitch: this.cesium.viewer.camera.pitch,
             yaw: this.cesium.viewer.camera.roll
         };
         return obj;
     }
 
-    addModel(name, url, x, y, z) {
+    addModel(name, url, x, y, z ,labelName) {
         //添加模型
         let itemSide = [x, y, z]
         var h1 = 360;
@@ -183,19 +207,22 @@ class GIS3D {
         var heading = Cesium.Math.toRadians(h);   
         //合并写法
         var instances = [];
-        // var labels = this.cesium.viewer.scene.primitives.add(new Cesium.LabelCollection()); 
-        // labels.add({
-        //     fillColor: Cesium.Color.BLACK,
-        //     backgroundColor: Cesium.Color.fromCssColorString('#fff'),
-        //     position: Cesium.Cartesian3.fromDegrees(itemSide[0], itemSide[1], 5),
-        //     text: "航向角" + h1,
-        //     font: '20px sans-serif',
-        //     showBackground: true,
-        //     horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-        //     pixelOffset: new Cesium.Cartesian2(0.0, 0),
-        //     // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.0),
-        //     scaleByDistance: new Cesium.NearFarScalar(1000, 1, 8000, 0)
-        // });
+
+        if(labelName){
+            var labels = this.cesium.viewer.scene.primitives.add(new Cesium.LabelCollection()); 
+            labels.add({
+                fillColor: Cesium.Color.BLACK,
+                backgroundColor: Cesium.Color.fromCssColorString('#fff'),
+                position: Cesium.Cartesian3.fromDegrees(itemSide[0], itemSide[1], itemSide[2]+11),
+                text: labelName,
+                font: '10px sans-serif',
+                showBackground: true,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                pixelOffset: new Cesium.Cartesian2(0.0, 0),
+                scaleByDistance: new Cesium.NearFarScalar(1000, 1, 8000, 0)
+            });
+        }
+
         var position = Cesium.Cartesian3.fromDegrees(itemSide[0], itemSide[1], 0); 
         var pitch = Cesium.Math.toRadians(0);
         var roll = 0;
@@ -214,6 +241,7 @@ class GIS3D {
     //定位地图
     updateCameraPosition(x, y, z, radius, pitch, yaw) {
         var heading = Cesium.Math.toRadians(radius);
+        
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
             destination: Cesium.Cartesian3.fromDegrees(x, y, z),

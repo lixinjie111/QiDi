@@ -58,7 +58,7 @@ class ProcessData {
             // console.log("-----"+cacheData[i])
             // console.log(spatId,cacheData.length,time,parseInt(cacheData[i].spatTime),delayTime,diff,i)
             if(diff<this.spatPulseInterval){
-                if(startIndex !=-1 && i != startIndex+1) {
+                if(startIndex !=-1 && i != startIndex+1){
                     break;
                 }
                 if(!rangeData || (rangeData && diff < rangeData.delayTime)) {
@@ -70,6 +70,7 @@ class ProcessData {
                         diff:diff
                     }
                     rangeData = obj;
+                    minDiff=diff;
                 }else {
                     break;
                 }
@@ -115,10 +116,8 @@ class ProcessData {
             
         }*/
         lostData.forEach(item=>{
-            let minDiff = Math.abs(time-cacheData[minIndex].spatTime);
-            // console.log("插值最小的索引"+minIndex,minDiff);
-            let d =  Math.abs(time-item.spatTime);
-            // console.log("##"+d);
+            //最小的值
+            // console.log("#spat:",minDiff,item.leftTime,item.status,item.spatTime)
         })
 
 
@@ -147,6 +146,7 @@ class ProcessData {
             for(let i=0;i<cacheData.length;i++){
                 let diff = Math.abs(time-cacheData[i].timestamp-delayTime);
                 let currentTime = time-delayTime;
+                // console.log(DateFormat.formatTime(currentTime,'hh:mm:ss:ms'),DateFormat.formatTime(cacheData.timestamp,'hh:mm:ss:ms'),diff,i);
                 if(diff<this.warnPulseInterval){
                     if(startIndex !=-1 && i != startIndex+1){
                         break;
@@ -235,6 +235,7 @@ class ProcessData {
             let cacheData = this.staticWarning[warnId];
             let currentTime = time-delayTime;
             let diff = currentTime - cacheData.timestamp;
+            // console.log(DateFormat.formatTime(currentTime,'hh:mm:ss:ms'),DateFormat.formatTime(cacheData.timestamp,'hh:mm:ss:ms'),diff);
             if(cacheData.timestamp<currentTime){
                 rangeData.push(cacheData);
                 delete this.staticWarning[warnId];

@@ -8,12 +8,12 @@ var GisData = {
      */
     initServer(viewer) {
         //业务数据
-        // viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
-        //     url: window.mapUrl,
-        //     maximumLevel: 22,
-        //     id: "layer1",
-        //     show: false
-        // }));
+        viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+            url: window.mapUrl,
+            maximumLevel: 22,
+            id: "layer1",
+            show: false
+        }));
     },
     //地图矢量数据初始化
     initRoadDate(viewer) {
@@ -298,7 +298,7 @@ var GisData = {
             [ 121.175468343422693, 31.28140713253277 ] ,
             [ 121.175842676513895, 31.281147522119241 ] 
            ] 
-           this.initTree(itemBigTree, viewer, "BigTree",false);
+           this.initTree(itemBigTree, viewer, "bigTree",false);
     },
     /**
      * 初始化红路灯模型

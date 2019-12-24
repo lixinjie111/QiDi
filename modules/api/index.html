@@ -30,7 +30,8 @@
   <script>
     gis3d = new GIS3D();
     gis3d.initload("cesiumContainer", false);
-    gis3d.updateCameraPosition(121.17659986110053,31.28070920407326,39.142101722743725,5.573718449729121,-0.23338301782710902,6.281191529370343);
+    let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+    gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
 
 
     //初始化地图--道路数据

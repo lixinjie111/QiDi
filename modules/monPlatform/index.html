@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!--代表禁止浏览器从本地计算机的缓存中访问页面内容-->
+  <!--<meta http-equiv="pragram" content="no-cache">
+  &lt;!&ndash;请求和响应不缓存&ndash;&gt;
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <!--IE / Edge 自动给数字加下划线的问题-->
+  <meta name="format-detection" content="telephone=no,email=no,address=no">
+  <title>3D地图测试</title>
+
+  <link rel="stylesheet" type="text/css" href="../../static/css/public.css" />
+  <link rel="stylesheet" type="text/css" href="../../static/map3d/css/widgets.css" />
+  <script>
+    document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
+  </script>
+  <script src="../../static/map3d/libs/Cesium.js"></script>
+  <script src="../../static/map3d/utils/GIS/GisData.js"></script>
+  <script src="../../static/map3d/utils/GIS/light3D.js"></script>
+  <script src="../../static/map3d/utils/GIS3D.js"></script>
+  <!-- <script src="../../static/map3d/utils/PerceptionCars.js"></script> -->
+  <script>
+   
+  </script>  
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  
+  <script src="../../static/js/jquery.min.js"></script>
+	<script>
+
+    document.write('<script src="../../static/map3d/utils/PerceptionCars.js?v=' + new Date().getTime() + '"><\/script>');
+    document.write('<script src="./js/index.js?v=' + new Date().getTime() + '"><\/script>');
+    // var gis3d=new GIS3D();
+    // var perceptionCars = new PerceptionCars();
+    // var perceptionWebsocket = {};
+
+    // gis3d.initload("cesiumContainer",false);
+    // perceptionCars.viewer=gis3d.cesium.viewer; 
+
+    // //初始化地图--道路数据
+    // GisData.initRoadDate(gis3d.cesium.viewer);
+    // //初始化地图服务--上帝视角时使用
+    // GisData.initServer(gis3d.cesium.viewer);
+    // //初始化模型数据--树
+    // GisData.initThreeData(gis3d.cesium.viewer);
+
+
+
+
+
+
+
+
+
+    // addEventListener('message', e => {
+    //     // e.data为父页面发送的数据
+    //    let eventData = e.data
+    //     if(eventData.type == "updateCam"){
+    //       let {x, y, z, radius, pitch, yaw} = eventData.data;
+    //       gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+    //     }
+    //     if(eventData.type == "position"){
+    //       getData(eventData);
+    //     }
+    //     if(eventData.type == "addModel"){    
+    //       gis3d.addModeCar({
+    //         longitude:eventData.data.longitude,
+    //         latitude:eventData.data.latitude,
+    //         heading:eventData.data.heading,
+    //         vehicleId:eventData.data.vehicleId,
+    //       },
+    //       eventData.data.name,
+    //       eventData.data.glbName,
+    //       );
+    //     }
+    // })
+
+
+    // function getData(e) {
+    //       perceptionWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+
+    //       perceptionWebsocket.addEventListener('open', function (event) { 
+    //         var perception = {
+    //           action:"road_real_data_per",
+    //           data:{
+    //               type:1,
+    //               // polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
+    //               polygon:e.data.currentExtent
+    //               }
+    //         }
+    //         var perceptionMsg = JSON.stringify(perception);
+    //         perceptionWebsocket.send(perceptionMsg);
+    //       });
+    //       perceptionWebsocket.addEventListener('message', function (event) {
+    //         let data = JSON.parse(event.data)
+    //         let maxGpsTime = 0;
+    //         let fiterData;
+    //         if(data.result.perList.length){
+    //           data.result.perList.map(item=>{
+    //             if(item.gpsTime > maxGpsTime){
+    //               maxGpsTime = item.gpsTime;
+    //               fiterData = item;
+    //             }
+    //           })        
+    //         }  
+    //         perceptionCars.addPerceptionData(fiterData.data,0);      
+    //       });
+    //       perceptionWebsocket.addEventListener('close', function (event) {
+    //         console.log("关闭链接")        
+    //       });
+    //       perceptionWebsocket.addEventListener('error', function (event) {
+    //         console.log("链接出错")      
+    //       });
+    // }
+
+  </script>
+</body>
+</html>

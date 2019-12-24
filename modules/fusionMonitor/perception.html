@@ -10,47 +10,42 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <!--IE / Edge 自动给数字加下划线的问题-->
   <meta name="format-detection" content="telephone=no,email=no,address=no">
-  <title>3D地图测试</title>
+  <title>融合--路口</title>
 
   <link rel="stylesheet" type="text/css" href="../../static/css/public.css" />
   <link rel="stylesheet" type="text/css" href="../../static/map3d/css/widgets.css" />
+  <link rel="stylesheet" type="text/css" href="./css/style.css" />
   <script>
     document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
   </script>
-
-  <script src="../../static/map3d/libs/Cesium.js"></script>
-  <script src="../../static/map3d/utils/GIS/GisData.js"></script>
-  <script src="../../static/map3d/utils/GIS/light3D.js"></script>
-  <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
-  <script src="../../static/map3d/utils/GIS3D.js"></script>
+  <style>
+  </style>
 </head>
 <body>
     <div id="cesiumContainer"></div>
+    <div class="c-pulse-time"></div>
+
+    <script src="../../static/map3d/libs/Cesium.js"></script>
+    <script src="../../static/map3d/utils/GIS/GisData.js"></script>
+    <script src="../../static/map3d/utils/GIS/GisUtils.js"></script>
+    <script src="../../static/map3d/utils/GIS/light3D.js"></script>
+    <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
+    <script src="../../static/map3d/utils/GIS3D.js"></script>
+    
+    <!-- <script src="../../static/map3d/utils/PerceptionCars.js"></script>
+    <script src="../../static/map3d/utils/ProcessCarTrack.js"></script>
+    <script src="../../static/map3d/utils/ProcessData.js"></script> -->
+
+    <script src="../../static/js/jquery.min.js"></script>
+    <script src="../../static/js/public.js"></script>
+    <script src="../../static/js/date.js"></script>
+    <script src="../../static/js/webSocket.js"></script>
+    <!-- <script src="./js/perception.js?"></script> -->
     <script>
-      gis3d = new GIS3D();
-      gis3d.initload("cesiumContainer", false);
-      gis3d.updateCameraPosition(121.17659986110053,31.28070920407326,39.142101722743725,5.573718449729121,-0.23338301782710902,6.281191529370343);
-
-
-      //初始化地图--道路数据
-      GisData.initRoadDate(gis3d.cesium.viewer);
-      //初始化地图服务--上帝视角时使用
-      GisData.initServer(gis3d.cesium.viewer);
-      //初始化模型数据--树
-      GisData.initThreeData(gis3d.cesium.viewer);
-      //初始化感知模型--杆
-      var item = sessionStorage.getItem("sideList");
-      if (sessionStorage.getItem("sideList")) {
-        GisData.initPoleModelDate(item,gis3d.cesium.viewer);
-      } 
-
-      //初始化模型--红路灯
-      GisData.initLightModel(gis3d.cesium.viewer);
-      //初始化模型--红路灯牌
-      initLight3D.initlight(gis3d.cesium.viewer);
-      // //更新红路灯数据
-      // initLight3D.updateLight(light)
-
+      document.write('<script src="../../static/map3d/utils/PerceptionCars.js?v=' + new Date().getTime() + '"><\/script>');
+      document.write('<script src="../../static/map3d/utils/ProcessCarTrack.js?v=' + new Date().getTime() + '"><\/script>');
+      document.write('<script src="../../static/map3d/utils/ProcessData.js?v=' + new Date().getTime() + '"><\/script>');
+      document.write('<script src="./js/perception.js?v=' + new Date().getTime() + '"><\/script>');
     </script>
 </body>
 </html>
