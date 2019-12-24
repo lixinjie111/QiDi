@@ -1,3 +1,4 @@
+
 /**
  * 平台车类
  */
@@ -123,7 +124,8 @@ class ProcessCarTrack {
             gpsTime: car.gpsTime,
             heading: car.heading,
             devType: car.devType,
-            type: car.type
+            type: car.type,
+            curSource: car.curSource
         };
         if (cdata == null)//没有该车的数据
         {
@@ -196,7 +198,7 @@ class ProcessCarTrack {
                     d2.vehicleId = cdata.nowReceiveData.vehicleId;
                     d2.plateNo = cdata.nowReceiveData.plateNo;
                     d2.devType = cdata.nowReceiveData.devType;
-
+                    d2.curSource = cdata.nowReceiveData.curSource;
                     d2.steps = i;
                     cdata.cacheData.push(d2);
                 }
@@ -282,12 +284,7 @@ class ProcessCarTrack {
                     {
                         if (this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId) != null) {
                             this.viewer.entities.remove(this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId));
-                        }
-                        let billboard = this.billboards[vid + "billboard" + itemSide[i].deviceId];
-                        if (billboard != null) {
-                            this.viewer.entities.remove(billboard);
-                        }
-
+                        } 
                     }
                     else {
                         if (this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId) == null) {
@@ -305,28 +302,8 @@ class ProcessCarTrack {
                                     })
                                 }
                             });
-
-                            var entity = this.viewer.entities.add({
-                                id: vid + "billboard" + itemSide[i].deviceId,
-                                position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2),
-                                billboard: {
-                                    image: '../../static/map3d/images/signal.png',
-                                    scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
-                                }
-
-                            });
-                            //增加信号指示
-                            this.billboards[vid + "billboard" + itemSide[i].deviceId] = entity;
                         }
                         else {
-                            //增加信号指示
-                            let billboard = this.billboards[vid + "billboard" + itemSide[i].deviceId];
-                            if (billboard != null) {
-                                billboard.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2);
-                            }
-
-
-
                             this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId).show = true;
                             this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId).polyline.positions = new Cesium.CallbackProperty(_line, false)
                         }
@@ -403,7 +380,7 @@ class ProcessCarTrack {
             return index < minIndex;
         })
         /*if(lostData.length>0){
-            debugger
+            
         }*/
         lostData.forEach(item => {
             let minDiff = Math.abs(time - cacheData[minIndex].gpsTime);
@@ -440,15 +417,16 @@ class ProcessCarTrack {
             //e.cesium.viewer.entities.add(entity);
 
 
-            let url = './static/map3d/model/car.glb';
+
+            let url = '../../static/map3d/model/car.glb';
             if (this.mainCarVID == vid) {
-                url = './static/map3d/model/carMian.glb';
+                url = '../../static/map3d/model/carMian.glb';
             }
 
             if (d.devType == 1)//obu车
             {
                 if (d.plateNo == "未注册") {
-                    url = './static/map3d/model/car_near_Black.glb';
+                    url = '../../static/map3d/model/car_near_Black.glb';
                 }
                 //增加光环
                 this.addEllipse(vid, position);
@@ -484,6 +462,25 @@ class ProcessCarTrack {
                     scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
                 }
             });
+            let urlImg = '../../static/map3d/images/4g.png';
+            if (d.curSource == "4G") {
+                urlImg = '../../static/map3d/images/4g.png';
+            }
+            else if (d.curSource == "V2X") {
+                urlImg = '../../static/map3d/images/v2x.png';
+            }
+            else {
+                urlImg = '../../static/map3d/images/4gv2x.png';
+            }
+            var entity = this.viewer.entities.add({
+                id: vid + "billboard",
+                position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2),
+                billboard: {
+                    image: urlImg,
+                    scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
+                }
+            });
+
 
         } else {
 
@@ -516,11 +513,20 @@ class ProcessCarTrack {
             var carlabelpt = this.viewer.entities.getById(vid + "lblpt");
             carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 4);
             carlabelpt.label.text = plateNo;
+            //增加信号指示
+            let billboard = this.viewer.entities.getById(vid + "billboard");
+            if (billboard != null) {
+                billboard.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2);
+            }
 
-            //修改光环大小
-            this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-            this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-            this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+            if (d.devType == 1)//obu车
+            {
+                //修改光环大小
+                this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+            }
 
         }
     }
