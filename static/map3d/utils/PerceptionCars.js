@@ -30,10 +30,10 @@ class PerceptionCars {
   receiveData(sideList) {
     sideList.forEach(item => {
       // if(item.devId=='RCU_2046A10433DB_3100000000132000002801'){
-          if (!this.devObj[item.devId]) {
-              this.devObj[item.devId] = new Array();
-          }
-          this.devObj[item.devId].push(item);
+      if (!this.devObj[item.devId]) {
+        this.devObj[item.devId] = new Array();
+      }
+      this.devObj[item.devId].push(item);
 
       // }
     });
@@ -42,14 +42,14 @@ class PerceptionCars {
     let devId = device.devId;
     let cdata = this.cacheAndInterpolateDataByDevId[devId];
     let d = {
-        devId: devId,
-        devType: device.devType,
-        targetType: device.targetType,
-        type: device.type,
-        gpsTime: device.gpsTime,
-        rcuId: device.rcuId,
-        batchId: device.gpsTime,
-        data: device.data
+      devId: devId,
+      devType: device.devType,
+      targetType: device.targetType,
+      type: device.type,
+      gpsTime: device.gpsTime,
+      rcuId: device.rcuId,
+      batchId: device.gpsTime,
+      data: device.data
     };
     if (cdata == null)//没有该车的数据
     {
@@ -57,7 +57,7 @@ class PerceptionCars {
         cacheData: new Array(),
         lastRecieveData: null,
         nowRecieveData: null,
-        isFirst:false
+        isFirst: false
       };
       cdata.cacheData.push(d);
       cdata.lastRecieveData = d;
@@ -103,13 +103,13 @@ class PerceptionCars {
   }
   processPerTrack(time, delayTime) {
     let devList = [];
-      let list = [];
-      // console.log("-----------");
+    let list = [];
+    // console.log("-----------");
     for (let devId in this.cacheAndInterpolateDataByDevId) {
       let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
       if (devCacheData && devCacheData.cacheData.length > 0) {
         let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
-        if (!devData){
+        if (!devData) {
           // console.log("没有找到相应的值")
           return;
         }
@@ -119,25 +119,25 @@ class PerceptionCars {
         }*/
         this.drawnObj[devId] = devData.batchId;
         let fusionList = devData.data;
-          if(fusionList&&fusionList.length) {
-              list.push.apply(list,fusionList);
-          }
+        if (fusionList && fusionList.length) {
+          list.push.apply(list, fusionList);
+        }
         // console.log(devData)
         // console.log("*****"+fusionList)
         devList.push(devData);
       }
     }
-      // if(!Object.keys(this.drawnObj).length) {
-      //     this.clearAllModel();
-      // }
+    // if(!Object.keys(this.drawnObj).length) {
+    //     this.clearAllModel();
+    // }
     // list.forEach(item=>{
     //   item.vehicleId =Math.random()*1000+"a" ;
     // })
     //   if(list&&list.length<=0){
     //      return;
     //   }
-      this.processPerceptionMesage(list);
-      // console.log("************")
+    this.processPerceptionMesage(list);
+    // console.log("************")
     return devList;
   }
   getMinValue(devId, time, delayTime, cacheData) {
@@ -163,7 +163,7 @@ class PerceptionCars {
             delayTime: diff,
             data: cacheData[i]
           }
-            minDiff=diff;
+          minDiff = diff;
           rangeData = obj;
         } else {
           break;
@@ -179,7 +179,7 @@ class PerceptionCars {
     if (rangeData) {
       minIndex = rangeData.index;
       minData = rangeData.data;
-        this.cacheAndInterpolateDataByDevId[devId].isFirst=true;
+      this.cacheAndInterpolateDataByDevId[devId].isFirst = true;
     } else {
       // console.log("plat***********************");
       minIndex = 0;
@@ -204,16 +204,16 @@ class PerceptionCars {
     // console.log("最小索引:",devId,minIndex,minDiff);
     // console.log(this.cacheAndInterpolateDataByDevId[devId].isFirst);
     //标尺还没对齐  return;
-    if(minDiff && minDiff > this.perMaxValue&&!this.cacheAndInterpolateDataByDevId[devId].isFirst){
+    if (minDiff && minDiff > this.perMaxValue && !this.cacheAndInterpolateDataByDevId[devId].isFirst) {
       return;
     }
     //对其后，找不到符合范围的  最小值保留
-    if (minDiff && minDiff > this.perMaxValue&&this.cacheAndInterpolateDataByDevId[devId].isFirst) {
+    if (minDiff && minDiff > this.perMaxValue && this.cacheAndInterpolateDataByDevId[devId].isFirst) {
       // console.log("per找到最小值无效",this.cacheAndInterpolateDataByDevId[devId].isFirst);
-    }else{
-        this.cacheAndInterpolateDataByDevId[devId].cacheData = this.cacheAndInterpolateDataByDevId[devId].cacheData.filter((item, index) => {
-            return index > minIndex;
-        });
+    } else {
+      this.cacheAndInterpolateDataByDevId[devId].cacheData = this.cacheAndInterpolateDataByDevId[devId].cacheData.filter((item, index) => {
+        return index > minIndex;
+      });
     }
     //打印出被舍弃的点
     // let lostData = this.cacheAndInterpolateDataByDevId[devId].cacheData.filter((item, index) => {
@@ -261,56 +261,51 @@ class PerceptionCars {
       }
       if (d.targetType == 0) {//人
         this.addMoveModel(true, d, "person");
+        this.addMoveLable(d, "personlabel");
       }
       else if (d.targetType == 1) //自行车
       {
         this.addMoveModel(true, d, "bicycle");
+        this.addMoveLable(d, "bicyclelabel");
       }
       else if (d.targetType == 2) { //感知车
         // console.log(d.vehicleId)
         /////////////处理感知车数据
         this.addMoveModel(false, d, "carbox");
         ///////////////////////////end 
-        //移动标签
-        var carlabel = this.viewer.entities.getById(d.vehicleId + "label");
-        if (carlabel == null || carlabel == undefined) {
-          this.addModeCarLabel(d,3);
-        }
-        else {
-          this.moveModelLabel(carlabel, d,3);
-        }
+        //移动标签 
+        this.addMoveLable(d, "carboxlabel");
       }
       else if (d.targetType == 3) //摩托车
       {
         this.addMoveModel(true, d, "motorbike");
+        this.addMoveLable(d, "motorbikelabel");
       }
       else if (d.targetType == 5) //公交车
       {
         this.addMoveModel(false, d, "bus");
-        //移动标签
-        var carlabel = this.viewer.entities.getById(d.vehicleId + "label");
-        if (carlabel == null || carlabel == undefined) {
-          this.addModeCarLabel(d,5);
-        }
-        else {
-          this.moveModelLabel(carlabel, d,5);
-        }
+        //移动标签 
+        this.addMoveLable(d, "buslabel");
       }
       else if (d.targetType == 7) //卡车
       {
         this.addMoveModel(false, d, "truck");
         //移动标签
-        var carlabel = this.viewer.entities.getById(d.vehicleId + "label");
-        if (carlabel == null || carlabel == undefined) {
-          this.addModeCarLabel(d,5);
-        }
-        else {
-          this.moveModelLabel(carlabel, d,5);
-        }
+        this.addMoveLable(d, "trucklabel");
       }
 
     }
     // },0); //
+  }
+  //增加和移动标签
+  addMoveLable(d, name) {
+    var carlabel = this.viewer.entities.getById(d.vehicleId + name);
+    if (carlabel == null || carlabel == undefined) {
+      this.addModeCarLabel(d, 5, name);
+    }
+    else {
+      this.moveModelLabel(carlabel, d, 5);
+    }
   }
   //增加移动模型
   addMoveModel(isAnimation, d, name) {
@@ -332,7 +327,8 @@ class PerceptionCars {
     for (var i = 0; i < primitives.length; i++) {
       var primitive = primitives.get(i);
       if (primitive.id) {
-        if (primitive instanceof Cesium.Model && primitive.id.search("carbox") != -1 || primitive.id.search("person") != -1) {
+        if (primitive instanceof Cesium.Model && primitive.id.search("carbox") != -1 || primitive.id.search("person") != -1 || primitive.id.search("bicycle") != -1 ||
+          primitive.id.search("motorbike") != -1 || primitive.id.search("bus") != -1 || primitive.id.search("truck") != -1) {
           this.viewer.scene.primitives.remove(primitive);
         }
       }
@@ -352,11 +348,14 @@ class PerceptionCars {
     this.clearCar(fusionList, "carbox");
     this.clearCar(fusionList, "person");
     this.clearCar(fusionList, "bicycle");
-    this.clearCar(fusionList, "motorbike"); 
+    this.clearCar(fusionList, "motorbike");
     this.clearCar(fusionList, "bus");
     this.clearCar(fusionList, "truck");
 
-    this.clearCarLabel(fusionList);
+    // this.clearCarLabel( "labelcarbox");
+    // this.clearCarLabel( "labelperson");
+    // this.clearCarLabel(fusionList,"labelperson");
+    // this.clearCarLabel(fusionList);
   }
   clearCarLabel(fusionList) {
     /////////////////////////
@@ -366,20 +365,25 @@ class PerceptionCars {
       var entitie = entities[i];
       let isTrue = false;
       for (var kk = 0; kk < fusionList.length; kk++) {
-        if (entitie.id != fusionList[kk].vehicleId + "label" && entitie.id.search("label") != -1) {
+        if (entitie.id == fusionList[kk].vehicleId + "labelcarbox") {
           isTrue = true;
-          continue;
+          break;
+        }
+        else {
+          isTrue = false;
         }
       }
-      if (isTrue) {
-        if (entitie.id.search("label") != -1) {
-          entitie.show = false;
+      if (!isTrue) {
+        if (entitie.id) {
+          if (entitie.id.search("label") != -1) {
+            entitie.show = false;
+          }
+          countLable++;
         }
 
-        countLable++;
       }
     }
-    if ((countLable - fusionList.length) >= 100) {
+    if ((countLable - fusionList.length) >= 30) {
       this.removeModelEntities();
     }
     // console.log(fusionList.length + "空闲文字" + countLable)
@@ -395,20 +399,31 @@ class PerceptionCars {
       // console.log("---------")
       //   console.log(typeof fusionList);
       for (var kk = 0; kk < fusionList.length; kk++) {
-        if (primitive instanceof Cesium.Model && (primitive.id != fusionList[kk].vehicleId + name)) {
+        if (primitive instanceof Cesium.Model && (primitive.id == fusionList[kk].vehicleId + name)) {
           isTrue = true;
-          continue;
+          break
+        }
+        else {
+          isTrue = false;
         }
       }
-      if (isTrue) {
-        if (primitive.id.indexOf(name) != -1) {
-          primitive.show = false;
+      if (!isTrue) {
+        if (primitive.id) {
+          if (primitive.id.indexOf(name) != -1) {
+            primitive.show = false;
+            var carlabel = this.viewer.entities.getById(primitive.id +"label");
+            if (carlabel!= null || carlabel != undefined) {
+              carlabel.show = false;
+            } 
+          }
+          count++;
         }
-        count++;
+
       }
     }
     if ((count - fusionList.length) >= window.count) {
       this.removeModelPrimitives(name);
+      this.removeModelEntities(name);
     }
     // console.log(fusionList.length + "空闲车" + count)
   }
@@ -463,11 +478,11 @@ class PerceptionCars {
       }
     }
   }
-  removeModelEntities() {
+  removeModelEntities(name) {
     var entities = this.viewer.entities._entities._array;
     for (var i = 0; i < entities.length; i++) {
       if (entities[i].id) {
-        if (!entities[i].show && entities[i].id.search("label") != -1) {
+        if (!entities[i].show && entities[i].id.search(name) != -1) {
           this.viewer.entities.remove(entities[i]);
         }
       }
@@ -512,7 +527,8 @@ class PerceptionCars {
     Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carmodel.modelMatrix)
 
   }
-  addModeCarLabel(d,height) {
+  //增加文字标签
+  addModeCarLabel(d, height, name) {
     var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + height);
     ///////////////增加文字
     let h = d.heading.toFixed(1);
@@ -520,7 +536,7 @@ class PerceptionCars {
     let veh = d.vehicleId.substr(0, 4);
     let text = "[" + h + ", " + s + ", " + veh + "]";
     let entityLabel = this.viewer.entities.add({
-      id: d.vehicleId + "label",
+      id: d.vehicleId + name,
       position: position,
       point: {
         color: Cesium.Color.RED,    //点位颜色
@@ -542,9 +558,9 @@ class PerceptionCars {
   /**
    * 移动文字标签
    */
-  moveModelLabel(carlabel, d,height) {
+  moveModelLabel(carlabel, d, height) {
     //var carlabel = this.viewer.entities.getById( d.vehicleId + "label");
-    carlabel.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ +height);
+    carlabel.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + height);
     let h = d.heading.toFixed(1);
     let s = d.speed.toFixed(1);
     let veh = d.vehicleId.substr(0, 4);

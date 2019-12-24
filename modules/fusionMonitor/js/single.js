@@ -468,7 +468,7 @@ function onPulseMessage(message){
     perPulseCount++;
 
     //红绿灯  缓存+1200ms调用一次
-    if(spatCount>=pulseNum&&(spatPulseCount==0||spatPulseCount>=10)){
+    if(spatCount>=pulseNum&&(spatPulseCount==0||spatPulseCount>10)){
         spatPulseCount=1;
         if(Object.keys(processData.spatObj).length>0){
             let spatData = processData.processSpatData(result.timestamp,_delayTime);
@@ -478,7 +478,7 @@ function onPulseMessage(message){
     spatPulseCount++;
 
     //执行告警
-    if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>=10)){
+    if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>10)){
         warningPulseCount=1;
         if(Object.keys(processData.dynamicWarning).length>0){
             warningExist = [];
@@ -505,7 +505,7 @@ function onPulseMessage(message){
     warningPulseCount++;
 
     //执行静态告警
-    if(staticCacheCount>pulseNum&&(staticPulseCount==0||staticPulseCount>=10)){
+    if(staticCacheCount>pulseNum&&(staticPulseCount==0||staticPulseCount>10)){
         staticPulseCount=1;
         //静态事件的处理
         if(Object.keys(processData.staticWarning).length>0){

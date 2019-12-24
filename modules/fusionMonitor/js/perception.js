@@ -147,7 +147,7 @@ function initWebsocketData() {
     platCars.pulseInterval = pulseInterval*0.8;//设置阀域范围 脉冲时间的100%
     platCars.platMaxValue = pulseInterval*1.5;
 
-    perceptionCars.stepTime = pulseInterval;
+    perceptionCars.stepTime = pulseInterval*2;
     perceptionCars.pulseInterval = parseInt(pulseInterval)*2*0.8;
     perceptionCars.perMaxValue = pulseInterval*2*1.5;
 
