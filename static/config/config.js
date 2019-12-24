@@ -48,5 +48,5 @@ window.defaultMapParam = {
     yaw: 0.003034199561255946
 };
 
-window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shanghai_qcc:dl_shcsq_wgs84_zc_0709&STYLE=&FORMAT=image/png&TILEMATRIXSET=EPSG:900913&TileMatrix=EPSG:900913:{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
+window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts?layer=shanghai_qcc%3A3dmaptest&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
 window.defualtZ=0.1;
