@@ -2,6 +2,7 @@
 let gis3d=new GIS3D();
 let perceptionCars = new PerceptionCars();
 let perceptionWebsocket = {};
+let perWebsocket = null;
 /** 调用 **/
 $(function() {
     initMap3D();
@@ -33,7 +34,7 @@ function addEvent(){
           gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
         }
         if(eventData.type == "position"){
-          getData(eventData);
+          initPerSocket(eventData)
         }
         if(eventData.type == "addModel"){    
           gis3d.addModeCar({
@@ -50,39 +51,38 @@ function addEvent(){
 
 }
 
-function getData(e) {
-    perceptionWebsocket = new WebSocket(window.config.socketUrl);  //获得WebSocket对象
+function initPerSocket(e) {
+  let perception = {
+    action:"road_real_data_per",
+    data:{
+        type:1,
+        polygon:e.data.currentExtent
+    }
+  }
+  if(perWebsocket){
+    perWebsocket.webSocket.close();
+  }else{
+    perWebsocket = new WebSocketObj(window.config.socketUrl, perception, onPerMessage);
+  }
+ 
 
-    perceptionWebsocket.addEventListener('open', function (event) { 
-      var perception = {
-        action:"road_real_data_per",
-        data:{
-            type:1,
-            // polygon:[[121.17403069999999,31.2836193],[121.1760307,31.2836193],[121.1760307,31.2816193],[121.17403069999999,31.2816193]]
-            polygon:e.data.currentExtent
-            }
-      }
-      var perceptionMsg = JSON.stringify(perception);
-      perceptionWebsocket.send(perceptionMsg);
-    });
-    perceptionWebsocket.addEventListener('message', function (event) {
-      let data = JSON.parse(event.data)
-      let maxGpsTime = 0;
-      let fiterData;
-      if(data.result.perList.length){
-        data.result.perList.map(item=>{
-          if(item.gpsTime > maxGpsTime){
-            maxGpsTime = item.gpsTime;
-            fiterData = item;
-          }
-        })        
-      }  
-      perceptionCars.addPerceptionData(fiterData.data,0);      
-    });
-    perceptionWebsocket.addEventListener('close', function (event) {
-      console.log("关闭链接")        
-    });
-    perceptionWebsocket.addEventListener('error', function (event) {
-      console.log("链接出错")      
-    });
 }
+
+
+function onPerMessage(event) {
+  let data = JSON.parse(event.data)
+  let maxGpsTime = 0;
+  let fiterData;
+  if(data.result.perList.length){
+    data.result.perList.map(item=>{
+      if(item.gpsTime > maxGpsTime){
+        maxGpsTime = item.gpsTime;
+        fiterData = item;
+      }
+    })        
+  }  
+  perceptionCars.addPerceptionData(fiterData.data,0);     
+}
+
+
+
