@@ -257,12 +257,12 @@ class PerceptionCars {
       }
       if (d.targetType == 0) {//人
         this.addMoveModel(false, d, "person");
-        this.addMoveLable(d, "personlabel");
+        this.addMoveLable(d, "personlabel",3);
       }
       else if (d.targetType == 1) //自行车
       {
         this.addMoveModel(false, d, "bicycle");
-        this.addMoveLable(d, "bicyclelabel");
+        this.addMoveLable(d, "bicyclelabel",3);
       }
       else if (d.targetType == 2) { //感知车
         // console.log(d.vehicleId)
@@ -270,37 +270,37 @@ class PerceptionCars {
         this.addMoveModel(false, d, "carbox");
         ///////////////////////////end 
         //移动标签
-        this.addMoveLable(d, "carboxlabel");
+        this.addMoveLable(d, "carboxlabel",3);
       }
       else if (d.targetType == 3) //摩托车
       {
         this.addMoveModel(true, d, "motorbike");
-        this.addMoveLable(d, "motorbikelabel");
+        this.addMoveLable(d, "motorbikelabel",3);
       }
       else if (d.targetType == 5) //公交车
       {
         this.addMoveModel(false, d, "bus");
         //移动标签
-        this.addMoveLable(d, "buslabel");
+        this.addMoveLable(d, "buslabel",5);
       }
       else if (d.targetType == 7) //卡车
       {
         this.addMoveModel(false, d, "truck");
         //移动标签
-        this.addMoveLable(d, "trucklabel");
+        this.addMoveLable(d, "trucklabel",5);
       }
 
     }
     // },0); //
   }
   //增加和移动标签
-  addMoveLable(d, name) {
+  addMoveLable(d, name,h) {
     var carlabel = this.viewer.entities.getById(d.vehicleId + name);
     if (carlabel == null || carlabel == undefined) {
       this.addModeCarLabel(d, 5, name);
     }
     else {
-      this.moveModelLabel(carlabel, d, 5);
+      this.moveModelLabel(carlabel, d,h);
     }
   }
   //增加移动模型
@@ -453,16 +453,16 @@ class PerceptionCars {
       //   scale : 3.0     //放大倍数
       // debugWireframe:true
     }));
-    if (isAnimation) {
-      //添加动画
-      Cesium.when(model.readyPromise).then(function (model) {
-        model.activeAnimations.addAll({
-          loop: Cesium.ModelAnimationLoop.REPEAT,//控制重复
-          speedup: 0.5, // 速度，相对于clock
-          reverse: false // 动画反转
-        })
-      });
-    }
+    // if (isAnimation) {
+    //   //添加动画
+    //   Cesium.when(model.readyPromise).then(function (model) {
+    //     model.activeAnimations.addAll({
+    //       loop: Cesium.ModelAnimationLoop.REPEAT,//控制重复
+    //       speedup: 0.5, // 速度，相对于clock
+    //       reverse: false // 动画反转
+    //     })
+    //   });
+    // }
     // console.log("绘制车辆",d.vehicleId + name);
 
   }
