@@ -444,7 +444,7 @@ var GisData = {
                 labels.add({
                     fillColor: Cesium.Color.BLACK,
                     backgroundColor: Cesium.Color.fromCssColorString('#fff'),
-                    position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 10 + window.defualtZ),
+                    position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 8 + window.defualtZ),
                     text: itemSide[i].devName,
                     font: '14px sans-serif',
                     showBackground: true,
