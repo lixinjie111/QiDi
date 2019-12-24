@@ -111,8 +111,8 @@ function getMessage() {
             if(eventData.data) {
                 camParam = eventData.data;
             }
-            // let {x, y, z, radius, pitch, yaw} = camParam;
-            let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+            let {x, y, z, radius, pitch, yaw} = camParam;
+            // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
             gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
         }
         if(eventData.type == 'updatePosition') {

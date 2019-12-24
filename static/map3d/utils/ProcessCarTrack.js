@@ -302,7 +302,7 @@ class ProcessCarTrack {
                             id:vid + "billboard" + itemSide[i].deviceId,
                             position : Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2),
                             billboard : {
-                                image : 'static/map3d/images/signal.png',
+                                image : '../../static/map3d/images/signal.png',
                                 scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
                             }
 
