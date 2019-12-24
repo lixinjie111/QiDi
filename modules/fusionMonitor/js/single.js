@@ -233,6 +233,8 @@ function init3DMap() {
 
     perceptionCars.viewer = gis3d.cesium.viewer;
     platCars.viewer = gis3d.cesium.viewer;
+    // 不连接感知杆，默认ture是连接感知杆儿
+    platCars.ispoleToCar=false;
 }
 function initWebsocketData() {
     //初始化车辆步长以及平台车阀域范围
