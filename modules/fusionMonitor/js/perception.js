@@ -116,7 +116,8 @@ function getMessage() {
             gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
         }
         if(eventData.type == 'updatePosition') {
-            gis3d.updatePosition(currentExtent[3][0],currentExtent[3][1],currentExtent[1][0],currentExtent[1][1]);
+            let _currentExtent = getExtend(longitude,latitude,0.001);
+            gis3d.updatePosition(_currentExtent[3][0],_currentExtent[3][1],_currentExtent[1][0],_currentExtent[1][1]);
         }
     });
 }
