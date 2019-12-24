@@ -539,7 +539,8 @@ class PerceptionCars {
       position: position,
       point: {
         color: Cesium.Color.RED,    //点位颜色
-        pixelSize: 0          //像素点大小
+        pixelSize: 0,         //像素点大小
+        scaleByDistance: new Cesium.NearFarScalar(200, 0, 2000, 1)
       },
       label: {
         text: text,
@@ -550,7 +551,7 @@ class PerceptionCars {
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         pixelOffset: new Cesium.Cartesian2(0.0, 0),
         // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.5),
-        scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
+        scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
       }
     });
   }
