@@ -137,6 +137,8 @@ function init3DMap() {
     initLight3D.initlight(gis3d.cesium.viewer);
     // //更新红路灯数据
     // initLight3D.updateLight(light);
+    // 框区域
+    gis3d.addRectangle(currentExtent[3][0],currentExtent[3][1],currentExtent[1][0],currentExtent[1][1]);
 
     perceptionCars.viewer = gis3d.cesium.viewer;
     platCars.viewer = gis3d.cesium.viewer;
@@ -409,7 +411,7 @@ function onPerceptionMessage(message) {
     perceptionCars.receiveData(sideList);
 }
 function initWarningWebSocket() {
-    let currentExtent = this.getExtend(longitude,latitude,0.02);
+    let currentExtent = getExtend(longitude,latitude,0.02);
     let _params = {
         "action":"cloud_event",
         "body":{
@@ -461,7 +463,7 @@ function onWarningMessage(message) {
     }
 }
 function initSpatWebSocket() {
-    let currentExtent = this.getExtend(longitude,latitude,0.02);
+    let currentExtent = getExtend(longitude,latitude,0.02);
     let _params = {
         "action":"spat",
         "data":{
@@ -538,8 +540,8 @@ function getExtend(x,y,r){
     let y1=y-r;
     currentExtent.push([x1, y0]);
     currentExtent.push([x0, y0]);
-    currentExtent.push([x0, y1/2]);
-    currentExtent.push([x1, y1/2]);
+    currentExtent.push([x0, y1]);
+    currentExtent.push([x1, y1]);
     return currentExtent;
 }
 function processWarn(warningData){

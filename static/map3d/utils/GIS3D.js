@@ -115,7 +115,7 @@ class GIS3D {
                     material: Cesium.Color.AZURE.withAlpha(0.1),
                     outline: true,
                     height :0,
-                   outlineColor: Cesium.Color.AZURE
+                   outlineColor: Cesium.Color.BLUE
                 }
              });
         }
