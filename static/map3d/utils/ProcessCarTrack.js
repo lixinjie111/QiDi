@@ -22,6 +22,7 @@ class ProcessCarTrack {
         this.singleObj = {};
         this.billboards = {};//存储发射信号
         this.sideList = [];//存储发射信号
+        this.ispoleToCar=true;//是否连接感知杆
     }
 
     //路口视角  平台车
@@ -235,7 +236,10 @@ class ProcessCarTrack {
                         v2xVeh++;
                     }
                     _this.moveCar(cardata);
-                    _this.poleToCar(cardata);
+                    if(this.ispoleToCar)
+                    {
+                        _this.poleToCar(cardata);
+                    } 
                     if (_this.mainCarVID == cardata.vehicleId) {
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata
