@@ -1,3 +1,5 @@
+import { try } from "bluebird";
+
 class PerceptionCars {
   constructor() {
     this.defualtZ = window.defualtZ;
@@ -234,7 +236,8 @@ class PerceptionCars {
   //绘制感知车
   processPerceptionMesage(fusionList, flag) {
     let _this = this;
-
+    try
+    {
     // _this.processPerceptionDataIntervalId = setInterval(() => {
     if (_this.deviceModels == undefined) return;
     // console.log("开始绘制");
@@ -291,6 +294,10 @@ class PerceptionCars {
       }
 
     }
+  } 
+  catch (error) {
+    
+  }
     // },0); //
   }
   //增加和移动标签

@@ -22,7 +22,7 @@ class ProcessCarTrack {
         this.singleObj = {};
         this.billboards = {};//存储发射信号
         this.sideList = [];//存储发射信号
-        this.ispoleToCar=true;//是否连接感知杆
+        this.ispoleToCar = true;//是否连接感知杆
     }
 
     //路口视角  平台车
@@ -205,6 +205,7 @@ class ProcessCarTrack {
         }
     }
     processPlatformCarsTrack(time, delayTime) {
+
         // console.log("-------")
         let _this = this;
         let platVeh = 0;
@@ -215,43 +216,46 @@ class ProcessCarTrack {
             'mainCar': {},
             'vehData': new Object()
         };
-        for (var vid in _this.cacheAndInterpolateDataByVid) {
-            let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
-            // console.log(carCacheData.nowReceiveData.gpsTime)
-            if (carCacheData != null) {
-                if (carCacheData.cacheData.length > 0) {
-                    //缓存数据
-                    let cacheData = _this.cacheAndInterpolateDataByVid[vid].cacheData;
-                    // console.log(cacheData.length);
-                    let cardata = _this.getMinValue(vid, time, delayTime);
-                    // let cardata = cacheData.shift();+
-                    if (!cardata) {
-                        return;
-                    }
-                    // console.log(cardata)
-                    if (cardata.devType == 1) {
-                        platVeh++;
-                    }
-                    if (cardata.devType == 2) {
-                        v2xVeh++;
-                    }
-                    _this.moveCar(cardata);
-                    if(this.ispoleToCar)
-                    {
-                        _this.poleToCar(cardata);
-                    } 
-                    if (_this.mainCarVID == cardata.vehicleId) {
-                        // mainCar= cardata;
-                        platCar['mainCar'] = cardata
-                        _this.moveTo(cardata);
-                        //主车
+        try {
+            for (var vid in _this.cacheAndInterpolateDataByVid) {
+                let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
+                // console.log(carCacheData.nowReceiveData.gpsTime)
+                if (carCacheData != null) {
+                    if (carCacheData.cacheData.length > 0) {
+                        //缓存数据
+                        let cacheData = _this.cacheAndInterpolateDataByVid[vid].cacheData;
+                        // console.log(cacheData.length);
+                        let cardata = _this.getMinValue(vid, time, delayTime);
+                        // let cardata = cacheData.shift();+
+                        if (!cardata) {
+                            return;
+                        }
+                        // console.log(cardata)
+                        if (cardata.devType == 1) {
+                            platVeh++;
+                        }
+                        if (cardata.devType == 2) {
+                            v2xVeh++;
+                        }
+                        _this.moveCar(cardata);
+                        if (this.ispoleToCar) {
+                            _this.poleToCar(cardata);
+                        }
+                        if (_this.mainCarVID == cardata.vehicleId) {
+                            // mainCar= cardata;
+                            platCar['mainCar'] = cardata
+                            _this.moveTo(cardata);
+                            //主车
+                        }
                     }
                 }
             }
+            vehData.platVeh = platVeh;
+            vehData.v2xVeh = v2xVeh;
+            platCar['vehData'] = vehData;
+        } catch (error) {
+            return null;
         }
-        vehData.platVeh = platVeh;
-        vehData.v2xVeh = v2xVeh;
-        platCar['vehData'] = vehData;
         return platCar;
     }
     //检测感知杆和单车关联
