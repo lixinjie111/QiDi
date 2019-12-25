@@ -16,6 +16,7 @@ let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
 
 let currentExtent = getExtend(longitude,latitude,extend);
+let platExtent = getExtend(longitude,latitude,0.02);
 let center=[longitude ,latitude];
 let camParam = window.defaultMapParam;
 
@@ -382,11 +383,10 @@ function onPulseMessage(message){
     staticPulseCount++;
 }
 function initPlatformWebSocket() {
-    let currentExtent = getExtend(longitude,latitude,0.02);
     let _params = {
         "action": "vehicle",
         "body": {
-            "polygon": currentExtent
+            "polygon": platExtent
         },
         "type": 3
     };
@@ -412,11 +412,10 @@ function onPerceptionMessage(message) {
     perceptionCars.receiveData(sideList);
 }
 function initWarningWebSocket() {
-    let currentExtent = getExtend(longitude,latitude,0.02);
     let _params = {
         "action":"cloud_event",
         "body":{
-            "region":currentExtent,
+            "region":platExtent,
         },
         "type":1
     };
@@ -464,11 +463,10 @@ function onWarningMessage(message) {
     }
 }
 function initSpatWebSocket() {
-    let currentExtent = getExtend(longitude,latitude,0.02);
     let _params = {
         "action":"spat",
         "data":{
-            "polygon":currentExtent
+            "polygon":platExtent
         },
         "type":2
     };
