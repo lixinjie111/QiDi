@@ -22,7 +22,7 @@ class ProcessCarTrack {
         this.platObj = {};
         this.singleObj = {};
         this.billboards = {};//存储发射信号
-        this.sideList = []; //路侧点列表
+        this.sideList = [];//存储发射信号
         this.ispoleToCar = true;//是否连接感知杆
     }
 
@@ -453,10 +453,10 @@ class ProcessCarTrack {
                     pixelSize: 0              //像素点大小
                 },
                 label: {
-                    fillColor: Cesium.Color.BLACK,
-                    backgroundColor: Cesium.Color.fromCssColorString('#fff'),
+                    fillColor: Cesium.Color.fromCssColorString('#2f2f2f'),
+                    backgroundColor: Cesium.Color.fromCssColorString('#F5F5DC').withAlpha(0.5),
                     text: d.plateNo,
-                    font: '14px sans-serif',
+                    font: '14px',
                     showBackground: true,
                     horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
                     pixelOffset: new Cesium.Cartesian2(0.0, 0),
