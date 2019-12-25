@@ -68,10 +68,10 @@ class GIS3D {
         this.cesium.viewer._cesiumWidget._creditContainer.style.display = "none";
 
         let v = this.cesium.viewer;
-        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () {
+        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () { 
             if (v.dataSources.length == 0) return;
             var currentMagnitude = v.camera.getMagnitude();
-            if (currentMagnitude <= 6372507.256225062) {
+            if (currentMagnitude <= 6373057.350774223) {
                 if (v.dataSources.length > 0) {
                     if (!v.dataSources._dataSources[0].show) {
                         for (var i = 0; i < v.dataSources.length; i++) {
