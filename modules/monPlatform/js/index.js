@@ -3,6 +3,7 @@ let gis3d=new GIS3D();
 let perceptionCars = new PerceptionCars();
 let perceptionWebsocket = {};
 let perWebsocket = null;
+let firstUpDateCam = true;
 /** 调用 **/
 $(function() {
     initMap3D();
@@ -31,7 +32,13 @@ function addEvent(){
        let eventData = e.data
         if(eventData.type == "updateCam"){
           let {x, y, z, radius, pitch, yaw} = eventData.data;
-          gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+          if(firstUpDateCam){
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw , 0);
+            firstUpDateCam = false;
+          }else{
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+          }
+         
         }
         if(eventData.type == "position"){
           initPerSocket(eventData)

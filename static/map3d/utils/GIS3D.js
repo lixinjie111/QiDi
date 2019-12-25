@@ -239,25 +239,17 @@ class GIS3D {
 
     }
     //定位地图
-    updateCameraPosition(x, y, z, radius, pitch, yaw) {
+    updateCameraPosition(x, y, z, radius, pitch, yaw,duration=5) {
         var heading = Cesium.Math.toRadians(radius);
         
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
+            duration: duration,
             destination: Cesium.Cartesian3.fromDegrees(x, y, z),
             orientation: hpr
         });
+    }
 
-    }
-    updateCameraPosition2(x, y, z, radius, pitch, yaw) {
-        var heading = Cesium.Math.toRadians(radius); 
-        var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
-        this.cesium.viewer.camera.flyTo({
-            duration: 0,
-            destination: Cesium.Cartesian3.fromDegrees(x, y, z),
-            orientation: hpr
-        }); 
-    }
     //二三维切换
     updatePosition(minx, miny, maxx, maxy) {
         var rectangle = new Cesium.Rectangle.fromDegrees(minx, miny, maxx, maxy);
