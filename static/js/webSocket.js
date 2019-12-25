@@ -31,7 +31,7 @@ class WebSocketObj {
     }
     onClose(){
         console.log("结束连接:"+this.params);
-        this.reconnect();
+        this.connectCount = 0;
     }
     onError(){
         console.log("连接error:"+this.params);
