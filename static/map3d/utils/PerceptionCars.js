@@ -550,9 +550,9 @@ class PerceptionCars {
       },
       label: {
         text: text,
-        fillColor: Cesium.Color.BLACK,
-        backgroundColor: Cesium.Color.fromCssColorString('#fff'),
-        font: '14px sans-serif',
+        fillColor: Cesium.Color.fromCssColorString('#2f2f2f'),
+        backgroundColor: Cesium.Color.fromCssColorString('#F5F5DC').withAlpha(0.5),
+        font: '12px',
         showBackground: true,
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         pixelOffset: new Cesium.Cartesian2(0.0, 0),
