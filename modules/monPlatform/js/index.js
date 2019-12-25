@@ -64,9 +64,10 @@ function initPerSocket(e) {
   if(perWebsocket){
     perWebsocket.webSocket.close();
     perWebsocket = null;
-  }else{
-    perWebsocket = new WebSocketObj(window.config.socketUrl, perception, onPerMessage);
   }
+  // else{
+    perWebsocket = new WebSocketObj(window.config.socketUrl, perception, onPerMessage);
+  // }
  
 
 }
