@@ -59,8 +59,11 @@ function initPerSocket(e) {
         polygon:e.data.currentExtent
     }
   }
+ 
+ 
   if(perWebsocket){
     perWebsocket.webSocket.close();
+    perWebsocket = null;
   }else{
     perWebsocket = new WebSocketObj(window.config.socketUrl, perception, onPerMessage);
   }
