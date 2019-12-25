@@ -45,3 +45,5 @@ window.defaultMapParam = {
 window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts?layer=shanghai_qcc%3A3dmaptest&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
 window.defualtZ=0.1; 
 window.count=30;//空闲车辆
+//默认的地图全区域
+window.currentExtent = [[121.15611700000001, 31.300408],[121.196117, 31.300408],[121.196117, 31.260408],[121.15611700000001, 31.260408]]
