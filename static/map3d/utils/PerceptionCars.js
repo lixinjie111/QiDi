@@ -258,12 +258,12 @@ class PerceptionCars {
           continue;
         }
         if (d.targetType == 0) {//人
-          this.addMoveModel(false, d, "person");
+          this.addMoveModel(true, d, "person");
           this.addMoveLable(d, "personlabel", 3);
         }
         else if (d.targetType == 1) //自行车
         {
-          this.addMoveModel(false, d, "bicycle");
+          this.addMoveModel(true, d, "bicycle");
           this.addMoveLable(d, "bicyclelabel", 3);
         }
         else if (d.targetType == 2) { //感知车
@@ -276,7 +276,7 @@ class PerceptionCars {
         }
         else if (d.targetType == 3) //摩托车
         {
-          this.addMoveModel(true, d, "motorbike");
+          this.addMoveModel(false, d, "motorbike");
           this.addMoveLable(d, "motorbikelabel", 3);
         }
         else if (d.targetType == 5) //公交车
@@ -459,16 +459,16 @@ class PerceptionCars {
       //   scale : 3.0     //放大倍数
       // debugWireframe:true
     }));
-    // if (isAnimation) {
-    //   //添加动画
-    //   Cesium.when(model.readyPromise).then(function (model) {
-    //     model.activeAnimations.addAll({
-    //       loop: Cesium.ModelAnimationLoop.REPEAT,//控制重复
-    //       speedup: 0.5, // 速度，相对于clock
-    //       reverse: false // 动画反转
-    //     })
-    //   });
-    // }
+    if (isAnimation) {
+      //添加动画
+      Cesium.when(model.readyPromise).then(function (model) {
+        model.activeAnimations.addAll({
+          loop: Cesium.ModelAnimationLoop.REPEAT,//控制重复
+          speedup: 0.5, // 速度，相对于clock
+          reverse: false // 动画反转
+        })
+      });
+    }
     // console.log("绘制车辆",d.vehicleId + name);
 
   }
