@@ -43,4 +43,5 @@ window.defaultMapParam = {
 };
 
 window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts?layer=shanghai_qcc%3A3dmaptest&style=&tilematrixset=EPSG%3A900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=EPSG%3A900913%3A{TileMatrix}&TileCol={TileCol}&TileRow={TileRow}"
-window.defualtZ=0.1;
+window.defualtZ=0.1; 
+window.count=30;//空闲车辆
