@@ -198,11 +198,11 @@ class PerceptionCars {
     }
     // console.log("最小索引:",devId,minIndex,minDiff,DateFormat.formatTime(time,'hh:mm:ss:ms'));
     // console.log(this.cacheAndInterpolateDataByDevId[devId].isFirst);
-    if(minData){
-        minData.data.forEach(item=>{
-            console.log(parseInt(minData.gpsTime),item.vehicleId,item.targetType);
-        });
-    }
+    // if(minData){
+    //     minData.data.forEach(item=>{
+    //         console.log(parseInt(minData.gpsTime),item.vehicleId,item.targetType);
+    //     });
+    // }
     //对其后，找不到符合范围的  最小值保留
     if (minDiff && minDiff > this.perMaxValue && this.cacheAndInterpolateDataByDevId[devId].isFirst) {
       // console.log(devId,"不在范围内")
@@ -539,7 +539,8 @@ class PerceptionCars {
     let h = d.heading.toFixed(1);
     let s = d.speed.toFixed(1);
     let veh = d.vehicleId.substr(0, 4);
-    let text = "[" + h + ", " + s + ", " + veh + "]";
+    // let text = "[" + h + ", " + s + ", " + veh + "]";
+    let text = "[" + veh + "]";
     let entityLabel = this.viewer.entities.add({
       id: d.vehicleId + name,
       position: position,
@@ -570,7 +571,8 @@ class PerceptionCars {
     let h = d.heading.toFixed(1);
     let s = d.speed.toFixed(1);
     let veh = d.vehicleId.substr(0, 4);
-    let text = "[" + h + ", " + s + ", " + veh + "]";
+    // let text = "[" + h + ", " + s + ", " + veh + "]";
+    let text = "[" + veh + "]";
     carlabel.show = true;
     carlabel.label.text = text;
   }

@@ -337,7 +337,6 @@ var GisData = {
     initPoleModelDate(item, viewer) {
         //var item = sessionStorage.getItem("sideList"); 
         if (item) {
-            debugger
             this.initModel_pole(item, viewer);
         }
 

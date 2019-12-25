@@ -112,11 +112,110 @@
   letter-spacing: 2px;
   color: #fff;
 }
-.c-pulse-time .el-icon-loading{
-  display: block;
-  width: 30px;
-  font-size: 30px;
-  color: #fff;
-  margin: 0 auto;
-}
 
+/*.c-icon-loading {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    box-shadow: 0 1em 0 -.2em currentcolor;
+    -webkit-animation: loading 0.8s ease-in-out alternate infinite;
+    animation: loading 0.8s ease-in-out alternate infinite;
+    -webkit-animation-delay: 0.32s;
+    animation-delay: 0.32s;
+    top: -1em;
+
+    width: 1em;
+    height: 1em;
+    color: inherit;
+    vertical-align: middle;
+    pointer-events: none;
+}
+.c-icon-loading:after,
+.c-icon-loading:before {
+    content: '';
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+    box-shadow: inherit;
+    -webkit-animation: inherit;
+    animation: inherit;
+}
+.c-icon-loading:before {
+    left: -1em;
+    -webkit-animation-delay: 0.48s;
+    animation-delay: 0.48s;
+}
+.c-icon-loading:after {
+    right: -1em;
+    -webkit-animation-delay: 0.16s;
+    animation-delay: 0.16s;
+}
+@-webkit-keyframes loading {
+    0% {
+        box-shadow: 0 2em 0 -.2em currentcolor;
+    }
+    100% {
+        box-shadow: 0 1em 0 -.2em currentcolor;
+    }
+}
+@keyframes loading {
+    0% {
+        box-shadow: 0 2em 0 -.2em currentcolor;
+    }
+    100% {
+        box-shadow: 0 1em 0 -.2em currentcolor;
+    }
+}*/
+
+.c-icon-loading {
+    position: relative;
+    display: block;
+    margin: 10px auto 0;
+    width: 1em;
+    height: 1em;
+    color: inherit;
+    vertical-align: middle;
+    pointer-events: none;
+}
+.c-icon-loading:before,
+.c-icon-loading:after {
+    content: '';
+    display: block;
+    position: absolute;
+    background-color: currentcolor;
+    left: 50%;
+    right: 0;
+    top: 0;
+    bottom: 50%;
+    box-shadow: -.5em 0 0 currentcolor;
+    -webkit-animation: loading 1s linear infinite;
+    animation: loading 1s linear infinite;
+}
+.c-icon-loading:after {
+    top: 50%;
+    bottom: 0;
+    -webkit-animation-delay: .25s;
+    animation-delay: .25s;
+}
+@-webkit-keyframes loading {
+    0%, 100% {
+        box-shadow: -.5em 0 0 transparent;
+        background-color: currentcolor;
+    }
+    50% {
+        box-shadow: -.5em 0 0 currentcolor;
+        background-color: transparent;
+    }
+}
+@keyframes loading {
+    0%, 100% {
+        box-shadow: -.5em 0 0 transparent;
+        background-color: currentcolor;
+    }
+    50% {
+        box-shadow: -.5em 0 0 currentcolor;
+        background-color: transparent;
+    }
+}
