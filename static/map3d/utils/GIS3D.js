@@ -249,6 +249,15 @@ class GIS3D {
         });
 
     }
+    updateCameraPosition2(x, y, z, radius, pitch, yaw) {
+        var heading = Cesium.Math.toRadians(radius); 
+        var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
+        this.cesium.viewer.camera.flyTo({
+            duration: 0,
+            destination: Cesium.Cartesian3.fromDegrees(x, y, z),
+            orientation: hpr
+        }); 
+    }
     //二三维切换
     updatePosition(minx, miny, maxx, maxy) {
         var rectangle = new Cesium.Rectangle.fromDegrees(minx, miny, maxx, maxy);
