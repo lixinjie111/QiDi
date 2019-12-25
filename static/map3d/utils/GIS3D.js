@@ -278,6 +278,18 @@ class GIS3D {
      * 增加车辆
      * @param {数据} d 
      */
+    addModeAndPosition(d, name, glbName){
+          //利用entity进行加载
+        var modleGlb = this.cesium.viewer.entities.add({
+            position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude),
+            name:  d.vehicleId + name,
+            model: {
+                uri: '../../static/map3d/model/' + glbName + '.glb'
+            }
+        });
+        //定位过去
+        this.cesium.viewer.zoomTo(modleGlb); 
+    }
     addModeCar(d, name, glbName) {
         var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ);
         var heading = Cesium.Math.toRadians(d.heading);
