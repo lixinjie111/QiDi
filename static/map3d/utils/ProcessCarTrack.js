@@ -22,7 +22,7 @@ class ProcessCarTrack {
         this.platObj = {};
         this.singleObj = {};
         this.billboards = {};//存储发射信号
-        this.sideList = [];//存储发射信号
+        this.sideList = []; //路侧点列表
         this.ispoleToCar = true;//是否连接感知杆
     }
 
