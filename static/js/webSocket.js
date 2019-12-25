@@ -30,11 +30,11 @@ class WebSocketObj {
         this.callback(message);
     }
     onClose(){
-        console.log("结束连接:"+this.params);
-        this.reconnect();
+        console.log("结束连接:"+this.params.action);
+        this.connectCount = 0;
     }
     onError(){
-        console.log("连接error:"+this.params);
+        console.log("连接error:"+this.params.action);
         this.reconnect();
     }
     onOpen(){

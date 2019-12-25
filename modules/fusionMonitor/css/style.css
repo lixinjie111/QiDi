@@ -112,4 +112,11 @@
   letter-spacing: 2px;
   color: #fff;
 }
+.c-pulse-time .el-icon-loading{
+  display: block;
+  width: 30px;
+  font-size: 30px;
+  color: #fff;
+  margin: 0 auto;
+}
 
