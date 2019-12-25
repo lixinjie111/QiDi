@@ -33,10 +33,10 @@ function addEvent(){
         if(eventData.type == "updateCam"){
           let {x, y, z, radius, pitch, yaw} = eventData.data;
           if(firstUpDateCam){
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw , 0);
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
             firstUpDateCam = false;
           }else{
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw,5);
           }
          
         }
