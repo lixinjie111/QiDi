@@ -114,7 +114,7 @@
   color: #fff;
 }
 
-/*.c-icon-loading {
+.c-icon-loading {
     position: relative;
     display: block;
     margin: 0 auto;
@@ -168,9 +168,9 @@
     100% {
         box-shadow: 0 1em 0 -.2em currentcolor;
     }
-}*/
+}
 
-.c-icon-loading {
+/*.c-icon-loading {
     position: relative;
     display: block;
     margin: 10px auto 0;
@@ -219,4 +219,4 @@
         box-shadow: -.5em 0 0 currentcolor;
         background-color: transparent;
     }
-}
+}*/
