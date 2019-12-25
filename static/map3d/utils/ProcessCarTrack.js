@@ -239,15 +239,16 @@ class ProcessCarTrack {
                         if (cardata.devType == 2) {
                             v2xVeh++;
                         }
-                        _this.moveCar(cardata);
-                        if (this.ispoleToCar) {
-                            _this.poleToCar(cardata);
-                        }
+                        _this.moveCar(cardata); 
                         if (_this.mainCarVID == cardata.vehicleId) {
                             // mainCar= cardata;
                             platCar['mainCar'] = cardata
                             _this.moveTo(cardata);
                             //主车
+                        }
+                        else
+                        {
+                            _this.poleToCar(cardata);
                         }
                     }
                 }
