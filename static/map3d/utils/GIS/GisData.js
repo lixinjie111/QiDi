@@ -464,11 +464,11 @@ var GisData = {
             var labels = viewer.scene.primitives.add(new Cesium.LabelCollection());
             for (var i = 0; i < itemSide.length; i++) {
                 labels.add({
-                    fillColor: Cesium.Color.BLACK,
-                    backgroundColor: Cesium.Color.fromCssColorString('#fff'),
+                    fillColor: Cesium.Color.WHITE ,
+                    backgroundColor: Cesium.Color.ROYALBLUE,
                     position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 8 + window.defualtZ),
                     text: itemSide[i].devName,
-                    font: '14px sans-serif',
+                    font: '14px',
                     showBackground: true,
                     horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
                     pixelOffset: new Cesium.Cartesian2(0.0, 0),
