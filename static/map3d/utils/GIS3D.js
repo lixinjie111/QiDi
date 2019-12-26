@@ -36,6 +36,7 @@ class GIS3D {
             imageryProvider: new Cesium.SingleTileImageryProvider({
                 url: '../../static/map3d/images/back.png'//透明图片
             }),
+            shouldAnimate: true
         });
         this.cesium.viewer.scene.globe.depthTestAgainstTerrain = false;
         // this.cesium.viewer.scene.postProcessStages.fxaa.enabled = true;
@@ -68,7 +69,7 @@ class GIS3D {
         this.cesium.viewer._cesiumWidget._creditContainer.style.display = "none";
 
         let v = this.cesium.viewer;
-        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () { 
+        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () {
             if (v.dataSources.length == 0) return;
             var currentMagnitude = v.camera.getMagnitude();
             if (currentMagnitude <= 6373057.350774223) {
@@ -100,30 +101,29 @@ class GIS3D {
                 }
             }
         })
+
+        this.textCar();
     }
     //路口显示范围
-    addRectangle(xmin,ymin,xmax,ymax)
-    { 
+    addRectangle(xmin, ymin, xmax, ymax) {
         //路口显示范围
-        let rec=this.cesium.viewer.entities.getById("rectanglefw")
-        if(!rec)
-        {
+        let rec = this.cesium.viewer.entities.getById("rectanglefw")
+        if (!rec) {
             this.cesium.viewer.entities.add({
-                id:"rectanglefw", 
+                id: "rectanglefw",
                 rectangle: {
-                   coordinates: Cesium.Rectangle.fromDegrees(xmin,ymin,xmax,ymax),
+                    coordinates: Cesium.Rectangle.fromDegrees(xmin, ymin, xmax, ymax),
                     material: Cesium.Color.AZURE.withAlpha(0.1),
                     outline: true,
-                    height :0,
-                   outlineColor: Cesium.Color.BLUE
+                    height: 0,
+                    outlineColor: Cesium.Color.BLUE
                 }
-             });
+            });
         }
-        else
-        {
-            this.cesium.viewer.entities.getById("rectanglefw").rectangle.coordinates=Cesium.Rectangle.fromDegrees(xmin,ymin,xmax,ymax);
+        else {
+            this.cesium.viewer.entities.getById("rectanglefw").rectangle.coordinates = Cesium.Rectangle.fromDegrees(xmin, ymin, xmax, ymax);
         }
-       
+
     }
     //移除事件
     remove3DInforLabel(name) {
@@ -142,10 +142,10 @@ class GIS3D {
             this.cesium.viewer.entities.getById(id).label.text = text;
         }
     }
-    get3DInfoLabel(id) {
-        let entities = this.cesium.viewer.entities.getById(id);
-        if (entities) {
-            return this.cesium.viewer.entities.getById(id).label.text
+    get3DInfoLabel(id) {
+        let entities = this.cesium.viewer.entities.getById(id);
+        if (entities) {
+            return this.cesium.viewer.entities.getById(id).label.text
         }
 
     }
@@ -182,38 +182,38 @@ class GIS3D {
      * 获取相机参数
      */
     getCamera() {
-        var cartesian3 = new Cesium.Cartesian3(this.cesium.viewer.camera.position.x, this.cesium.viewer.camera.position.y, this.cesium.viewer.camera.position.z);
-        var cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesian3);
-        var lat = Cesium.Math.toDegrees(cartographic.latitude);
-        var lng = Cesium.Math.toDegrees(cartographic.longitude);
-        var alt = cartographic.height;
+        var cartesian3 = new Cesium.Cartesian3(this.cesium.viewer.camera.position.x, this.cesium.viewer.camera.position.y, this.cesium.viewer.camera.position.z);
+        var cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesian3);
+        var lat = Cesium.Math.toDegrees(cartographic.latitude);
+        var lng = Cesium.Math.toDegrees(cartographic.longitude);
+        var alt = cartographic.height;
 
-        let obj = {
-            x: lng,
-            y: lat,
-            z: alt,
-            radius:  Cesium.Math.toDegrees(this.cesium.viewer.camera.heading),
-            pitch: this.cesium.viewer.camera.pitch,
-            yaw: this.cesium.viewer.camera.roll
-        };
-        return obj;
+        let obj = {
+            x: lng,
+            y: lat,
+            z: alt,
+            radius: Cesium.Math.toDegrees(this.cesium.viewer.camera.heading),
+            pitch: this.cesium.viewer.camera.pitch,
+            yaw: this.cesium.viewer.camera.roll
+        };
+        return obj;
     }
 
-    addModel(name, url, x, y, z ,labelName) {
+    addModel(name, url, x, y, z, labelName) {
         //添加模型
         let itemSide = [x, y, z]
         var h1 = 360;
         var h = -90 + h1;
-        var heading = Cesium.Math.toRadians(h);   
+        var heading = Cesium.Math.toRadians(h);
         //合并写法
         var instances = [];
 
-        if(labelName){
-            var labels = this.cesium.viewer.scene.primitives.add(new Cesium.LabelCollection()); 
+        if (labelName) {
+            var labels = this.cesium.viewer.scene.primitives.add(new Cesium.LabelCollection());
             labels.add({
                 fillColor: Cesium.Color.BLACK,
                 backgroundColor: Cesium.Color.fromCssColorString('#fff'),
-                position: Cesium.Cartesian3.fromDegrees(itemSide[0], itemSide[1], itemSide[2]+11),
+                position: Cesium.Cartesian3.fromDegrees(itemSide[0], itemSide[1], itemSide[2] + 11),
                 text: labelName,
                 font: '10px sans-serif',
                 showBackground: true,
@@ -223,25 +223,25 @@ class GIS3D {
             });
         }
 
-        var position = Cesium.Cartesian3.fromDegrees(itemSide[0], itemSide[1], 0); 
+        var position = Cesium.Cartesian3.fromDegrees(itemSide[0], itemSide[1], 0);
         var pitch = Cesium.Math.toRadians(0);
         var roll = 0;
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
         var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
         instances.push({
             modelMatrix: modelMatrix
-        });        
+        });
         this.cesium.viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-            id:name,
+            id: name,
             url: url,
             instances: instances,
         }));
 
     }
     //定位地图
-    updateCameraPosition(x, y, z, radius, pitch, yaw,duration=0) {
+    updateCameraPosition(x, y, z, radius, pitch, yaw, duration = 0) {
         var heading = Cesium.Math.toRadians(radius);
-        
+
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
             duration: duration,
@@ -279,17 +279,17 @@ class GIS3D {
      * 增加车辆
      * @param {数据} d 
      */
-    addModeAndPosition(d, name, glbName){
-          //利用entity进行加载
+    addModeAndPosition(d, name, glbName) {
+        //利用entity进行加载
         var modleGlb = this.cesium.viewer.entities.add({
             position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude),
-            name:  d.vehicleId + name,
+            name: d.vehicleId + name,
             model: {
                 uri: '../../static/map3d/model/' + glbName + '.glb'
             }
         });
         //定位过去
-        this.cesium.viewer.zoomTo(modleGlb); 
+        this.cesium.viewer.zoomTo(modleGlb);
     }
     addModeCar(d, name, glbName) {
         var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, window.defualtZ);
@@ -320,7 +320,7 @@ class GIS3D {
     //测试绘制车
     textCar() {
         //添加路灯杆和信息牌
-        let itemSide = [[112.95003033070373, 28.326432159727982, 0]]
+        let itemSide = [[121.17551589465815, 31.281617738453047, 0]]
         var h1 = 360;
         var h = -90 + h1;
         var heading = Cesium.Math.toRadians(h);
@@ -354,11 +354,19 @@ class GIS3D {
                     modelMatrix: modelMatrix
                 });
             }
-            this.cesium.viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: '../../static/map3d/model/car_close.glb',
+            let model = this.cesium.viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
+                url: '../../static/map3d/model/Bicycle_new.glb',
                 instances: instances,
                 scale: 10.0
             }));
+            //添加动画
+            Cesium.when(model.readyPromise).then(function (model) {
+                model.activeAnimations.addAll({
+                    loop: Cesium.ModelAnimationLoop.REPEAT,//控制重复
+                    speedup: 0.5, // 速度，相对于clock
+                    reverse: false // 动画反转
+                })
+            });
         }
     }
     //释放模型
