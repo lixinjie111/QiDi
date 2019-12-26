@@ -102,10 +102,11 @@ class GIS3D {
             }
         })
 
-        this.textCar();
+        // this.textCar();
     }
     //路口显示范围
     addRectangle(xmin, ymin, xmax, ymax) {
+        
         //路口显示范围
         let rec = this.cesium.viewer.entities.getById("rectanglefw")
         if (!rec) {
@@ -355,7 +356,7 @@ class GIS3D {
                 });
             }
             let model = this.cesium.viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: '../../static/map3d/model/Bicycle_new.glb',
+                url: '../../static/map3d/model/carbox.glb',
                 instances: instances,
                 scale: 10.0
             }));
