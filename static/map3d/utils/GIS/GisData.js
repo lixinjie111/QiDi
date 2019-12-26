@@ -329,7 +329,7 @@ var GisData = {
         let itemSide2 = [[121.17551589465815, 31.281617738453047, 0.0, 250],
         [121.17510881207043, 31.281747510005268, 0.0, -10],
         [121.17533995826606, 31.282071700494583, 0.0, 60]] 
-        this.initTree(itemSide2, viewer, "traffic_light_yellow",true);
+        this.initTree(itemSide2, viewer, "I_RB",true);
     },
     /**
      * 初始化感知杆模型
@@ -466,14 +466,14 @@ var GisData = {
                 labels.add({
                     fillColor: Cesium.Color.WHITE ,
                     backgroundColor: Cesium.Color.ROYALBLUE,
-                    position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 8 + window.defualtZ),
+                    position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 6.8+ window.defualtZ),
                     text: itemSide[i].devName,
                     font: '14px',
                     showBackground: true,
                     horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
                     pixelOffset: new Cesium.Cartesian2(0.0, 0),
                     // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.0),
-                    scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
+                    scaleByDistance: new Cesium.NearFarScalar(100, 1.3, 1000, 0)
                 });
                 var position = Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, window.defualtZ);
                 //  

@@ -239,16 +239,17 @@ class ProcessCarTrack {
                         if (cardata.devType == 2) {
                             v2xVeh++;
                         }
-                        _this.moveCar(cardata); 
+                        _this.moveCar(cardata);
                         if (_this.mainCarVID == cardata.vehicleId) {
                             // mainCar= cardata;
                             platCar['mainCar'] = cardata
                             _this.moveTo(cardata);
                             //主车
                         }
-                        else
-                        {
-                            _this.poleToCar(cardata);
+                        else {
+                            if (cardata.devType == 2) {
+                                _this.poleToCar(cardata);
+                            }
                         }
                     }
                 }
@@ -285,7 +286,7 @@ class ProcessCarTrack {
                     {
                         if (this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId) != null) {
                             this.viewer.entities.remove(this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId));
-                        } 
+                        }
                     }
                     else {
                         if (this.viewer.entities.getById(vid + "line" + itemSide[i].deviceId) == null) {
@@ -424,7 +425,7 @@ class ProcessCarTrack {
                 url = '../../static/map3d/model/carMian.glb';
             }
 
-            if (d.devType == 1)//obu车
+            if (d.devType == 2)//obu车
             {
                 if (d.plateNo == "未注册") {
                     url = '../../static/map3d/model/car_near_Black.glb';
@@ -460,7 +461,7 @@ class ProcessCarTrack {
                     showBackground: true,
                     horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
                     pixelOffset: new Cesium.Cartesian2(0.0, 0),
-                    scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
+                    scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
                 }
             });
             let urlImg = '../../static/map3d/images/4g.png';
@@ -475,10 +476,10 @@ class ProcessCarTrack {
             }
             var entity = this.viewer.entities.add({
                 id: vid + "billboard",
-                position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude,3),
+                position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 3),
                 billboard: {
                     image: urlImg,
-                    scaleByDistance: new Cesium.NearFarScalar(70, 1, 150, 0.5)
+                    scaleByDistance: new Cesium.NearFarScalar(70, 1, 300, 0)
                 }
             });
 
@@ -512,7 +513,7 @@ class ProcessCarTrack {
             Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carpt.modelMatrix)
 
             var carlabelpt = this.viewer.entities.getById(vid + "lblpt");
-            carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 4);
+            carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 3);
             carlabelpt.label.text = plateNo;
             //增加信号指示
             let billboard = this.viewer.entities.getById(vid + "billboard");
@@ -520,7 +521,7 @@ class ProcessCarTrack {
                 billboard.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2);
             }
 
-            if (d.devType == 1)//obu车
+            if (d.devType == 2)//obu车
             {
                 //修改光环大小
                 this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
@@ -631,8 +632,8 @@ class ProcessCarTrack {
     //主车移动
     moveTo(d) {
         var heading = Cesium.Math.toRadians(d.heading);
-        var pitch = -0.1569132859032279;// -0.2469132859032279;
-        var roll = 0.0029627735803421373;
+        var pitch = Cesium.Math.toRadians(-5);// -0.2469132859032279;
+        var roll = 0.0;
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
 
         this.viewer.camera.setView({
@@ -640,5 +641,19 @@ class ProcessCarTrack {
             orientation: hpr
         });
     }
-
+     removeModelPrimitives(item) {
+        if (item.length > 0) {
+            for (let j = 0; j < item.length; j++) {
+                var primitives = this.viewer.scene.primitives;
+                for (var i = 0; i < primitives.length; i++) {
+                    var primitive = primitives.get(i);
+                    if (primitive.id) {
+                        if (primitive instanceof Cesium.Model && primitive.id.search(item[j]) != -1) {
+                            this.viewer.scene.primitives.remove(primitive);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
