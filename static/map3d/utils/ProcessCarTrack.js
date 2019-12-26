@@ -475,10 +475,10 @@ class ProcessCarTrack {
             }
             var entity = this.viewer.entities.add({
                 id: vid + "billboard",
-                position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2),
+                position: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude,3),
                 billboard: {
                     image: urlImg,
-                    scaleByDistance: new Cesium.NearFarScalar(100, 1, 2000, 0)
+                    scaleByDistance: new Cesium.NearFarScalar(70, 1, 150, 0.5)
                 }
             });
 
