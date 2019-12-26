@@ -4,6 +4,10 @@ let perceptionCars = new PerceptionCars();
 let perceptionWebsocket = {};
 let perWebsocket = null;
 let firstUpDateCam = true;
+let perListArr = [];
+let perListObj = {};
+let postData = false;
+let removeTimer = {};
 /** 调用 **/
 $(function() {
     initMap3D();
@@ -84,10 +88,7 @@ function initPerSocket(e) {
 
 }
 
-let perListArr = [];
-let perListObj = {};
-let postData = false;
-let removeTimer = {};
+
 function onPerMessage(event) {
   let data = JSON.parse(event.data)
   let maxGpsTime = 0;
@@ -101,7 +102,9 @@ function onPerMessage(event) {
     })        
   }  
 
-  clearTimeout(removeTimer[fiterData.devId].timer);
+  if(removeTimer[fiterData.devId]){
+    clearTimeout(removeTimer[fiterData.devId].timer);
+  }
   perListObj[fiterData.devId] = fiterData.data;
   removeTimer[fiterData.devId] = {};
   removeTimer[fiterData.devId].timer = setTimeout(() => {
