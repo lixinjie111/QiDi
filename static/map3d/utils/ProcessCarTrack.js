@@ -115,7 +115,7 @@ class ProcessCarTrack {
     //缓存并且插值平台车轨迹
     cacheAndInterpolatePlatformCar(car) {
         let vid = car.vehicleId;
-        if(car.type==2){
+        if (car.type == 2) {
             car.plateNo = '非注册';
         }
         let cdata = this.cacheAndInterpolateDataByVid[vid];
@@ -128,7 +128,7 @@ class ProcessCarTrack {
             heading: car.heading,
             devType: car.devType,
             type: car.type,
-            curSource: car.curSource
+            source: car.source
         };
         if (cdata == null)//没有该车的数据
         {
@@ -201,7 +201,7 @@ class ProcessCarTrack {
                     d2.vehicleId = cdata.nowReceiveData.vehicleId;
                     d2.plateNo = cdata.nowReceiveData.plateNo;
                     d2.devType = cdata.nowReceiveData.devType;
-                    d2.curSource = cdata.nowReceiveData.curSource;
+                    d2.source = cdata.nowReceiveData.source;
                     d2.steps = i;
                     cdata.cacheData.push(d2);
                 }
@@ -468,15 +468,26 @@ class ProcessCarTrack {
                     scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
                 }
             });
-            let urlImg = '../../static/map3d/images/4g.png';
-            if (d.curSource == "4G") {
-                urlImg = '../../static/map3d/images/4g.png';
-            }
-            else if (d.curSource == "V2X") {
-                urlImg = '../../static/map3d/images/v2x.png';
-            }
-            else {
-                urlImg = '../../static/map3d/images/4gv2x.png';
+            let urlImg = '../../static/map3d/images/4g.png'; 
+            debugger
+            if (d.source.length > 0) { //判断类型车
+                if(d.source.length==1)
+                { 
+                    if (d.source[0] == "4G") {
+                        urlImg = '../../static/map3d/images/4g.png';
+                    }
+                    else if (d.source[0] == "V2X") {
+                        urlImg = '../../static/map3d/images/v2x.png';
+                    }
+                    else {
+                        urlImg = '../../static/map3d/images/4gv2x.png';
+                    }
+                }
+                else
+                {
+                    urlImg = '../../static/map3d/images/4gv2x.png'; 
+                }
+               
             }
             var entity = this.viewer.entities.add({
                 id: vid + "billboard",
@@ -645,7 +656,7 @@ class ProcessCarTrack {
             orientation: hpr
         });
     }
-     removeModelPrimitives(item) {
+    removeModelPrimitives(item) {
         if (item.length > 0) {
             for (let j = 0; j < item.length; j++) {
                 var primitives = this.viewer.scene.primitives;
