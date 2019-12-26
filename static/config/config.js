@@ -15,7 +15,7 @@ window.config = {
     socketUrl:'ws://116.236.72.205:49999/ws',  //影子系统
     dlWmsUrl: 'http://116.236.72.204:48080/', //迪路
 
-    version: 1.2,       // 版本号
+    version: "1.2",       // 版本号
 }
 
 //高德地图额外配置项添加
@@ -46,4 +46,4 @@ window.mapUrl=window.config.dlWmsUrl+"geoserver/gwc/service/wmts?layer=shanghai_
 window.defualtZ=0.1; 
 window.count=30;//空闲车辆
 //默认的地图全区域
-window.currentExtent = [[121.15611700000001, 31.300408],[121.196117, 31.300408],[121.196117, 31.260408],[121.15611700000001, 31.260408]]
+window.currentExtent = [[121.158117,31.298408000000002],[121.194117,31.298408000000002],[121.194117,31.262408],[121.158117,31.262408]];
