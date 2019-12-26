@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!--代表禁止浏览器从本地计算机的缓存中访问页面内容-->
+  <!--<meta http-equiv="pragram" content="no-cache">
+  &lt;!&ndash;请求和响应不缓存&ndash;&gt;
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <!--IE / Edge 自动给数字加下划线的问题-->
+  <meta name="format-detection" content="telephone=no,email=no,address=no">
+  <title>3D地图测试</title>
+
+  <link rel="stylesheet" type="text/css" href="../../static/css/public.css" />
+  <link rel="stylesheet" type="text/css" href="../../static/map3d/css/widgets.css" />
+  <script>
+    document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
+  </script>
+  <script src="../../static/map3d/libs/Cesium.js"></script>
+  <script src="../../static/map3d/utils/GIS/GisData.js"></script>
+  <script src="../../static/map3d/utils/GIS/light3D.js"></script>
+  <script src="../../static/map3d/utils/GIS3D.js"></script>
+  <!-- <script src="../../static/map3d/utils/PerceptionCars.js"></script> -->
+  <script>
+   
+  </script>  
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  
+  <script src="../../static/js/jquery.min.js"></script>
+  <script src="../../static/js/public.js"></script>
+  <script src="../../static/js/webSocket.js?v=1"></script>
+	<script>
+
+    document.write('<script src="../../static/map3d/utils/PerceptionCars2.js?v=' + new Date().getTime() + '"><\/script>');
+    document.write('<script src="./js/index_mini.js?v=' + new Date().getTime() + '"><\/script>');
+  
+  </script>
+</body>
+</html>
