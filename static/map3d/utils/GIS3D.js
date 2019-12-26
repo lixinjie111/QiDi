@@ -150,32 +150,32 @@ class GIS3D {
         }
 
     }
-    //添加事件
-    add3DInfoLabel(name, text, x, y, z) {
-        let positions = [];
-        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
-        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 10));
-        let lableModel = this.cesium.viewer.entities.add({
-            id: name,
-            position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 10),
-            polyline: {
-                positions: positions,
-                width: 3,
-                material: Cesium.Color.fromCssColorString('#ab6503')
-            },
-            label: {
-                text: text,
-                backgroundColor: Cesium.Color.fromCssColorString('#894b2b'),
-                font: '30px sans-serif',
-                showBackground: true,
-                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                pixelOffset: new Cesium.Cartesian2(0.0, 0),
-                scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
-            }
-        });
+  //添加事件
+  add3DInfoLabel(name, text, x, y, z=0) {
+    let positions = [];
+    positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
+    positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5));
+    let lableModel = this.cesium.viewer.entities.add({
+        id: name,
+        position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5),
+        polyline: {
+            positions: positions,
+            width: 3,
+            material: Cesium.Color.fromCssColorString('#ab6503')
+        },
+        label: {
+            text: text, 
+            backgroundColor: Cesium.Color.fromCssColorString('#894b2b'),
+            font: '30px sans-serif',
+            showBackground: true,
+            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            pixelOffset: new Cesium.Cartesian2(0.0, 0),
+            scaleByDistance: new Cesium.NearFarScalar(100, 1.3, 500, 0)
+        }
+    });
 
-        this.modelsInforLabel[name] = lableModel;
-    }
+    this.modelsInforLabel[name] = lableModel;
+}
     getExtent() {
         // this.cesium.viewer
     }
