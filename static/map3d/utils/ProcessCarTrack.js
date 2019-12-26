@@ -641,5 +641,22 @@ class ProcessCarTrack {
             orientation: hpr
         });
     }
-
+    //删除单车
+    removeModelPrimitives(item) {
+        if(item.length>0)
+        {
+            for(let i=0;i<item.length;i++)
+            {
+                var primitives = this.viewer.scene.primitives;
+                for (var i = 0; i < primitives.length; i++) {
+                  var primitive = primitives.get(i);
+                  if (primitive.id) {
+                    if (primitive instanceof Cesium.Model  && primitive.id.search(item[i]) != -1) {
+                      this.viewer.scene.primitives.remove(primitive);
+                    }
+                  }
+                }
+            }
+        } 
+      }
 }
