@@ -24,6 +24,7 @@ class ProcessCarTrack {
         this.billboards = {};//存储发射信号
         this.sideList = [];//存储发射信号
         this.ispoleToCar = true;//是否连接感知杆
+        this.removeObj={};
     }
 
     //路口视角  平台车
@@ -209,60 +210,62 @@ class ProcessCarTrack {
             cdata.lastReceiveData = cdata.nowReceiveData;
         }
     }
-    processPlatformCarsTrack(time, delayTime) {
-
+    processPlatformCarsTrack(time,delayTime) {
         // console.log("-------")
-        let _this = this;
+        let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
         let vehData = {};
 
         let platCar = {
-            'mainCar': {},
-            'vehData': new Object()
+            'mainCar':{},
+            'vehData':new Object(),
+            'carData':new Object()
         };
-        try {
-            for (var vid in _this.cacheAndInterpolateDataByVid) {
-                let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
-                // console.log(carCacheData.nowReceiveData.gpsTime)
-                if (carCacheData != null) {
-                    if (carCacheData.cacheData.length > 0) {
-                        //缓存数据
-                        let cacheData = _this.cacheAndInterpolateDataByVid[vid].cacheData;
-                        // console.log(cacheData.length);
-                        let cardata = _this.getMinValue(vid, time, delayTime);
-                        // let cardata = cacheData.shift();+
-                        if (!cardata) {
-                            return;
-                        }
-                        // console.log(cardata)
-                        if (cardata.devType == 1) {
-                            platVeh++;
-                        }
-                        if (cardata.devType == 2) {
-                            v2xVeh++;
-                        }
-                        _this.moveCar(cardata);
-                        if (_this.mainCarVID == cardata.vehicleId) {
-                            // mainCar= cardata;
-                            platCar['mainCar'] = cardata
-                            _this.moveTo(cardata);
-                            //主车
-                        }
-                        else {
-                            if (cardata.devType == 2) {
-                                _this.poleToCar(cardata);
-                            }
-                        }
+        for (var vid in _this.cacheAndInterpolateDataByVid) {
+            let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
+            // console.log(carCacheData.nowReceiveData.gpsTime)
+            if (carCacheData) {
+                //缓存数据
+                let cacheData = carCacheData.cacheData;
+                if (cacheData.length > 0) {
+                    this.removeObj[vid]=0;
+                    let cardata = _this.getMinValue(vid, time, delayTime);
+                    if (!cardata) {
+                        return;
+                    }
+                    platCar.carData[vid]=cardata;
+                    // console.log(cardata)
+                    if(cardata.devType==1){
+                        platVeh++;
+                    }
+                    if(cardata.devType==2){
+                        v2xVeh++;
+                    }
+                    _this.moveCar(cardata);
+                    _this.poleToCar(cardata);
+                    if (_this.mainCarVID == cardata.vehicleId) {
+                        // mainCar= cardata;
+                        platCar['mainCar'] = cardata
+                        _this.moveTo(cardata);
+                        //主车
+                    }
+                }else{
+                    //消失机制
+                    this.removeObj[vid]++;
+                    //超过3s没有缓存数就让消失
+                    if(this.removeObj>75){
+                        this.removeModelPrimitives(vid);
+                        delete this.removeObj[vid];
+                        delete this.cacheAndInterpolateDataByVid[vid];
+                        delete this.platObj[vid];
                     }
                 }
             }
-            vehData.platVeh = platVeh;
-            vehData.v2xVeh = v2xVeh;
-            platCar['vehData'] = vehData;
-        } catch (error) {
-            return null;
         }
+        vehData.platVeh = platVeh;
+        vehData.v2xVeh = v2xVeh;
+        platCar['vehData'] = vehData;
         return platCar;
     }
     //检测感知杆和单车关联

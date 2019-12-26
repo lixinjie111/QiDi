@@ -7,7 +7,9 @@ let urlConfig = {
     // 获取路侧点位置
     getDevDis: window.config.url+"lc/baseStat/getDevDis",
     // 获取标识牌和红绿灯信息 "type": "signs,spats,lampPole"
-    // typeRoadData: window.config.url+"ehb/road/typeRoadData"
+    // typeRoadData: window.config.url+"ehb/road/typeRoadData",
+    // 获取摄像头感知区域
+    findRSBindDevList: window.config.url+"openApi/v2x/device/findRSBindDevList"
 };
 
 /** 参数管理 **/
@@ -54,7 +56,7 @@ let removeWarning = [];
 
 /** 调用 **/
 $(function() {
-    if(top.location == self.location){  
+    if(top.location == self.location){
         console.log("是顶层窗口");
         // 获取路侧点位置
         getDevDis();
@@ -63,10 +65,12 @@ $(function() {
     }else {
         console.log("不是顶层窗口");
     }
+    //获取感知区域
+    findRSBindDevList();
     // 接受数据
     getMessage();
     // 初始化3D地图
-    init3DMap(); 
+    init3DMap();
     // 初始化动态数据
     initWebsocketData();
     // 脉冲实时接口
@@ -95,6 +99,45 @@ function getDevDis() {
         },
         error: function(err) {
             console.log("获取路侧点位置失败",err);
+        }
+    })
+}
+function findRSBindDevList() {
+    let _params = JSON.stringify({
+        "rsPtId": crossId,
+        "typeList": ["N","S"]
+    });
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        cache:false,
+        contentType: 'application/json;charset=UTF-8',
+        url: urlConfig.findRSBindDevList,
+        data: _params,
+        success: function(res) {
+            let data = res.data;
+            let sensingArea = [];
+            let startArea = [];
+            let area = "";
+            data.forEach(item=>{
+                if(item.sensingArea!=''){
+                    let area = item.sensingArea.split(";");
+                    if(startArea.length<=0){
+                        startArea=area[0];
+                    }
+                    sensingArea.push.apply(sensingArea,area);
+                 }
+            });
+            if(startArea){
+                sensingArea.forEach(item=>{
+                    area=area+item+",";
+                })
+                area = area+startArea;
+            }
+            GisData.addPolygon(area,0.1);
+        },
+        error: function(err) {
+            console.log("获取设备感知区域失败",err);
         }
     })
 }
@@ -191,7 +234,7 @@ function init3DMap() {
     GisData.initLightModel(gis3d.cesium.viewer);
     //初始化模型--红路灯牌
     initLight3D.initlight(gis3d.cesium.viewer);
-    
+
     // 框区域
     gis3d.addRectangle(currentExtent[3][0],currentExtent[3][1],currentExtent[1][0],currentExtent[1][1]);
 

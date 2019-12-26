@@ -17,7 +17,7 @@ class PerceptionCars {
     this.perMaxValue = '';
     this.cacheAndInterpolateDataByDevId = {};
     this.stepTime = '';
-    this.drawnObj = {};
+    // this.drawnObj = {};
   }
 
   //接受数据
@@ -104,36 +104,39 @@ class PerceptionCars {
     }
   }
   processPerTrack(time, delayTime) {
-    let devList = [];
-    let list = [];
-    // console.log("-----------");
-    for (let devId in this.cacheAndInterpolateDataByDevId) {
-      let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
-      if (devCacheData && devCacheData.cacheData.length > 0) {
-        let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
-        if (!devData) {
-          // console.log("没有找到相应的值")
-          return;
+        let devList = [];
+        let list = [];
+        let drawObj = {};
+        // console.log("-----------");
+        for (let devId in this.cacheAndInterpolateDataByDevId) {
+            let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
+            if (devCacheData && devCacheData.cacheData.length > 0) {
+                let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
+                if (!devData){
+                    // console.log("没有找到相应的值")
+                    return;
+                }
+                /*if (this.drawnObj[devId] != '' && devData.batchId == this.drawnObj[devId]) {
+                  // console.log("重复绘制的点"+devId+"  ,"+DateFormat.formatTime(devData.batchId,'hh:mm:ss'))
+                  return;
+                }*/
+                // this.drawnObj[devId] = devData.batchId;
+                drawObj[devId] = devData;
+                let fusionList = devData.data;
+                if(fusionList&&fusionList.length) {
+                    list.push.apply(list,fusionList);
+                }
+                devList.push(devData);
+            }
         }
-        /*if (this.drawnObj[devId] != '' && devData.batchId == this.drawnObj[devId]) {
-          // console.log("重复绘制的点"+devId+"  ,"+DateFormat.formatTime(devData.batchId,'hh:mm:ss'))
-          return;
-        }*/
-        this.drawnObj[devId] = devData.batchId;
-        let fusionList = devData.data;
-        if (fusionList && fusionList.length) {
-          list.push.apply(list, fusionList);
+        //如果本次没找见 则清除所有的模型
+        if(!Object.keys(drawObj).length) {
+            this.clearAllModel();
         }
-        devList.push(devData);
-      }
+        this.processPerceptionMesage(list);
+        // console.log("**************")
+        return devList;
     }
-    // if(!Object.keys(this.drawnObj).length) {
-    //     this.clearAllModel();
-    // }
-    this.processPerceptionMesage(list);
-    // console.log("**************")
-    return devList;
-  }
   getMinValue(devId, time, delayTime, cacheData) {
     /* let minDiff = Math.abs(time-minData.gpsTime-delayTime);*/
     let rangeData = null;
