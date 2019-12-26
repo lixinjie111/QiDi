@@ -632,7 +632,7 @@ class ProcessCarTrack {
     //主车移动
     moveTo(d) {
         var heading = Cesium.Math.toRadians(d.heading);
-        var pitch =Cesium.Math.toRadians(-5);// -0.2469132859032279;
+        var pitch = Cesium.Math.toRadians(-5);// -0.2469132859032279;
         var roll = 0.0;
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
 
@@ -643,20 +643,18 @@ class ProcessCarTrack {
     }
     //删除单车
     removeModelPrimitives(item) {
-        if(item.length>0)
-        {
-            for(let i=0;i<item.length;i++)
-            {
+        if (item.length > 0) {
+            for (let j = 0; j < item.length; j++) {
                 var primitives = this.viewer.scene.primitives;
                 for (var i = 0; i < primitives.length; i++) {
-                  var primitive = primitives.get(i);
-                  if (primitive.id) {
-                    if (primitive instanceof Cesium.Model  && primitive.id.search(item[i]) != -1) {
-                      this.viewer.scene.primitives.remove(primitive);
+                    var primitive = primitives.get(i);
+                    if (primitive.id) {
+                        if (primitive instanceof Cesium.Model && primitive.id.search(item[j]) != -1) {
+                            this.viewer.scene.primitives.remove(primitive);
+                        }
                     }
-                  }
                 }
             }
-        } 
-      }
+        }
+    }
 }
