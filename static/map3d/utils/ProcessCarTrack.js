@@ -641,8 +641,7 @@ class ProcessCarTrack {
             orientation: hpr
         });
     }
-    //删除单车
-    removeModelPrimitives(item) {
+     removeModelPrimitives(item) {
         if (item.length > 0) {
             for (let j = 0; j < item.length; j++) {
                 var primitives = this.viewer.scene.primitives;
