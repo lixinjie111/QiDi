@@ -113,26 +113,14 @@ function findRSBindDevList() {
         url: urlConfig.findRSBindDevList,
         data: _params,
         success: function(res) {
-            let data = res.data;
-            let sensingArea = [];
-            let startArea = [];
-            let area = "";
+            let data = res.data; 
+            let reg = /\;/g;
             data.forEach(item=>{
-                if(item.sensingArea!=''){
-                    let area = item.sensingArea.split(";");
-                    if(startArea.length<=0){
-                        startArea=area[0];
-                    }
-                    sensingArea.push.apply(sensingArea,area);
+                if(item.sensingArea){
+                    let area = JSON.parse('['+item.sensingArea.replace(reg, ",")+']');
+                    gis3d.addPolygon(area);
                  }
             });
-            if(startArea){
-                sensingArea.forEach(item=>{
-                    area=area+item+",";
-                })
-                area = area+startArea;
-            }
-            gis3d.addPolygon(area);
         },
         error: function(err) {
             console.log("获取设备感知区域失败",err);

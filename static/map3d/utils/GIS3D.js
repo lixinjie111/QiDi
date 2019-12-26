@@ -288,23 +288,16 @@ class GIS3D {
         });
     }
     //绘制面
-    addPolygon(hierarchy, z = window.defualtZ) {
-        // new Cesium.ImageMaterialProperty({
-        //     image:'../../static/images/3.png',
-        //     color: Cesium.Color.fromCssColorString('#fff').withAlpha(0.8),
-        //     repeat : new Cesium.Cartesian2(4,4)
-        // })
-        this.cesium.viewer.entities.add({
-            id: "p1",
-            polygon: {
-                hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(hierarchy),
-                extrudedHeight: z,
-                perPositionHeight: true,
-                material: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.8),
-                outline: false
-            }
-        });
-    }
+    addPolygon(hierarchy, z = window.defualtZ) {
+        this.cesium.viewer.entities.add({
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray(hierarchy),
+                extrudedHeight: z, 
+                material: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.8),
+                outline: false
+            }
+        });
+    }
     /**
      * 增加车辆
      * @param {数据} d 
