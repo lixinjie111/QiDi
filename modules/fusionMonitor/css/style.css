@@ -108,7 +108,7 @@
   left:50%;
   transform: translate(-50%,0);
   font-family: MicrosoftYaHei;
-  line-height: 46px;
+  line-height: 40px;
   border:1px solid #808d62;
   background:#e7e8e3;
   box-sizing: border-box;
@@ -144,6 +144,7 @@
   background:#e7e8e3 ;
   text-align: center;
   text-indent: 0;
+  margin-top: -3px;
 }
 .c-loading-icon{
   display: inline-block;

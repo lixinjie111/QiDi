@@ -288,13 +288,13 @@ class GIS3D {
         });
     }
     //绘制面
-    addPolygon(hierarchy, z = window.defualtZ) {
+    addPolygon(hierarchy) {
         this.cesium.viewer.entities.add({
             polygon: {
                 hierarchy: Cesium.Cartesian3.fromDegreesArray(hierarchy),
-                extrudedHeight: z, 
-                material: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.8),
-                outline: false
+                extrudedHeight: 0.08, 
+                material: Cesium.Color.fromCssColorString('#71446b').withAlpha(1),
+                closetop: false
             }
         });
     }
