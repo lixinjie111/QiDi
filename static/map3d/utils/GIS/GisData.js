@@ -466,14 +466,14 @@ var GisData = {
                 labels.add({
                     fillColor: Cesium.Color.WHITE ,
                     backgroundColor: Cesium.Color.ROYALBLUE,
-                    position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 8 + window.defualtZ),
+                    position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 6.8+ window.defualtZ),
                     text: itemSide[i].devName,
                     font: '14px',
                     showBackground: true,
                     horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
                     pixelOffset: new Cesium.Cartesian2(0.0, 0),
                     // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.0),
-                    scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
+                    scaleByDistance: new Cesium.NearFarScalar(100, 1.3, 1000, 0)
                 });
                 var position = Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, window.defualtZ);
                 //  

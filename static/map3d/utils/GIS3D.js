@@ -240,9 +240,8 @@ class GIS3D {
 
     }
     //定位地图
-    updateCameraPosition(x, y, z, radius, pitch, yaw, duration = 0) {
-        var heading = Cesium.Math.toRadians(radius);
-
+    updateCameraPosition(x, y, z, radius=0, pitch=0, yaw=0, duration = 0) {
+        var heading = Cesium.Math.toRadians(radius); 
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
             duration: duration,
