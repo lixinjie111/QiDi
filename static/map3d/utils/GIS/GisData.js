@@ -329,7 +329,7 @@ var GisData = {
         let itemSide2 = [[121.17551589465815, 31.281617738453047, 0.0, 250],
         [121.17510881207043, 31.281747510005268, 0.0, -10],
         [121.17533995826606, 31.282071700494583, 0.0, 60]] 
-        this.initTree(itemSide2, viewer, "traffic_light_yellow",true);
+        this.initTree(itemSide2, viewer, "I_RB",true);
     },
     /**
      * 初始化感知杆模型
