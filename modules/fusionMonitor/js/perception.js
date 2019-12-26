@@ -6,7 +6,7 @@
 let urlConfig = {
     // 获取路侧点位置
     getDevDis: window.config.url+"lc/baseStat/getDevDis",
-    // 获取标识牌和红绿灯信息
+    // 获取标识牌和红绿灯信息 "type": "signs,spats,lampPole"
     typeRoadData: window.config.url+"ehb/road/typeRoadData"
 };
 
@@ -18,7 +18,6 @@ let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
 
 let currentExtent = getExtend(longitude,latitude,extend);
-let platExtent = getExtend(longitude,latitude,0.02);
 let center=[longitude ,latitude];
 let camParam = window.defaultMapParam;
 
@@ -118,10 +117,13 @@ function typeRoadData() {
                 //设置--红路灯杆
                 // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
             }
-            if(_data.signs && _data.signs.length) {
-                //设置--标识牌
-                // initLight3D.initlight(gis3d.cesium.viewer, _data.signs);
+            if(_data.spats && _data.spats.length) {
+                //设置--红绿灯
+                // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
             }
+            // if(_data.signs && _data.signs.length) {
+            //     //设置--标识牌
+            // }
         },
         error: function(err) {
             console.log("获取标识牌和红绿灯信息失败",err);
@@ -148,10 +150,13 @@ function getMessage() {
                     //设置--红路灯杆
                     // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
                 }
-                if(_data.signs && _data.signs.length) {
-                    //设置--标识牌
-                    // initLight3D.initlight(gis3d.cesium.viewer, _data.signs);
+                if(_data.spats && _data.spats.length) {
+                    //设置--红绿灯
+                    // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
                 }
+                // if(_data.signs && _data.signs.length) {
+                //     //设置--标识牌
+                // }
             }else {
                 // 获取标识牌和红绿灯信息
                 typeRoadData();
@@ -434,7 +439,7 @@ function initPlatformWebSocket() {
     let _params = {
         "action": "vehicle",
         "body": {
-            "polygon": platExtent
+            "polygon": window.currentExtent
         },
         "type": 3
     };
@@ -463,7 +468,7 @@ function initWarningWebSocket() {
     let _params = {
         "action":"cloud_event",
         "body":{
-            "region":platExtent,
+            "region":window.currentExtent,
         },
         "type":1
     };
@@ -514,7 +519,7 @@ function initSpatWebSocket() {
     let _params = {
         "action":"spat",
         "data":{
-            "polygon":platExtent
+            "polygon":window.currentExtent
         },
         "type":2
     };

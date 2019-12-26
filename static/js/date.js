@@ -13,7 +13,7 @@ class TDate {
         const hour = this.formatNum(tDate.getHours());
         const minutes = this.formatNum(tDate.getMinutes());
         const seconds = this.formatNum(tDate.getSeconds());
-        const millisecond = this.formatNum(tDate.getMilliseconds());
+        const millisecond = this.formatMsNum(tDate.getMilliseconds());
         if(type == 'yy-mm-dd'){
             return year + '-' + month + '-' + day;
         }else if(type == 'yy-mm-dd hh:mm:ss'){
@@ -28,6 +28,15 @@ class TDate {
     }
     static formatNum(value){
         return value < 10 ? '0' + value : value;
+    }
+    static formatMsNum(value){
+        if(value < 10) {
+            return '0' + value;
+        }
+        if(value < 100) {
+            return '0' + value;
+        }
+        return value;
     }
     static dateToMs (date) {//日期转时间戳
         let result = new Date(date).getTime();
