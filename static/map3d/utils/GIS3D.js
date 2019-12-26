@@ -250,6 +250,36 @@ class GIS3D {
         });
     }
 
+    zoomModule(x, y, z, radius=0, pitch=0, yaw=0, duration = 0) {
+        let rect= Cesium.Rectangle.fromDegrees(x-0.0001, y-0.0001, x+0.0001, y+0.0001);
+        let loactionTectEntity = this.cesium.viewer.entities.add({
+            name: 'locationRectangle',
+            id: 'locationRectangle',
+            rectangle: {
+                coordinates: rect,
+                material: Cesium.Color.GREEN.withAlpha(1.0),
+                height: 10.0,
+                outline: false
+            }
+        });
+        var heading = Cesium.Math.toRadians(radius); 
+        var flyPromise = this.cesium.viewer.flyTo(loactionTectEntity, {
+            duration: 0,
+            offset: new Cesium.HeadingPitchRange(heading, pitch)
+        });
+        let _this=this;
+        flyPromise.then(function () {
+        
+            var center = Cesium.Rectangle.center(rect);
+            var car = Cesium.Cartesian3.fromRadians(center.longitude, center.latitude);
+            var range = Cesium.Cartesian3.distance(car, _this.cesium.viewer.camera.position) * Math.cos(20);
+           
+            _this.cesium.viewer.zoomTo(loactionTectEntity, new Cesium.HeadingPitchRange(heading,  pitch, range));
+          
+            _this.cesium.viewer.entities.remove(loactionTectEntity);
+        });  
+    } 
+
     //二三维切换
     updatePosition(minx, miny, maxx, maxy) {
         var rectangle = new Cesium.Rectangle.fromDegrees(minx, miny, maxx, maxy);

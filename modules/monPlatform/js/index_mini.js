@@ -37,9 +37,13 @@ function addEvent(){
             firstUpDateCam = false;
           }else{
             gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw,5);
-          }
-         
+          }   
         }
+        if(eventData.type == "zoomModule"){
+          let {x, y, z, radius, pitch, yaw} = eventData.data;
+          gis3d.zoomModule(x, y, z, radius, pitch, yaw);     
+        }
+        
         if(eventData.type == "position"){
           initPerSocket(eventData);
           timer();
@@ -83,6 +87,7 @@ function initPerSocket(e) {
 let perListArr = [];
 let perListObj = {};
 let postData = false;
+let removeTimer = {};
 function onPerMessage(event) {
   let data = JSON.parse(event.data)
   let maxGpsTime = 0;
@@ -96,21 +101,20 @@ function onPerMessage(event) {
     })        
   }  
 
-  // perceptionCars.addPerceptionData(fiterData.data,0);    
-
+  clearTimeout(removeTimer[fiterData.devId].timer);
   perListObj[fiterData.devId] = fiterData.data;
-  
+  removeTimer[fiterData.devId] = {};
+  removeTimer[fiterData.devId].timer = setTimeout(() => {
+    delete perListObj[fiterData.devId];
+  }, 3000);
   if(postData){
     for (const k in perListObj) {
-        // perListArr.push(perListObj[k]);   
         perListObj[k].map((val)=>{
           perListArr.push(val);   
         })
     }
-    // perListArr.map((v)=>{
-      perceptionCars.addPerceptionData(perListArr);
-    // })   
-    perListObj = {};
+    perceptionCars.addPerceptionData(perListArr);
+    // perListObj = {};
     perListArr = [];
     postData = false;
   }
