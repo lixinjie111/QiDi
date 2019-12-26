@@ -101,37 +101,69 @@
 }
 .c-pulse-time{
   position: absolute;
-  width: 370px;
-  font-size: 26px;
+  width: 360px;
+  font-size: 20px;
   z-index: 2;
   top: 50px;
   left:50%;
   transform: translate(-50%,0);
-  text-align: left;
   font-family: MicrosoftYaHei;
-  line-height: 40px;
+  line-height: 50px;
   letter-spacing: 2px;
-  color: #fff;
-}
-
-.c-three-bounce{
   text-align: center;
+  border:1px solid #808d62;
+  background:#e7e8e3;
+  box-sizing: border-box;
+  color: #08adac;
+  font-weight: 600;
+  border-radius: 2px;
 }
-.c-loading {
+.c-pulse-time:before,
+.c-pulse-time:after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #716d6d;
+  top: 50%;
+  margin-top: -4px;
+}
+.c-pulse-time:before {
+  left: 10px;
+}
+.c-pulse-time:after {
+  right: 10px;
+}
+.c-loading-wrap{
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  background:#e7e8e3 ;
+}
+.c-loading-icon{
   display: inline-block;
   width: 10px;
   height: 10px;
   border-radius: 100%;
-  background-color: #ffffff;
+  background-color: #716d6d;
   -webkit-animation: bouncedelay 1.4s infinite ease-in-out both;
   animation: bouncedelay 1.4s infinite ease-in-out both;
+  
 }
-.c-loading.one{
-  -webkit-animation-delay: -0.32s;
+.c-loading-icon.one{
   animation-delay: -0.32s;
 }
-.c-loading.two{
-  -webkit-animation-delay: -0.16s;
+.c-loading-icon.two{
+  animation-delay: -0.16s;
+}
+.c-loading-icon.three{
+  animation-delay: -0.16s;
+}
+.c-loading-icon.four{
+  animation-delay: -0.16s;
+}
+.c-loading-icon.five{
   animation-delay: -0.16s;
 }
 @-webkit-keyframes bouncedelay {

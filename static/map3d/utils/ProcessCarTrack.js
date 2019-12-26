@@ -115,6 +115,9 @@ class ProcessCarTrack {
     //缓存并且插值平台车轨迹
     cacheAndInterpolatePlatformCar(car) {
         let vid = car.vehicleId;
+        if(car.type==2){
+            car.plateNo = '非注册';
+        }
         let cdata = this.cacheAndInterpolateDataByVid[vid];
         let d = {
             vehicleId: vid,
@@ -427,7 +430,7 @@ class ProcessCarTrack {
 
             if (d.devType == 2)//obu车
             {
-                if (d.plateNo == "未注册") {
+                if (d.plateNo == "非注册") {
                     url = '../../static/map3d/model/car_near_Black.glb';
                 }
                 //增加光环
@@ -451,7 +454,8 @@ class ProcessCarTrack {
                 position: position,
                 point: {
                     color: Cesium.Color.RED,    //点位颜色
-                    pixelSize: 0              //像素点大小
+                    pixelSize: 0,              //像素点大小
+                    scaleByDistance: new Cesium.NearFarScalar(200, 0, 2000, 1)
                 },
                 label: {
                     fillColor: Cesium.Color.fromCssColorString('#2f2f2f'),
