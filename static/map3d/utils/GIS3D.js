@@ -288,7 +288,7 @@ class GIS3D {
         });
     }
     //绘制面
-    addPolygon(hierarchy, z) {
+    addPolygon(hierarchy, z = window.defualtZ) {
         // new Cesium.ImageMaterialProperty({
         //     image:'../../static/images/3.png',
         //     color: Cesium.Color.fromCssColorString('#fff').withAlpha(0.8),
