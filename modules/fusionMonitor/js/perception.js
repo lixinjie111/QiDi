@@ -101,7 +101,7 @@ function getDevDis() {
 function typeRoadData() {
     let _params = JSON.stringify({
             "polygon":window.currentExtent,
-            "type": "signs,lampPole"
+            "type": "lampPole,spats"
         });
     $.ajax({
         type: "POST",
