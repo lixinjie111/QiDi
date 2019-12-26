@@ -152,7 +152,7 @@ var GisData = {
             show: false
         }));
         //道路直线
-        let dlzx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlzx.geojson', {
+        let dlzx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlzx01.geojson', {
             stroke: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
             strokeWidth: 1,
             // markerSymbol: '?',
@@ -160,6 +160,23 @@ var GisData = {
             show: false
         }));
         dlzx.then(function (dataSource) {
+            var entities = dataSource.entities.values;
+            for (var i = 0; i < entities.length; i++) {
+                var entity = entities[i];
+                entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 3000);
+            }
+        }).otherwise(function (error) {
+            //Display any errrors encountered while loading.
+            //window.alert(error);
+        });
+        let dlzx02 = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlzx02.geojson', {
+            stroke: Cesium.Color.fromCssColorString('#f3f3f3').withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1)
+            strokeWidth: 1,
+            // markerSymbol: '?',
+            // zIndex: 1,
+            show: false
+        }));
+        dlzx02.then(function (dataSource) {
             var entities = dataSource.entities.values;
             for (var i = 0; i < entities.length; i++) {
                 var entity = entities[i];
