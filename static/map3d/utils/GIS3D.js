@@ -36,7 +36,8 @@ class GIS3D {
             imageryProvider: new Cesium.SingleTileImageryProvider({
                 url: '../../static/map3d/images/back.png'//透明图片
             }),
-            shouldAnimate: true
+            shouldAnimate: true,
+            selectionIndicator:false
         });
         this.cesium.viewer.scene.globe.depthTestAgainstTerrain = false;
         // this.cesium.viewer.scene.postProcessStages.fxaa.enabled = true;
