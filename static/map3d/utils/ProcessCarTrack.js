@@ -575,11 +575,19 @@ class ProcessCarTrack {
                     }
                 } 
                 if (isV2X) {
-                    //修改光环大小
-                this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-                this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-                this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-                this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                 //修改光环大小 
+                    if (this.viewer.entities.getById(vid + "ellipse1")) {
+                        this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                    }
+                    if (this.viewer.entities.getById(vid + "ellipse2")) {
+                        this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                    }
+                    if (this.viewer.entities.getById(vid + "ellipse3")) {
+                        this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                    }
+                    if (this.viewer.entities.getById(vid + "ellipse4")) {
+                        this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                    }
                 }
             } 
 
