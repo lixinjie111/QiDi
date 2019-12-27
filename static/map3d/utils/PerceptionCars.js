@@ -22,10 +22,6 @@ class PerceptionCars {
 
   //接受数据
   addPerceptionData(data, miniLabel) {
-    //  console.log(11);
-    // this.cachePerceptionQueue.push(data);
-    // this.cachePerceptionQueue= new Array();
-    // this.cachePerceptionQueue.push(data);
     this.processPerceptionMesage(data, miniLabel);
   }
   receiveData(sideList) {
