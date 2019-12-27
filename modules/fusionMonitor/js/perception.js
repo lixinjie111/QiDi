@@ -502,6 +502,9 @@ function initPerceptionWebSocket() {
     };
     perceptionWebsocket = new WebSocketObj(window.config.socketUrl, _params, onPerceptionMessage);
 }
+function shutDown(){
+    perceptionWebsocket&&perceptionWebsocket.webSocket.close();
+}
 function onPerceptionMessage(message) {
     let data = JSON.parse(message.data)
     let sideList = data.result.perList;
@@ -530,13 +533,13 @@ function onWarningMessage(message) {
                 if(!item.isD){
                     //如果是静态事件，收到确认
                     let warning = {
-                        "action":"warning",
+                        "action":"cloud_event",
                         "body":{
-                            "warnId": item.warnId,
+                            "warnId":item.warnId,
                             "status":1
                         },
                         "type":2
-                    }
+                    };
                     let warningMsg = JSON.stringify(warning);
                     warningWebsocket.sendMsg(warningMsg);
                     item.warnId = warnId;
@@ -639,25 +642,25 @@ function getExtend(x,y,r){
     currentExtent.push([x1, y1]);
     return currentExtent;
 }
-function processWarn(warningData){
-    let warnId = warningData.warnId;
+function processWarn(data){
+    let warnId = data.warnId;
     if(warnId){
         //如果告警第一次画
         if(!warningData[warnId]){
-            console.log(warnId);
+            console.log("新增告警事件："+warnId);
             warningCount++;
             warningData[warnId] = {
                 warnId: warnId,
                 id:warnId,
-                msg:warningData.warnMsg,
-                longitude:warningData.longitude,
-                latitude:warningData.latitude
+                msg:data.warnMsg,
+                longitude:data.longitude,
+                latitude:data.latitude
             }
-            gis3d.add3DInfoLabel(warnId,warningData.warnMsg,warningData.longitude,warningData.latitude,20);
+            gis3d.add3DInfoLabel(warnId,data.warnMsg,data.longitude,data.latitude,20);
         }else{
             //判断是否需要更新
-            if(warningData.longitude != warningData[warnId].longitude || warningData.latitude != warningData[warnId].latitude) {
-                gis3d.update3DInfoLabel(warnId,warningData.warnMsg);
+            if(data.longitude != warningData[warnId].longitude || data.latitude != warningData[warnId].latitude) {
+                gis3d.update3DInfoLabel(warnId,data.warnMsg);
             }
         }
     }
@@ -675,7 +678,7 @@ function processCancelWarn(data){
             parent.postMessage(_camData,"*");
 
             delete warningData[warnId];
-            console.log("移除事件"+warnId)
+            console.log("移除事件："+warnId)
             gis3d.remove3DInforLabel(warnId);
             removeWarning.push(warnId);
             delete processData.cancelWarning[warnId];

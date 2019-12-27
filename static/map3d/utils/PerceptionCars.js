@@ -19,15 +19,6 @@ class PerceptionCars {
     this.stepTime = '';
     // this.drawnObj = {};
   }
-
-  //接受数据
-  addPerceptionData(data, flag) {
-    //  console.log(11);
-    // this.cachePerceptionQueue.push(data);
-    // this.cachePerceptionQueue= new Array();
-    // this.cachePerceptionQueue.push(data);
-    this.processPerceptionMesage(data, flag);
-  }
   receiveData(sideList) {
     sideList.forEach(item => {
       // if(item.devId=='RCU_2046A10433DB_3100000000132000002801'){
@@ -130,7 +121,7 @@ class PerceptionCars {
             }
         }
         //如果本次没找见 则清除所有的模型
-        if(!Object.keys(drawObj).length) {
+        if(drawObj&&!Object.keys(drawObj).length) {
             this.clearAllModel();
         }
         this.processPerceptionMesage(list);
@@ -587,7 +578,4 @@ class PerceptionCars {
       }
     }
   }
-
-
-
 }
