@@ -255,7 +255,7 @@ class ProcessCarTrack {
                             let isV2X=false;//是否有v2x车 OBU
                             for(let i=0;i<cardata.source.length;i++)
                             {
-                                if(cardata.source[i].toUpperCase().search("V2X"))
+                                if(cardata.source[i].toUpperCase().trim()=="V2X")
                                 {
                                     isV2X=true;
                                 }
@@ -446,21 +446,22 @@ class ProcessCarTrack {
             if (this.mainCarVID == vid) {
                 url = '../../static/map3d/model/carMian.glb';
             }
+            if (d.plateNo == "非注册") {
+                url = '../../static/map3d/model/car_near_Black.glb';
+            }
 
             if(d.source.length>0)
             {
                 let isV2X=false;//是否有v2x车 OBU
                 for(let i=0;i<d.source.length;i++)
                 {
-                    if(d.source[i].toUpperCase().search("V2X"))
+                    if(d.source[i].toUpperCase().trim()=="V2X")
                     {
                         isV2X=true;
                     }
                 } 
                 if (isV2X) {
-                    if (d.plateNo == "非注册") {
-                        url = '../../static/map3d/model/car_near_Black.glb';
-                    }
+                    debugger 
                     //增加光环
                     this.addEllipse(vid, position);
                 }
@@ -500,12 +501,13 @@ class ProcessCarTrack {
             let urlImg = '../../static/map3d/images/4g.png'; 
             
             if (d.source.length > 0) { //判断类型车
+                debugger
                 if(d.source.length==1)
                 { 
-                    if (d.source[0].toUpperCase()== "4G") {
+                    if (d.source[0].toUpperCase().trim()== "4G") {
                         urlImg = '../../static/map3d/images/4g.png';
                     }
-                    else if (d.source[0].toUpperCase() == "V2X") {
+                    else if (d.source[0].toUpperCase().trim() == "V2X") {
                         urlImg = '../../static/map3d/images/v2x.png';
                     }
                     else {
@@ -569,7 +571,7 @@ class ProcessCarTrack {
                 let isV2X=false;//是否有v2x车 OBU
                 for(let i=0;i<d.source.length;i++)
                 {
-                    if(d.source[i].toUpperCase().search("V2X"))
+                    if(d.source[i].toUpperCase().trim()=="V2X")
                     {
                         isV2X=true;
                     }
