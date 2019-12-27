@@ -621,9 +621,9 @@ function onPerceptionMessage(message) {
 }
 function initCanWebSocket() {
     let _params = {
-                    'action': 'can_real_data',
-                    'vehicleIds': vehicleId
-                };
+        'action': 'can_real_data',
+        'vehicleIds': vehicleId
+    };
     canWebSocket = new WebSocketObj(window.config.socketUrl, _params, onCanMessage);
 }
 function onCanMessage(message) {
@@ -696,10 +696,10 @@ function onSpatMessage(message) {
 }
 function initCancelWarningWebSocket() {
     let _params = {
-                    "action": "event_cancel",
-                    "body": {},
-                    "type": 1
-                };
+        "action":"event_cancel",
+        "body":{"busType":"rsi"},
+        "type":1
+    };
     cancelWarningWebsocket = new WebSocketObj(window.config.socketUrl, _params, onCancelWarningMessage);
 }
 function onCancelWarningMessage(message) {
@@ -747,23 +747,25 @@ function getExtend(x,y,r){
     currentExtent.push([x1, y1/2]);
     return currentExtent;
 }
-function processWarn(warningData,distance){
-    let warnId = warningData.warnId;
+function processWarn(data,distance){
+    let warnId = data.warnId;
+
     let warningMsg;
     if(distance){
-        warningMsg = warningData.warnMsg + ' ' +distance+'米';
+        warningMsg = data.warnMsg + '\n' +distance+'米';
     }
     //如果告警第一次画
     if(!warningData[warnId]){
+        console.log("新增告警事件："+warnId);
         warningCount++;
         warningData[warnId] = {
             warnId: warnId,
             id:warnId,
-            warnMsg:warningData.warnMsg,
-            longitude:warningData.longitude,
-            latitude:warningData.latitude
+            warnMsg:data.warnMsg,
+            longitude:data.longitude,
+            latitude:data.latitude
         }
-        gis3d.add3DInfoLabel(warnId,warningMsg,warningData.longitude,warningData.latitude,20);
+        gis3d.add3DInfoLabel(warnId,warningMsg,data.longitude,data.latitude,20);
     }else{
         gis3d.update3DInfoLabel(warnId,warningMsg);
     }
@@ -775,6 +777,7 @@ function processCancelWarn(data){
             delete warningData[warnId];
             gis3d.remove3DInforLabel(warnId);
             removeWarning.push(warnId);
+            console.log("移除事件："+warnId)
             staticExist.forEach((item,index)=>{
                 if(item.warnId == warnId){
                     staticExist.splice(index,1)

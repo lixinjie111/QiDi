@@ -62,13 +62,13 @@ var GisData = {
             show: false
         }));
         //感知区域
-        viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/gzqy.geojson', {
-            fill: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),//'../../static/images/login-bg.jpg',//.withAlpha(1)
-            stroke: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),// Cesium.Color.ORANGE,  
-            // markerSymbol: '?',
-            // zIndex: 0,
-            show: false
-        }));
+        // viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/gzqy.geojson', {
+        //     fill: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),//'../../static/images/login-bg.jpg',//.withAlpha(1)
+        //     stroke: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.5),// Cesium.Color.ORANGE,  
+        //     // markerSymbol: '?',
+        //     // zIndex: 0,
+        //     show: false
+        // }));
         //道路马路牙子
 
         let dlwbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/a.as', {

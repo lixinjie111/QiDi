@@ -26,47 +26,6 @@ class ProcessCarTrack {
         this.ispoleToCar = true;//是否连接感知杆
         this.removeObj={};
     }
-
-    //路口视角  平台车
-    onCarMessage(data, flag) {
-        // console.log('----------')
-        // console.log(data.time);
-        // this.cacheTrackCarData=data;
-        this.thisMessage(flag, data);
-    }
-    //接受数据
-    thisMessage(isCar, data) {
-        let data2 = data.result.data;
-        if (isCar == 0) {
-            for (let n = 0; n < data2.length; n++) {
-                let pcar = data2[n];
-                if (pcar.heading < 0) {
-                    // 不处理小于0的的数据
-                    continue;
-                }
-                // if (pcar.vehicleId == "B21E0003")
-                //缓存数据
-                this.cacheAndInterpolatePlatformCar(pcar, data);
-            }
-        }
-        else {
-            for (let n = 0; n < data2.length; n++) {
-                let pcar = data2[n];
-                if (pcar.heading < 0) {
-                    // 不处理小于0的的数据
-                    continue;
-                }
-                //缓存数据
-                this.cacheAndInterpolatePlatformCar(pcar, null);
-            }
-            let datamain = data.result.selfVehInfo;
-            if (datamain != null) {
-                this.mainCarVID = datamain.vehicleId;
-                this.cacheAndInterpolatePlatformCar(datamain, null);
-            }
-        }
-    }
-
     //接收数据
     receiveData(json, time, mainCarId) {
         let data = json.result.data;
@@ -242,7 +201,7 @@ class ProcessCarTrack {
                     if(cardata.devType==2){
                         v2xVeh++;
                     }
-                    _this.moveCar(cardata); 
+                    _this.moveCar(cardata);
                     if (_this.mainCarVID == cardata.vehicleId) {
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata
@@ -476,7 +435,6 @@ class ProcessCarTrack {
                 }
             });
             let urlImg = '../../static/map3d/images/4g.png'; 
-            
             if (d.source.length > 0) { //判断类型车
                 if(d.source.length==1)
                 { 
