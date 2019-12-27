@@ -26,6 +26,47 @@ class ProcessCarTrack {
         this.ispoleToCar = true;//是否连接感知杆
         this.removeObj={};
     }
+
+    //路口视角  平台车
+    onCarMessage(data, flag) {
+        // console.log('----------')
+        // console.log(data.time);
+        // this.cacheTrackCarData=data;
+        this.thisMessage(flag, data);
+    }
+    //接受数据
+    thisMessage(isCar, data) {
+        let data2 = data.result.data;
+        if (isCar == 0) {
+            for (let n = 0; n < data2.length; n++) {
+                let pcar = data2[n];
+                if (pcar.heading < 0) {
+                    // 不处理小于0的的数据
+                    continue;
+                }
+                // if (pcar.vehicleId == "B21E0003")
+                //缓存数据
+                this.cacheAndInterpolatePlatformCar(pcar, data);
+            }
+        }
+        else {
+            for (let n = 0; n < data2.length; n++) {
+                let pcar = data2[n];
+                if (pcar.heading < 0) {
+                    // 不处理小于0的的数据
+                    continue;
+                }
+                //缓存数据
+                this.cacheAndInterpolatePlatformCar(pcar, null);
+            }
+            let datamain = data.result.selfVehInfo;
+            if (datamain != null) {
+                this.mainCarVID = datamain.vehicleId;
+                this.cacheAndInterpolatePlatformCar(datamain, null);
+            }
+        }
+    }
+
     //接收数据
     receiveData(json, time, mainCarId) {
         let data = json.result.data;
@@ -201,17 +242,29 @@ class ProcessCarTrack {
                     if(cardata.devType==2){
                         v2xVeh++;
                     }
-                    _this.moveCar(cardata);
+                    _this.moveCar(cardata); 
                     if (_this.mainCarVID == cardata.vehicleId) {
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata
                         _this.moveTo(cardata);
                         //主车
                     }
-                    else {
-                        if (cardata.devType == 2) {
-                            _this.poleToCar(cardata);
+                    else { 
+                        if(cardata.source.length>0)
+                        {
+                            let isV2X=false;//是否有v2x车 OBU
+                            for(let i=0;i<cardata.source.length;i++)
+                            {
+                                if(cardata.source[i].toUpperCase().search("V2X"))
+                                {
+                                    isV2X=true;
+                                }
+                            } 
+                            if (isV2X) {
+                                _this.poleToCar(cardata);
+                            }
                         }
+                        
                     }
                 }else{
                     //消失机制
@@ -394,14 +447,24 @@ class ProcessCarTrack {
                 url = '../../static/map3d/model/carMian.glb';
             }
 
-            if (d.devType == 2)//obu车
+            if(d.source.length>0)
             {
-                if (d.plateNo == "非注册") {
-                    url = '../../static/map3d/model/car_near_Black.glb';
+                let isV2X=false;//是否有v2x车 OBU
+                for(let i=0;i<d.source.length;i++)
+                {
+                    if(d.source[i].toUpperCase().search("V2X"))
+                    {
+                        isV2X=true;
+                    }
+                } 
+                if (isV2X) {
+                    if (d.plateNo == "非注册") {
+                        url = '../../static/map3d/model/car_near_Black.glb';
+                    }
+                    //增加光环
+                    this.addEllipse(vid, position);
                 }
-                //增加光环
-                this.addEllipse(vid, position);
-            }
+            }  
 
             this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
                 id: vid + "car",
@@ -435,6 +498,7 @@ class ProcessCarTrack {
                 }
             });
             let urlImg = '../../static/map3d/images/4g.png'; 
+            
             if (d.source.length > 0) { //判断类型车
                 if(d.source.length==1)
                 { 
@@ -452,7 +516,6 @@ class ProcessCarTrack {
                 {
                     urlImg = '../../static/map3d/images/4gv2x.png'; 
                 }
-               
             }
             var entity = this.viewer.entities.add({
                 id: vid + "billboard",
@@ -501,14 +564,24 @@ class ProcessCarTrack {
                 billboard.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2);
             }
 
-            if (d.devType == 2)//obu车
+            if(d.source.length>0)
             {
-                //修改光环大小
+                let isV2X=false;//是否有v2x车 OBU
+                for(let i=0;i<d.source.length;i++)
+                {
+                    if(d.source[i].toUpperCase().search("V2X"))
+                    {
+                        isV2X=true;
+                    }
+                } 
+                if (isV2X) {
+                    //修改光环大小
                 this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
                 this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
                 this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
                 this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-            }
+                }
+            } 
 
         }
     }
