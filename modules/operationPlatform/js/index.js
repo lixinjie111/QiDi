@@ -29,6 +29,7 @@ function initMap3D(){
       gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
     }
 }
+
 function addEvent(){
     addEventListener('message', e => {
         // e.data为父页面发送的数据
@@ -63,7 +64,6 @@ function addEvent(){
           );
         }
     })
-
 }
 
 function initPerSocket(e) {
@@ -74,6 +74,8 @@ function initPerSocket(e) {
         polygon:e.data.currentExtent
     }
   }
+ 
+ 
   if(perWebsocket){
     perWebsocket.webSocket.close();
     perWebsocket = null;

@@ -202,12 +202,16 @@ class ProcessCarTrack {
                         v2xVeh++;
                     }
                     _this.moveCar(cardata);
-                    _this.poleToCar(cardata);
                     if (_this.mainCarVID == cardata.vehicleId) {
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata
                         _this.moveTo(cardata);
                         //主车
+                    }
+                    else {
+                        if (cardata.devType == 2) {
+                            _this.poleToCar(cardata);
+                        }
                     }
                 }else{
                     //消失机制
@@ -434,10 +438,10 @@ class ProcessCarTrack {
             if (d.source.length > 0) { //判断类型车
                 if(d.source.length==1)
                 { 
-                    if (d.source[0] == "4G") {
+                    if (d.source[0].toUpperCase()== "4G") {
                         urlImg = '../../static/map3d/images/4g.png';
                     }
-                    else if (d.source[0] == "V2X") {
+                    else if (d.source[0].toUpperCase() == "V2X") {
                         urlImg = '../../static/map3d/images/v2x.png';
                     }
                     else {

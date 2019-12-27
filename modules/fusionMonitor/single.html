@@ -15,9 +15,9 @@
   <link rel="stylesheet" type="text/css" href="../../static/css/public.css" />
   <link rel="stylesheet" type="text/css" href="../../static/map3d/css/widgets.css" />
   <link rel="stylesheet" type="text/css" href="./css/style.css" />
-  <script>
-    document.write('<script src="../../static/config/config.js?v=' + new Date().getTime() + '"><\/script>');
-  </script>
+
+  <script src="../../static/config/config.js"></script>
+  
   <style>
     .c-box {
       height: 180px;
@@ -184,6 +184,11 @@
       <span><em class="travel-heading">--</em><i>°</i></span>
       <span><em class="travel-year">--</em><i class="travel-time">--</i></span>
     </div>
+
+    <script>
+      document.write('<script src="https://webapi.amap.com/maps?v=1.4.14&key=' + window.mapOption.key + '&plugin=AMap.Geocoder"><\/script>');
+    </script>
+
     <script src="../../static/map3d/libs/Cesium.js"></script>
     <script src="../../static/map3d/utils/GIS/GisData.js"></script>
     <script src="../../static/map3d/utils/GIS/GisUtils.js"></script>
@@ -191,22 +196,16 @@
     <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
     <script src="../../static/map3d/utils/GIS3D.js"></script>
     
-    <!-- <script src="../../static/map3d/utils/PerceptionCars.js"></script>
+    <script src="../../static/map3d/utils/PerceptionCars.js"></script>
     <script src="../../static/map3d/utils/ProcessCarTrack.js"></script>
-    <script src="../../static/map3d/utils/ProcessData.js"></script> -->
+    <script src="../../static/map3d/utils/ProcessData.js"></script>
 
     <script src="../../static/js/jquery.min.js"></script>
     <script src="../../static/js/public.js"></script>
     <script src="../../static/js/date.js"></script>
     <script src="../../static/js/coordConvert.js"></script>
-    <script src="../../static/js/webSocket.js?1"></script>
-    <!-- <script src="./js/single.js"></script> -->
-    <script>
-      document.write('<script src="https://webapi.amap.com/maps?v=1.4.14&key=' + window.mapOption.key + '&plugin=AMap.Geocoder"><\/script>');
-      document.write('<script src="../../static/map3d/utils/PerceptionCars.js?v=' + new Date().getTime() + '"><\/script>');
-      document.write('<script src="../../static/map3d/utils/ProcessCarTrack.js?v=' + new Date().getTime() + '"><\/script>');
-      document.write('<script src="../../static/map3d/utils/ProcessData.js?v=' + new Date().getTime() + '"><\/script>');
-      document.write('<script src="./js/single.js?v=' + new Date().getTime() + '"><\/script>');
-    </script>
+    <script src="../../static/js/webSocket.js"></script>
+    <script src="./js/single.js"></script>
+    
 </body>
 </html>

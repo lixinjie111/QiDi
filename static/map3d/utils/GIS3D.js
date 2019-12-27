@@ -36,7 +36,8 @@ class GIS3D {
             imageryProvider: new Cesium.SingleTileImageryProvider({
                 url: '../../static/map3d/images/back.png'//透明图片
             }),
-            shouldAnimate: true
+            shouldAnimate: true,
+            selectionIndicator:false
         });
         this.cesium.viewer.scene.globe.depthTestAgainstTerrain = false;
         // this.cesium.viewer.scene.postProcessStages.fxaa.enabled = true;
@@ -288,23 +289,20 @@ class GIS3D {
         });
     }
     //绘制面
-    addPolygon(hierarchy, z) {
-        // new Cesium.ImageMaterialProperty({
-        //     image:'../../static/images/3.png',
-        //     color: Cesium.Color.fromCssColorString('#fff').withAlpha(0.8),
-        //     repeat : new Cesium.Cartesian2(4,4)
-        // })
-        this.cesium.viewer.entities.add({
-            id: "p1",
-            polygon: {
-                hierarchy: Cesium.Cartesian3.fromDegreesArrayHeights(hierarchy),
-                extrudedHeight: z,
-                perPositionHeight: true,
-                material: Cesium.Color.fromCssColorString('#71446b').withAlpha(0.8),
-                outline: false
-            }
-        });
-    }
+       //绘制面
+        addPolygon(hierarchy) {
+            this.cesium.viewer.entities.add({
+                polygon: {
+                    hierarchy: Cesium.Cartesian3.fromDegreesArray(hierarchy),
+                    height: 0.03, 
+                    material: Cesium.Color.fromCssColorString('#6d596e').withAlpha(1),
+                    closetop: false,
+                    closeBottom:false,
+                    outline: false
+                     
+                }
+            });
+        }
     /**
      * 增加车辆
      * @param {数据} d 

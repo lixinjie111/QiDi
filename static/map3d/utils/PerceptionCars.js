@@ -1,4 +1,4 @@
- 
+
 class PerceptionCars {
   constructor() {
     this.defualtZ = window.defualtZ;
@@ -519,8 +519,15 @@ class PerceptionCars {
     carmodel.show = true;
     carmodel.id = d.vehicleId + name;
     //判断如果等或者大于360度，设置红色
+    //判断如果等或者大于360度，设置红色
     if (d.heading >= 360) {
       carmodel.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
+    }
+    else {
+      //清除第一次 出现360数据，第二次颜色问题
+      if (carmodel.color.green == 0) {
+        carmodel.color = new Cesium.Color(1, 1, 1, 1);
+      }
     }
     let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
     Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carmodel.modelMatrix)

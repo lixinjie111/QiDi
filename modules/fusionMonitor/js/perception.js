@@ -9,7 +9,7 @@ let urlConfig = {
     // 获取标识牌和红绿灯信息 "type": "signs,spats,lampPole"
     // typeRoadData: window.config.url+"ehb/road/typeRoadData",
     // 获取摄像头感知区域
-    findRSBindDevList: window.config.url+"openApi/v2x/device/findRSBindDevList"
+    findRSBindDevList: window.config.operateUrl+"openApi/v2x/device/findRSBindDevList"
 };
 
 /** 参数管理 **/
@@ -65,8 +65,6 @@ $(function() {
     }else {
         console.log("不是顶层窗口");
     }
-    //获取感知区域
-    findRSBindDevList();
     // 接受数据
     getMessage();
     // 初始化3D地图
@@ -115,26 +113,14 @@ function findRSBindDevList() {
         url: urlConfig.findRSBindDevList,
         data: _params,
         success: function(res) {
-            let data = res.data;
-            let sensingArea = [];
-            let startArea = [];
-            let area = "";
+            let data = res.data; 
+            let reg = /\;/g;
             data.forEach(item=>{
-                if(item.sensingArea!=''){
-                    let area = item.sensingArea.split(";");
-                    if(startArea.length<=0){
-                        startArea=area[0];
-                    }
-                    sensingArea.push.apply(sensingArea,area);
+                if(item.sensingArea){
+                    let area = JSON.parse('['+item.sensingArea.replace(reg, ",")+']');
+                    gis3d.addPolygon(area);
                  }
             });
-            if(startArea){
-                sensingArea.forEach(item=>{
-                    area=area+item+",";
-                })
-                area = area+startArea;
-            }
-            GisData.addPolygon(area,0.1);
         },
         error: function(err) {
             console.log("获取设备感知区域失败",err);
@@ -240,6 +226,10 @@ function init3DMap() {
 
     perceptionCars.viewer = gis3d.cesium.viewer;
     platCars.viewer = gis3d.cesium.viewer;
+
+
+    //获取感知区域
+    findRSBindDevList();
 }
 function initWebsocketData() {
     //初始化车辆步长以及平台车阀域范围
