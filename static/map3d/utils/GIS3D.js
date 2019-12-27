@@ -292,9 +292,10 @@ class GIS3D {
         this.cesium.viewer.entities.add({
             polygon: {
                 hierarchy: Cesium.Cartesian3.fromDegreesArray(hierarchy),
-                extrudedHeight: 0.08, 
+                extrudedHeight: 0.03, 
                 material: Cesium.Color.fromCssColorString('#71446b').withAlpha(1),
-                closetop: false
+                closetop: false,
+                closeBottom:false
             }
         });
     }
