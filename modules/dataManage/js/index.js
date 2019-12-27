@@ -1,5 +1,6 @@
 let gis3d=new GIS3D();
 let perceptionCars = new PerceptionCars();
+let firstUpDateCam = true;
 
 /** 调用 **/
 $(function() {
