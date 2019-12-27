@@ -10,11 +10,8 @@ let postData = false;
 let removeTimer = {};
 /** 调用 **/
 $(function() {
-    initMap3D();
-
-    addEvent();
-  
-
+  initMap3D();
+  addEvent();
 });
 
 function initMap3D(){
@@ -26,11 +23,13 @@ function initMap3D(){
     GisData.initServer(gis3d.cesium.viewer);
     //初始化模型数据--树
     GisData.initThreeData(gis3d.cesium.viewer);
+
+    if(top.location == self.location){
+      let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+      gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+    }
 }
-
-
 function addEvent(){
-
     addEventListener('message', e => {
         // e.data为父页面发送的数据
        let eventData = e.data
@@ -75,8 +74,6 @@ function initPerSocket(e) {
         polygon:e.data.currentExtent
     }
   }
- 
- 
   if(perWebsocket){
     perWebsocket.webSocket.close();
     perWebsocket = null;
@@ -84,10 +81,7 @@ function initPerSocket(e) {
   // else{
     perWebsocket = new WebSocketObj(window.config.socketUrl, perception, onPerMessage);
   // }
- 
-
 }
-
 
 function onPerMessage(event) {
   let data = JSON.parse(event.data)
