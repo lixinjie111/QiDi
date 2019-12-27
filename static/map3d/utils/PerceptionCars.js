@@ -1,4 +1,4 @@
- 
+
 class PerceptionCars {
   constructor() {
     this.defualtZ = window.defualtZ;
@@ -31,9 +31,9 @@ class PerceptionCars {
   receiveData(sideList) {
     sideList.forEach(item => {
       // if(item.devId=='RCU_2046A10433DB_3100000000132000002801'){
-      if(!item.$ref){
+      if (!item.$ref) {
         if (!this.devObj[item.devId]) {
-            this.devObj[item.devId] = new Array();
+          this.devObj[item.devId] = new Array();
         }
         this.devObj[item.devId].push(item);
       }
@@ -104,39 +104,39 @@ class PerceptionCars {
     }
   }
   processPerTrack(time, delayTime) {
-        let devList = [];
-        let list = [];
-        let drawObj = {};
-        // console.log("-----------");
-        for (let devId in this.cacheAndInterpolateDataByDevId) {
-            let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
-            if (devCacheData && devCacheData.cacheData.length > 0) {
-                let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
-                if (!devData){
-                    // console.log("没有找到相应的值")
-                    return;
-                }
-                /*if (this.drawnObj[devId] != '' && devData.batchId == this.drawnObj[devId]) {
-                  // console.log("重复绘制的点"+devId+"  ,"+DateFormat.formatTime(devData.batchId,'hh:mm:ss'))
-                  return;
-                }*/
-                // this.drawnObj[devId] = devData.batchId;
-                drawObj[devId] = devData;
-                let fusionList = devData.data;
-                if(fusionList&&fusionList.length) {
-                    list.push.apply(list,fusionList);
-                }
-                devList.push(devData);
-            }
+    let devList = [];
+    let list = [];
+    let drawObj = {};
+    // console.log("-----------");
+    for (let devId in this.cacheAndInterpolateDataByDevId) {
+      let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
+      if (devCacheData && devCacheData.cacheData.length > 0) {
+        let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
+        if (!devData) {
+          // console.log("没有找到相应的值")
+          return;
         }
-        //如果本次没找见 则清除所有的模型
-        if(!Object.keys(drawObj).length) {
-            this.clearAllModel();
+        /*if (this.drawnObj[devId] != '' && devData.batchId == this.drawnObj[devId]) {
+          // console.log("重复绘制的点"+devId+"  ,"+DateFormat.formatTime(devData.batchId,'hh:mm:ss'))
+          return;
+        }*/
+        // this.drawnObj[devId] = devData.batchId;
+        drawObj[devId] = devData;
+        let fusionList = devData.data;
+        if (fusionList && fusionList.length) {
+          list.push.apply(list, fusionList);
         }
-        this.processPerceptionMesage(list);
-        // console.log("**************")
-        return devList;
+        devList.push(devData);
+      }
     }
+    //如果本次没找见 则清除所有的模型
+    if (!Object.keys(drawObj).length) {
+      this.clearAllModel();
+    }
+    this.processPerceptionMesage(list);
+    // console.log("**************")
+    return devList;
+  }
   getMinValue(devId, time, delayTime, cacheData) {
     /* let minDiff = Math.abs(time-minData.gpsTime-delayTime);*/
     let rangeData = null;
@@ -528,8 +528,15 @@ class PerceptionCars {
     carmodel.show = true;
     carmodel.id = d.vehicleId + name;
     //判断如果等或者大于360度，设置红色
+    //判断如果等或者大于360度，设置红色
     if (d.heading >= 360) {
       carmodel.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
+    }
+    else {
+      //清除第一次 出现360数据，第二次颜色问题
+      if (carmodel.color.green == 0) {
+        carmodel.color = new Cesium.Color(1, 1, 1, 1);
+      }
     }
     let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
     Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carmodel.modelMatrix)
