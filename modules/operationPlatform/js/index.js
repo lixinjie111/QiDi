@@ -47,6 +47,10 @@ function addEvent(){
           let {x, y, z, radius, pitch, yaw} = eventData.data;
           gis3d.zoomModule(x, y, z, radius, pitch, yaw);     
         }
+        if(eventData.type == "getCamData"){
+          let camData = gis3d.getCamera();
+          parent.postMessage(camData,"*");
+        }
         
         if(eventData.type == "position"){
           initPerSocket(eventData);
