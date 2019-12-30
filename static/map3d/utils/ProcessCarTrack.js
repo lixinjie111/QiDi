@@ -461,7 +461,6 @@ class ProcessCarTrack {
                     }
                 } 
                 if (isV2X) {
-                    debugger 
                     //增加光环
                     this.addEllipse(vid, position);
                 }
@@ -501,7 +500,6 @@ class ProcessCarTrack {
             let urlImg = '../../static/map3d/images/4g.png'; 
             
             if (d.source.length > 0) { //判断类型车
-                debugger
                 if(d.source.length==1)
                 { 
                     if (d.source[0].toUpperCase().trim()== "4G") {
