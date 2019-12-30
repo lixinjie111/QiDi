@@ -38,7 +38,7 @@ let spatWebsocket = null;
 let warningWebsocket = null;
 let cancelWarningWebsocket = null;
 
-let pulseInterval = 20;
+let pulseInterval = 40;
 let processDataTime = '';
 let pulseNowTime = '';
 let pulseCount = 0;
@@ -268,8 +268,8 @@ function distanceMapEnd(point,heading){
     distanceMap.setFitView();
 }
 function init3DMap() {
-    gis3d.initload("cesiumContainer", false);
-    
+    gis3d.initload("cesiumContainer", true);
+
     // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
     // gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
 
