@@ -207,8 +207,11 @@ function getMessage() {
 }
 function init3DMap() {
     gis3d.initload("cesiumContainer", false);
-    let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-    gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+
+    if(top.location == self.location){  
+        let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+        gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+    }
 
     //初始化地图--道路数据
     GisData.initRoadDate(gis3d.cesium.viewer);
