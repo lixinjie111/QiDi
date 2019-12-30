@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!--代表禁止浏览器从本地计算机的缓存中访问页面内容-->
+  <!--<meta http-equiv="pragram" content="no-cache">
+  &lt;!&ndash;请求和响应不缓存&ndash;&gt;
+  <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">-->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+  <!--IE / Edge 自动给数字加下划线的问题-->
+  <meta name="format-detection" content="telephone=no,email=no,address=no">
+  <title>融合--路口--单步执行</title>
+
+  <link rel="stylesheet" type="text/css" href="../../static/css/public.css" />
+  <link rel="stylesheet" type="text/css" href="../../static/map3d/css/widgets.css" />
+  <link rel="stylesheet" type="text/css" href="./css/style.css" />
+
+  <script src="../../static/config/config.js"></script>
+  
+  <style>
+    .c-fusion-left {width: auto; min-width: 270px;}
+    .c-box {color: #ccc;}
+    .m-sub-ul {padding: 10px; line-height: 28px; font-size: 14px;}
+    .m-sub-li {position: relative;padding-left: 22px;}
+    .m-sub-li:before {content: ''; position: absolute; left: 0; top: 50%; margin-top: -7px; width: 14px; height: 14px; border-radius: 50%; overflow: hidden; background-color: #4eaf6b;}
+  </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    <div class="c-pulse-time">
+      <div class="c-loading-wrap">
+          <span class="c-loading-icon one"></span>
+          <span class="c-loading-icon two"></span>
+          <span class="c-loading-icon three"></span>
+          <span class="c-loading-icon four"></span>
+          <span class="c-loading-icon five"></span>
+          <span class="c-loading-icon six"></span>
+      </div>
+      <div class="m-time1"></div>
+      <div class="m-time2"></div>
+      <div class="m-time3"></div>
+    </div>
+    <div class="c-fusion-side c-fusion-left">
+      <div class="c-scroll-wrap">
+        <ul class="c-scroll-inner m-ul">
+          <li class="m-li">
+            <div class="c-title">标题</div>
+            <ul class="c-box m-sub-ul">
+              <li class="m-sub-li">1</li>
+              <li class="m-sub-li">2</li>
+              <li class="m-sub-li">3</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="../../static/map3d/libs/Cesium.js"></script>
+    <script src="../../static/map3d/utils/GIS/GisData.js"></script>
+    <script src="../../static/map3d/utils/GIS/GisUtils.js"></script>
+    <script src="../../static/map3d/utils/GIS/light3D.js"></script>
+    <script src="../../static/map3d/utils/GIS/initLight3D.js"></script>
+    <script src="../../static/map3d/utils/GIS3D.js"></script>
+    
+
+    <script src="../../static/js/jquery.min.js"></script>
+    <script src="../../static/js/public.js"></script>
+    <script src="../../static/js/date.js"></script>
+    <script src="../../static/js/webSocket.js"></script>
+
+    <script src="./js/PerceptionCars.js"></script>
+    <script src="./js/perceptionTest.js"></script>
+    
+</body>
+</html>
