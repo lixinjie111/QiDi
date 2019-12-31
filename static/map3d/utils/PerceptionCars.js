@@ -8,10 +8,7 @@ class PerceptionCars {
       this.yaw = 0,
       this.roll = Math.PI * (10 / 90);
     this.deviceModels = { cars: {}, persons: [], texts: [] };
-    this.cachePerceptionQueue = new Array(); //缓存感知数据
-    this.lastPerceptionMessage = null;
     this.viewer = null;
-    this.processPerceptionDataIntervalId = null;
     this.devObj = {};
     this.pulseInterval = '';//阈值范围
     this.perMaxValue = '';

@@ -25,6 +25,7 @@ class ProcessCarTrack {
         this.sideList = [];//存储发射信号
         this.ispoleToCar = true;//是否连接感知杆
         this.removeObj={};
+        // this.i=0;
     }
 
     //路口视角  平台车
@@ -211,7 +212,6 @@ class ProcessCarTrack {
         }
     }
     processPlatformCarsTrack(time,delayTime) {
-        // console.log("-------")
         let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
@@ -245,7 +245,77 @@ class ProcessCarTrack {
                     _this.moveCar(cardata); 
                     if (_this.mainCarVID == cardata.vehicleId) {
                         // mainCar= cardata;
-                        platCar['mainCar'] = cardata
+                        platCar['mainCar'] = cardata;
+                        _this.moveTo(cardata);
+                        //主车
+                    }else {
+                        if (cardata.devType == 2) {
+                            _this.poleToCar(cardata);
+                        }
+                    }
+                }else{
+                    //消失机制
+                    this.removeObj[vid]++;
+                    //超过3s没有缓存数就让消失
+                    if(this.removeObj>75){
+                        this.removeModelPrimitives(vid);
+                        delete this.removeObj[vid];
+                        delete this.cacheAndInterpolateDataByVid[vid];
+                        delete this.platObj[vid];
+                    }
+                }
+            }
+        }
+        vehData.platVeh = platVeh;
+        vehData.v2xVeh = v2xVeh;
+        platCar['vehData'] = vehData;
+        return platCar;
+    }
+    processPlatformCarsTrack1(time,delayTime,isStart) {
+        let _this=this;
+        let platVeh = 0;
+        let v2xVeh = 0;
+        let vehData = {};
+
+        let platCar = {
+            'mainCar':{},
+            'vehData':new Object(),
+            'carData':new Object()
+        };
+        for (var vid in _this.cacheAndInterpolateDataByVid) {
+            let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
+            // console.log(carCacheData.nowReceiveData.gpsTime)
+            if (carCacheData) {
+                //缓存数据
+                let cacheData = carCacheData.cacheData;
+                if (cacheData.length > 0) {
+                    this.removeObj[vid]=0;
+                    let cardata = _this.getMinValue(vid, time, delayTime);
+                    if (!cardata) {
+                        return;
+                    }
+                    //等于主车
+                    // if(_this.mainCarVID == vid){
+                    /*if(isStart=='start'){
+                        _this.addModel(cardata);
+
+                    }
+                    if(isStart=='end'){
+                        _this.moveTo1(cardata);
+                        return;
+                    }*/
+                    platCar.carData[vid]=cardata;
+                    // console.log(cardata)
+                    if(cardata.devType==1){
+                        platVeh++;
+                    }
+                    if(cardata.devType==2){
+                        v2xVeh++;
+                    }
+                    _this.moveCar(cardata);
+                    if (_this.mainCarVID == cardata.vehicleId) {
+                        // mainCar= cardata;
+                        platCar['mainCar'] = cardata;
                         _this.moveTo(cardata);
                         //主车
                     }
@@ -266,6 +336,7 @@ class ProcessCarTrack {
                         }
                         
                     }
+                    // }
                 }else{
                     //消失机制
                     this.removeObj[vid]++;
@@ -702,6 +773,52 @@ class ProcessCarTrack {
             orientation: hpr
         });
     }
+
+    //添加模型车并改变单车视角
+    /*moveTo1(d) {
+        var heading = Cesium.Math.toRadians(d.heading);
+        var pitch = Cesium.Math.toRadians(-30);// -0.2469132859032279;
+        var roll = 0.0;
+        var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+
+        this.viewer.camera.setView({
+            destination: Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2.5),
+            orientation: hpr
+        });
+    }
+
+    addModel(car){
+        if(this.i>100){
+            this.i=0;
+        }
+        this.i++;
+        console.log(this.i,car.heading)
+        let position = Cesium.Cartesian3.fromDegrees(car.longitude, car.latitude, 0.2);
+        let entityLabel = this.viewer.entities.add({
+            position: position,
+            point: {
+                color: Cesium.Color.RED,    //点位颜色
+                pixelSize: 10,              //像素点大小
+                // scaleByDistance: new Cesium.NearFarScalar(1,1, 2000, 1)
+            }
+        });
+        let position2 = Cesium.Cartesian3.fromDegrees(car.longitude, car.latitude, 0.5);
+         this.viewer.entities.add({
+            position: position2,
+            label: {
+                // fillColor: Cesium.Color.fromCssColorString('#2f2f2f'),
+                // backgroundColor: Cesium.Color.fromCssColorString('#F5F5DC').withAlpha(0.5),
+                // // text: car.longitude+","+car.latitude+","+car.heading+","+car.gpsTime,
+                // text: car.longitude+","+car.latitude+","+car.heading+","+car.gpsTime,
+                text: this.i+"",
+                font: '14px',
+                // showBackground: true,
+                // horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                // pixelOffset: new Cesium.Cartesian2(0.0, 0),
+                // scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
+            }
+        });
+    }*/
     removeModelPrimitives(item) {
         if (item.length > 0) {
             for (let j = 0; j < item.length; j++) {

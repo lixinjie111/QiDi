@@ -2,21 +2,16 @@ class ProcessData {
     constructor(){
         this.spatObj={};
         this.spatPulseInterval='';//阈值范围
-        this.routePulseInterval='';
         this.canPulseInterval='';
         this.warnPulseInterval='';
-        this.cancelPulseInterval='';
 
         this.spatMaxValue = '';
-        this.routeMaxValue = '';
         this.canMaxValue='';
         this.warnMaxValue='';
-        this.cancelMaxValue='';
-        this.routeList=[];
         this.canList=[];
         this.dynamicWarning={};
         this.staticWarning={};
-        this.cancelWarning=[];
+        this.cancelWarning={};
     }
 
     receiveLightData(data){
@@ -236,7 +231,8 @@ class ProcessData {
             let currentTime = time-delayTime;
             let diff = currentTime - cacheData.timestamp;
             // console.log(DateFormat.formatTime(currentTime,'hh:mm:ss:ms'),DateFormat.formatTime(cacheData.timestamp,'hh:mm:ss:ms'),diff);
-            if(cacheData.timestamp<currentTime){
+           // console.log(cacheData.timestamp,currentTime)
+            if(cacheData.timestamp<=currentTime){
                 rangeData.push(cacheData);
                 delete this.staticWarning[warnId];
             }
