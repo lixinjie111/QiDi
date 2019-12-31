@@ -14,7 +14,7 @@ let urlConfig = {
 
 /** 参数管理 **/
 let crossId = getQueryVariable("crossId");
-let delayTime = parseFloat(getQueryVariable("delayTime")).toFixed(3)*1000;
+let delayTime = parseFloat(getQueryVariable( "delayTime")).toFixed(3)*1000;
 let extend = parseFloat(getQueryVariable("extend"));
 let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
@@ -514,7 +514,7 @@ function initWarningWebSocket() {
     let _params = {
         "action":"cloud_event",
         "body":{
-            "region":currentExtent,
+            "region":window.currentExtent,
         },
         "type":1
     };
@@ -565,7 +565,7 @@ function initSpatWebSocket() {
     let _params = {
         "action":"spat",
         "data":{
-            "polygon":currentExtent
+            "polygon":window.currentExtent
         },
         "type":2
     };
