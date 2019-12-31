@@ -533,7 +533,11 @@ class ProcessCarTrack {
                 } 
                 if (isV2X) {
                     //增加光环
-                    this.addEllipse(vid, position);
+                    this.addEllipse(vid, position,'#f4f422');
+                }
+                else
+                {
+                    this.addEllipse(vid, position,'#A9A9A9');
                 }
             }  
 
@@ -645,7 +649,7 @@ class ProcessCarTrack {
                         isV2X=true;
                     }
                 } 
-                if (isV2X) {
+            
                  //修改光环大小 
                     if (this.viewer.entities.getById(vid + "ellipse1")) {
                         this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
@@ -659,13 +663,13 @@ class ProcessCarTrack {
                     if (this.viewer.entities.getById(vid + "ellipse4")) {
                         this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
                     }
-                }
+              
             } 
 
         }
     }
-    //添加光环
-    addEllipse(vid, position) {
+     //添加光环
+    addEllipse(vid, position,color) {
         //光环
         var r1 = 0, r2 = 2.5, r3 = 5, r4 = 7.5;
         function changeR1() { //这是callback，参数不能内传
@@ -708,7 +712,7 @@ class ProcessCarTrack {
                 semiMajorAxis: new Cesium.CallbackProperty(changeR1, false),
                 height: this.defualtZ + 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
-                outlineColor: Cesium.Color.fromCssColorString('#f4f422').withAlpha(1),
+                outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
                 fill: false
             }
@@ -724,7 +728,7 @@ class ProcessCarTrack {
                 semiMajorAxis: new Cesium.CallbackProperty(changeR2, false),
                 height: this.defualtZ + 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
-                outlineColor: Cesium.Color.fromCssColorString('#f4f422').withAlpha(1),
+                outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
                 fill: false
             }
@@ -740,7 +744,7 @@ class ProcessCarTrack {
                 semiMajorAxis: new Cesium.CallbackProperty(changeR3, false),
                 height: this.defualtZ + 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
-                outlineColor: Cesium.Color.fromCssColorString('#f4f422').withAlpha(1),
+                outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
                 fill: false
             }
@@ -755,7 +759,7 @@ class ProcessCarTrack {
                 semiMajorAxis: new Cesium.CallbackProperty(changeR4, false),
                 height: this.defualtZ + 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
-                outlineColor: Cesium.Color.fromCssColorString('#f4f422').withAlpha(1),
+                outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
                 fill: false
             }
