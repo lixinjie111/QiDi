@@ -20,6 +20,7 @@ let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
 
 let currentExtent = getExtend(longitude,latitude,extend);
+let perExtent = getExtend(longitude,latitude,window.extend);
 let center=[longitude ,latitude];
 let camParam = window.defaultMapParam;
 
@@ -472,7 +473,7 @@ function initPlatformWebSocket() {
     let _params = {
         "action": "vehicle",
         "body": {
-            "polygon": window.currentExtent
+            "polygon": perExtent
         },
         "type": 3
     };
@@ -504,7 +505,7 @@ function initWarningWebSocket() {
     let _params = {
         "action":"cloud_event",
         "body":{
-            "region":window.currentExtent,
+            "region":perExtent,
         },
         "type":1
     };
@@ -555,7 +556,7 @@ function initSpatWebSocket() {
     let _params = {
         "action":"spat",
         "data":{
-            "polygon":window.currentExtent
+            "polygon":perExtent
         },
         "type":2
     };
@@ -619,18 +620,6 @@ function processPerData(data){
         }
         parent.postMessage(_camData,"*");
     }
-}
-function getExtend(x,y,r){
-    let currentExtent=[];
-    let x0=x+r;
-    let y0=y+r;
-    let x1=x-r;
-    let y1=y-r;
-    currentExtent.push([x1, y0]);
-    currentExtent.push([x0, y0]);
-    currentExtent.push([x0, y1]);
-    currentExtent.push([x1, y1]);
-    return currentExtent;
 }
 function processWarn(data){
     let warnId = data.warnId;

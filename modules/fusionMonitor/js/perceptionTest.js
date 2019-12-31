@@ -37,8 +37,6 @@ let perceptionWebsocket = null;
 $(function() {
     // 初始化3D地图
     init3DMap();
-    // 接受数据
-    getMessage();
     // 初始化动态数据
     initPerceptionWebSocket();
     // 上下键绑定事件
@@ -72,32 +70,6 @@ function findRSBindDevList() {
             console.log("获取设备感知区域失败",err);
         }
     })
-}
-function getMessage() {
-    window.addEventListener('message', e => {
-        // e.data为父页面发送的数据
-        let eventData = e.data;
-        if(eventData.type == 'updateSideList') {
-            if(eventData.data) {
-                GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer);
-            }else {
-                // 获取路侧点位置
-                getDevDis();
-            }
-        }
-        if(eventData.type == 'updateCam') {
-            if(eventData.data) {
-                camParam = eventData.data;
-            }
-            let {x, y, z, radius, pitch, yaw} = camParam;
-            // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
-        }
-        if(eventData.type == 'updatePosition') {
-            let _currentExtent = getExtend(longitude,latitude,0.001);
-            gis3d.updatePosition(_currentExtent[3][0],_currentExtent[3][1],_currentExtent[1][0],_currentExtent[1][1]);
-        }
-    });
 }
 function init3DMap() {
     gis3d.initload("cesiumContainer", false);
@@ -198,16 +170,4 @@ function onPerceptionMessage(message) {
     }else {
         perceptionWebsocket&&perceptionWebsocket.webSocket.close();
     }
-}
-function getExtend(x,y,r){
-    let currentExtent=[];
-    let x0=x+r;
-    let y0=y+r;
-    let x1=x-r;
-    let y1=y-r;
-    currentExtent.push([x1, y0]);
-    currentExtent.push([x0, y0]);
-    currentExtent.push([x0, y1]);
-    currentExtent.push([x1, y1]);
-    return currentExtent;
 }

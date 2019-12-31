@@ -466,7 +466,7 @@ function onPulseMessage(message){
             //如果是主车 计算主车与告警事件之间的距离
             if(mainCar){
                 //静态事件  查找框内的事件 staticExist  存储静态事件
-                let currentExtend = getExtend(mainCar.longitude,mainCar.latitude,0.005);
+                let currentExtend = getExtendCut(mainCar.longitude,mainCar.latitude,0.005);
                 if(staticExist.length>0){
                     staticExist.forEach((item,index)=>{
                         if(item.longitude<currentExtend[1][0]&&item.latitude<currentExtend[1][1]&&item.longitude>currentExtend[3][0]&&item.latitude>currentExtend[3][1]){
@@ -759,18 +759,6 @@ function computeDistance(mainCar,warningItem){
     s = s *6378.137 ;// EARTH_RADIUS;
     s = parseInt(Math.round(s * 10000) / 10);
     return s;
-}
-function getExtend(x,y,r){
-    let currentExtent=[];
-    let x0=x+r;
-    let y0=y+r;
-    let x1=x-r;
-    let y1=y-r;
-    currentExtent.push([x1, y0]);
-    currentExtent.push([x0, y0]);
-    currentExtent.push([x0, y1/2]);
-    currentExtent.push([x1, y1/2]);
-    return currentExtent;
 }
 function processWarn(data,distance){
     let warnId = data.warnId;
