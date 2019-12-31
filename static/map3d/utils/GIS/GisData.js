@@ -175,9 +175,9 @@ var GisData = {
                 //window.alert(error);
             });
         }
-
+        for (let i = 1; i < 5; i++) {
         //道路外边框
-        let dlbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlwbk.geojson', {
+        let dlbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlwbk0'+i+'.geojson', {
             stroke: Cesium.Color.fromCssColorString('#516b03').withAlpha(0.996),// Cesium.Color.ALICEBLUE.withAlpha(0.996),
             strokeWidth: 2,
             // markerSymbol: '?',
@@ -193,6 +193,7 @@ var GisData = {
             //Display any errrors encountered while loading.
             //window.alert(error);
         });
+    }
         //   dlbk.then(function(dataSource) {  
         //     var entities = dataSource.entities.values;  
         //     for (var i = 0; i < entities.length; i++) { 
