@@ -101,27 +101,31 @@ var GisData = {
             show: false
         }));
         //道路 长虚线
-        let dcdx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlcxx.geojson', {
-            stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1) 
-            strokeWidth: 1,
-            // markerSymbol: '?',
-            show: false
-        }));
-        dcdx.then(function (dataSource) {
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-
-                var entity = entities[i];
-                entity.polyline.material = new Cesium.PolylineDashMaterialProperty({
-                    color: Cesium.Color.ALICEBLUE.withAlpha(0.996),
-                    dashLength: 10.0
-                });
-                entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 3000);
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            //window.alert(error);
-        });
+        for(let i=1;i<5;i++)
+        {
+            let dcdx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlcxx0'+i+'.geojson', {
+                stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1) 
+                strokeWidth: 1,
+                // markerSymbol: '?',
+                show: false
+            }));
+            dcdx.then(function (dataSource) {
+                var entities = dataSource.entities.values;
+                for (var i = 0; i < entities.length; i++) {
+    
+                    var entity = entities[i];
+                    entity.polyline.material = new Cesium.PolylineDashMaterialProperty({
+                        color: Cesium.Color.ALICEBLUE.withAlpha(0.996),
+                        dashLength: 10.0
+                    });
+                    entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 3000);
+                }
+            }).otherwise(function (error) {
+                //Display any errrors encountered while loading.
+                //window.alert(error);
+            });
+        }
+        
 
         //道路短虚线
         let dcxx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dldxx.geojson', {
