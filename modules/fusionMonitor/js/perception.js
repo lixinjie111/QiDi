@@ -56,6 +56,8 @@ let removeWarning = [];
 
 /** 调用 **/
 $(function() {
+    // 初始化3D地图
+    init3DMap();
     if(top.location == self.location){
         console.log("是顶层窗口");
         // 获取路侧点位置
@@ -65,11 +67,8 @@ $(function() {
     }else {
         console.log("不是顶层窗口");
     }
-     // 初始化3D地图
-     init3DMap();
     // 接受数据
     getMessage();
-   
     // 初始化动态数据
     initWebsocketData();
     // 脉冲实时接口
@@ -198,7 +197,7 @@ function getMessage() {
             }
             let {x, y, z, radius, pitch, yaw} = camParam;
             // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw, eventData.animationZ);
         }
         if(eventData.type == 'updatePosition') {
             let _currentExtent = getExtend(longitude,latitude,0.001);

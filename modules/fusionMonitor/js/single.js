@@ -74,6 +74,10 @@ let isStart = false;
 
 /** 调用 **/
 $(function() {
+    // 初始化高德地图
+    initMap();  
+    // 初始化3D地图
+    init3DMap(); 
     if(top.location == self.location){  
         // console.log("是顶层窗口");
         // 获取路侧点位置
@@ -87,10 +91,6 @@ $(function() {
     getMessage();
     // 获取车辆基本信息
     getVehicleBaseData(); 
-    // 初始化高德地图
-    initMap();  
-    // 初始化3D地图
-    init3DMap(); 
     // 初始化动态数据
     initWebsocketData();
     // 脉冲实时接口
