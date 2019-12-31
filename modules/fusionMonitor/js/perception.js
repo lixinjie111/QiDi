@@ -14,7 +14,7 @@ let urlConfig = {
 
 /** 参数管理 **/
 let crossId = getQueryVariable("crossId");
-let delayTime = parseFloat(getQueryVariable( "delayTime")).toFixed(3)*1000;
+let delayTime = parseFloat(getQueryVariable("delayTime")).toFixed(3)*1000;
 let extend = parseFloat(getQueryVariable("extend"));
 let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
@@ -48,11 +48,6 @@ let perCacheCount = 0;
 let warningCacheCount = 0;
 let staticCacheCount = 0;
 
-//统一循环数量
-let warning = 0;
-let spat = 0;
-let per = 0;
-
 let warningData = {};
 let warningCount = 0;//要进行距离计算
 let lastLightObj = {};//要进行距离计算
@@ -62,18 +57,19 @@ let removeWarning = [];
 /** 调用 **/
 $(function() {
     if(top.location == self.location){
-        // console.log("是顶层窗口");
+        console.log("是顶层窗口");
         // 获取路侧点位置
         getDevDis();
         // 获取标识牌和红绿灯信息
         typeRoadData();
     }else {
-        // console.log("不是顶层窗口");
+        console.log("不是顶层窗口");
     }
+     // 初始化3D地图
+     init3DMap();
     // 接受数据
     getMessage();
-    // 初始化3D地图
-    init3DMap();
+   
     // 初始化动态数据
     initWebsocketData();
     // 脉冲实时接口
@@ -211,13 +207,7 @@ function getMessage() {
     });
 }
 function init3DMap() {
-    gis3d.initload("cesiumContainer", false);
-
-    if(top.location == self.location){  
-        let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-        gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
-    }
-
+    gis3d.initload("cesiumContainer", false);  
     //初始化地图--道路数据
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
@@ -235,6 +225,10 @@ function init3DMap() {
     perceptionCars.viewer = gis3d.cesium.viewer;
     platCars.viewer = gis3d.cesium.viewer;
 
+    if(top.location == self.location){  
+        let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+        gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+    }
 
     //获取感知区域
     findRSBindDevList();
@@ -245,21 +239,21 @@ function initWebsocketData() {
     platCars.pulseInterval = pulseInterval*0.8;//设置阀域范围 脉冲时间的100%
     platCars.platMaxValue = pulseInterval*1.5;
 
-    let perPulse = 80;
-    perceptionCars.stepTime = perPulse;
-    perceptionCars.pulseInterval = perPulse*0.8;
-    perceptionCars.perMaxValue = perPulse*1.5;
-    per = 80/pulseInterval;    //默认2
+    perceptionCars.stepTime = pulseInterval*2;
+    perceptionCars.pulseInterval = parseInt(pulseInterval)*2*0.8;
+    perceptionCars.perMaxValue = pulseInterval*2*1.5;
 
-    let spatPulse = 400;
-    processData.spatPulseInterval = spatPulse*0.8;
+    let spatPulse = pulseInterval*10;
+    processData.pulseInterval = spatPulse*0.8;
     processData.spatMaxValue =  spatPulse*1.5;
-    spat = 400/pulseInterval;  //默认10
 
-    let warnPulse = 400;
+    let warnPulse = pulseInterval*10;
     processData.warnPulseInterval = warnPulse*0.8;
     processData.warnMaxValue = warnPulse*1.5;
-    warning = 400/pulseInterval;  //默认10
+
+    let cancelPulse = pulseInterval;
+    processData.cancelPulseInterval = cancelPulse*0.8;
+    processData.cancelMaxValue = cancelPulse*1.5;
 }
 /** websocket **/
 function initPulseWebSocket() {
@@ -335,14 +329,12 @@ function onPulseMessage(message){
         }
     }
     //缓存的时间
-    let pulseNum = delayTime/40;
-    if(pulseCount>pulseNum) {
-
+    let pulseNum = delayTime*2/40;
+    if(pulseCount>=pulseNum) {
 
         //当平台车开始插值时，调用其他接口
         // processDataTime = result.timestamp-delayTime;
-        let processTime = result.timestamp-delayTime;
-        processDataTime = TDate.formatTime(processTime,'yy-mm-dd hh:mm:ss:ms');
+        processDataTime = TDate.formatTime(result.timestamp-delayTime,'yy-mm-dd hh:mm:ss:ms');
         document.querySelector('.c-pulse-time').innerHTML = processDataTime;
         //平台车
         if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
@@ -358,22 +350,22 @@ function onPulseMessage(message){
         }
 
         //取消告警
-        if(Object.keys(processData.cancelWarning).length>0){
+        if(processData.cancelWarning.length>0){
             let cancelData = [];
             //查找现有告警是否有取消告警
-            for(let warnId in processData.cancelWarning){
-                // console.log(processData.cancelWarning[warnId],processTime)
-                if(warningData[warnId]&&processData.cancelWarning[warnId].time<=processTime){
+            processData.cancelWarning.forEach(warnId=>{
+                //如果有告警 则进行删除
+                if(warningData[warnId]){
                     cancelData.push(warnId);
                 }
-            }
+            })
             if(cancelData.length>0){
                 processCancelWarn(cancelData);
             }
         }
 
         //每隔80ms一次
-        if(spatPulseCount==0||spatPulseCount>spat){
+        if(spatPulseCount==0||spatPulseCount>=10){
             spatPulseCount=1;
             if(Object.keys(processData.spatObj).length>0){
                 let data = processData.processSpatData(result.timestamp,delayTime);
@@ -386,7 +378,7 @@ function onPulseMessage(message){
 
     }
 
-    if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>per){
+    if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>=2){
         perPulseCount=1;
         if(Object.keys(perceptionCars.devObj).length>0){
             let perList = perceptionCars.processPerTrack(result.timestamp,delayTime);
@@ -406,7 +398,7 @@ function onPulseMessage(message){
                                     persons++;
                                 }
 
-                                if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
+                                if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7) {
                                     pernum++;
                                 }
 
@@ -432,7 +424,7 @@ function onPulseMessage(message){
     perPulseCount++
 
     //执行动态告警
-    if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>warning)){
+    if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>=10)){
         warningPulseCount=1;
         if(Object.keys(processData.dynamicWarning).length>0){
             for(let warnId in processData.dynamicWarning){
@@ -453,7 +445,7 @@ function onPulseMessage(message){
     warningPulseCount++;
 
     //执行静态告警
-    if(staticCacheCount>pulseNum&&(staticPulseCount==0||staticPulseCount>warning)){
+    if(staticCacheCount>pulseNum&&(staticPulseCount==0||staticPulseCount>=10)){
         staticPulseCount=1;
         //静态事件的处理
         if(Object.keys(processData.staticWarning).length>0){
@@ -595,13 +587,9 @@ function onCancelWarningMessage(message) {
         "type":2
     }
     let cancelWarningMsg = JSON.stringify(cancelWarning);
-    let obj = {
-        warnId:warnId,
-        time:json.time
-    }
     cancelWarningWebsocket.sendMsg(cancelWarningMsg);
-    if(!processData.cancelWarning[warnId]){
-        processData.cancelWarning[warnId]=obj;
+    if(processData.cancelWarning.indexOf(warnId)==-1){
+        processData.cancelWarning.push(warnId);
     }
 }
 function processPerData(data){
@@ -650,7 +638,7 @@ function processWarn(data){
     if(warnId){
         //如果告警第一次画
         if(!warningData[warnId]){
-            console.log("新增告警事件：",warnId,data.warnMsg);
+            console.log("新增告警事件："+warnId);
             warningCount++;
             warningData[warnId] = {
                 warnId: warnId,
@@ -681,7 +669,7 @@ function processCancelWarn(data){
             parent.postMessage(_camData,"*");
 
             delete warningData[warnId];
-            console.log("移除事件：",warnId)
+            console.log("移除事件："+warnId)
             gis3d.remove3DInforLabel(warnId);
             removeWarning.push(warnId);
             delete processData.cancelWarning[warnId];
