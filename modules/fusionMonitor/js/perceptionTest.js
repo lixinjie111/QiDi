@@ -79,7 +79,6 @@ function getMessage() {
         let eventData = e.data;
         if(eventData.type == 'updateSideList') {
             if(eventData.data) {
-                platCars.sideList = eventData.data;
                 GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer);
             }else {
                 // 获取路侧点位置
