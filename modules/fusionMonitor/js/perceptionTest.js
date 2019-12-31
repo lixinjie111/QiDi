@@ -35,10 +35,10 @@ let perceptionWebsocket = null;
 
 /** 调用 **/
 $(function() {
-    // 接受数据
-    getMessage();
     // 初始化3D地图
     init3DMap();
+    // 接受数据
+    getMessage();
     // 初始化动态数据
     initPerceptionWebSocket();
     // 上下键绑定事件
