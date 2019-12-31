@@ -3,7 +3,6 @@ let gis3d=new GIS3D();
 let perceptionCars = new PerceptionCars();
 let perceptionWebsocket = {};
 let perWebsocket = null;
-let firstUpDateCam = true;
 let perListArr = [];
 let perListObj = {};
 let postData = false;
@@ -36,9 +35,8 @@ function addEvent(){
        let eventData = e.data
         if(eventData.type == "updateCam"){
           let {x, y, z, radius, pitch, yaw} = eventData.data;
-          if(firstUpDateCam){
+          if(eventData.animationZ){
             gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
-            firstUpDateCam = false;
           }else{
             gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw,5);
           }   
