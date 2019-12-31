@@ -222,6 +222,7 @@ class ProcessCarTrack {
             'vehData':new Object(),
             'carData':new Object()
         };
+
         for (var vid in _this.cacheAndInterpolateDataByVid) {
             let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
             // console.log(carCacheData.nowReceiveData.gpsTime)
@@ -243,7 +244,7 @@ class ProcessCarTrack {
                         v2xVeh++;
                     }
                     _this.moveCar(cardata); 
-                    if (_this.mainCarVID == cardata.vehicleId) {
+                    if (_this.mainCarVID == cardata.vehicleId){
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata;
                         _this.moveTo(cardata);
@@ -341,7 +342,8 @@ class ProcessCarTrack {
                     //消失机制
                     this.removeObj[vid]++;
                     //超过3s没有缓存数就让消失
-                    if(this.removeObj>75){
+                    if(this.removeObj[vid]>75){
+                        console.log("平台车辆消失：",vid)
                         this.removeModelPrimitives(vid);
                         delete this.removeObj[vid];
                         delete this.cacheAndInterpolateDataByVid[vid];
@@ -823,17 +825,15 @@ class ProcessCarTrack {
             }
         });
     }*/
-    removeModelPrimitives(item) {
-        if (item.length > 0) {
-            for (let j = 0; j < item.length; j++) {
-                var primitives = this.viewer.scene.primitives;
-                for (var i = 0; i < primitives.length; i++) {
-                    var primitive = primitives.get(i);
-                    if (primitive.id) {
-                        if (primitive instanceof Cesium.Model && primitive.id.search(item[j]) != -1) {
-                            this.viewer.scene.primitives.remove(primitive);
-                        }
-                    }
+    //删除单车
+    removeModelPrimitives(vehicleId) {
+        let carId = vehicleId + "car";
+        var primitives = this.viewer.scene.primitives;
+        for (var i = 0; i < primitives.length; i++) {
+            var primitive = primitives.get(i);
+            if (primitive.id) {
+                if (primitive instanceof Cesium.Model  && primitive.id==carId) {
+                    this.viewer.scene.primitives.remove(primitive);
                 }
             }
         }
