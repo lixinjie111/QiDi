@@ -222,6 +222,7 @@ class ProcessCarTrack {
             'vehData':new Object(),
             'carData':new Object()
         };
+
         for (var vid in _this.cacheAndInterpolateDataByVid) {
             let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
             // console.log(carCacheData.nowReceiveData.gpsTime)
@@ -243,7 +244,7 @@ class ProcessCarTrack {
                         v2xVeh++;
                     }
                     _this.moveCar(cardata); 
-                    if (_this.mainCarVID == cardata.vehicleId) {
+                    if (_this.mainCarVID == cardata.vehicleId){
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata;
                         _this.moveTo(cardata);
