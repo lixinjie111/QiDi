@@ -460,7 +460,6 @@ function onPulseMessage(message){
             for(let warnId in processData.staticWarning){
                 let staticData = processData.processStaticData(result.timestamp,delayTime);
                 if(staticData&&staticData.length>0){
-                    console.log("length:"+staticData.length)
                     //静态事件
                     staticData.forEach(item=>{
                         processWarn(item);
