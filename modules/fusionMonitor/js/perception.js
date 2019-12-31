@@ -62,13 +62,13 @@ let removeWarning = [];
 /** 调用 **/
 $(function() {
     if(top.location == self.location){
-        console.log("是顶层窗口");
+        // console.log("是顶层窗口");
         // 获取路侧点位置
         getDevDis();
         // 获取标识牌和红绿灯信息
         typeRoadData();
     }else {
-        console.log("不是顶层窗口");
+        // console.log("不是顶层窗口");
     }
     // 接受数据
     getMessage();

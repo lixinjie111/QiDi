@@ -35,11 +35,6 @@ let perceptionWebsocket = null;
 
 /** 调用 **/
 $(function() {
-    if(top.location == self.location){
-        console.log("是顶层窗口");
-    }else {
-        console.log("不是顶层窗口");
-    }
     // 接受数据
     getMessage();
     // 初始化3D地图
@@ -84,7 +79,6 @@ function getMessage() {
         let eventData = e.data;
         if(eventData.type == 'updateSideList') {
             if(eventData.data) {
-                platCars.sideList = eventData.data;
                 GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer);
             }else {
                 // 获取路侧点位置
@@ -97,7 +91,7 @@ function getMessage() {
             }
             let {x, y, z, radius, pitch, yaw} = camParam;
             // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw, 5);
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
         }
         if(eventData.type == 'updatePosition') {
             let _currentExtent = getExtend(longitude,latitude,0.001);
@@ -137,46 +131,45 @@ function initBindHandle() {
             if(e && e.keyCode==40){ //下
                 console.log("向下");
                 drawCount++;
-                document.querySelector('.m-time3').innerHTML = TDate.formatTime(startGpsTime+(runTime*drawCount),'yy-mm-dd hh:mm:ss:ms');
-                if(Object.keys(perceptionCars.devObj).length>0){
-                    perceptionCars.processPerTrack(startGpsTime+(drawCount*runTime));
-                    for(let attr in perceptionCars.drawObj) {
-                        if(perceptionCars.drawObj[attr].length) {
-                            drawObj.attr = {
-                                data: perceptionCars.drawObj[attr],
-                                gpsTime: perceptionCars.drawObj[attr][0].gpsTime,
-                                updateTime: perceptionCars.drawObj[attr][0].updateTime
-                            };
-                        }
-                    }
-                }
+                drawCarObj();
             }
             if(e && e.keyCode==38){ // 上
                 console.log("向上");
                 if(drawCount>0) {
                     drawCount--;
-                    document.querySelector('.m-time3').innerHTML = TDate.formatTime(startGpsTime+(runTime*drawCount),'yy-mm-dd hh:mm:ss:ms');
-                    if(Object.keys(perceptionCars.devObj).length>0){
-                        perceptionCars.processPerTrack(startGpsTime+(drawCount*runTime));
-                        for(let attr in perceptionCars.drawObj) {
-                            if(perceptionCars.drawObj[attr].length) {
-                                drawObj.attr = {
-                                    data: perceptionCars.drawObj[attr],
-                                    gpsTime: perceptionCars.drawObj[attr][0].gpsTime,
-                                    updateTime: perceptionCars.drawObj[attr][0].updateTime
-                                };
-                            }
-                        }
-                    }
+                    drawCarObj();
                 }
             }
         }
     });
 }
-function countTime() {
-    document.querySelector('.m-time1').innerHTML = processDataTime;
-    document.querySelector('.m-time2').innerHTML = processDataTime;
-    document.querySelector('.m-time3').innerHTML = processDataTime;
+function drawCarObj() {
+    // console.log('第'+drawCount+'组数据');
+    let _time = startGpsTime+(runTime*drawCount);
+    document.querySelector('.m-time3').innerHTML = TDate.formatTime(_time,'yy-mm-dd hh:mm:ss:ms');
+    if(Object.keys(perceptionCars.devObj).length>0){
+        perceptionCars.processPerTrack(startGpsTime+(drawCount*runTime));
+        let _str = '';
+        for(let attr in perceptionCars.drawObj) {
+            if(perceptionCars.drawObj[attr].length) {
+                drawObj[attr] = {
+                    data: perceptionCars.drawObj[attr],
+                    gpsTime: perceptionCars.drawObj[attr][0].gpsTime,
+                    updateTime: perceptionCars.drawObj[attr][0].updateTime
+                };
+                _str += '<li class="m-li">'+
+                            '<div class="c-title">'+attr+'</div>'+
+                            '<ul class="c-box m-sub-ul">';
+                let _strLi = '';
+                perceptionCars.drawObj[attr].forEach(item => {
+                    _strLi += '<li class="m-sub-li">'+item.vehicleId+', '+item.longitude.toFixed(9)+', '+item.latitude.toFixed(9)+', '+item.speed.toFixed(1)+'km/h, '+item.heading.toFixed(1)+'°, '+TDate.formatTime(item.gpsTime, "hh:mm:ss:ms")+', '+TDate.formatTime(item.updateTime, "hh:mm:ss:ms")+', '+(item.updateTime-item.gpsTime)+', '+(_time-item.gpsTime)+'</li>';
+                });
+                _str += _strLi+'</ul><li>';
+            }
+        }
+        document.querySelector('.m-ul').innerHTML = _str;
+        console.log(drawObj);
+    }
 } 
 function initPerceptionWebSocket() {
     let _params = {
