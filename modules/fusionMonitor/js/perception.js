@@ -197,7 +197,7 @@ function getMessage() {
             }
             let {x, y, z, radius, pitch, yaw} = camParam;
             // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw, eventData.animationZ);
         }
         if(eventData.type == 'updatePosition') {
             let _currentExtent = getExtend(longitude,latitude,0.001);
