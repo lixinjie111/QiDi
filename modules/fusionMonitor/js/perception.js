@@ -7,7 +7,7 @@ let urlConfig = {
     // 获取路侧点位置
     getDevDis: window.config.url+"lc/baseStat/getDevDis",
     // 获取标识牌和红绿灯信息 "type": "signs,spats,lampPole"
-    // typeRoadData: window.config.url+"ehb/road/typeRoadData",
+    typeRoadData: window.config.url+"ehb/road/typeRoadData",
     // 获取摄像头感知区域
     findRSBindDevList: window.config.operateUrl+"openApi/v2x/device/findRSBindDevList"
 };
@@ -66,7 +66,7 @@ $(function() {
         // 获取路侧点位置
         getDevDis();
         // 获取标识牌和红绿灯信息
-        // typeRoadData();
+        typeRoadData();
     }else {
         console.log("不是顶层窗口");
     }
@@ -132,38 +132,38 @@ function findRSBindDevList() {
         }
     })
 }
-// function typeRoadData() {
-//     let _params = JSON.stringify({
-//             "polygon":window.currentExtent,
-//             "type": "lampPole,spats"
-//         });
-//     $.ajax({
-//         type: "POST",
-//         dataType: "json",
-//         cache:false,
-//         contentType: 'application/json;charset=UTF-8',
-//         url: urlConfig.typeRoadData,
-//         data: _params,
-//         success: function(res) {
-//             // console.log("获取标识牌和红绿灯信息成功",res);
-//             let _data = res.data;
-//             if(_data.lampPole && _data.lampPole.length) {
-//                 //设置--红路灯杆
-//                 // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
-//             }
-//             if(_data.spats && _data.spats.length) {
-//                 //设置--红绿灯
-//                 // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
-//             }
-//             // if(_data.signs && _data.signs.length) {
-//             //     //设置--标识牌
-//             // }
-//         },
-//         error: function(err) {
-//             console.log("获取标识牌和红绿灯信息失败",err);
-//         }
-//     })
-// }
+function typeRoadData() {
+    let _params = JSON.stringify({
+            "polygon":window.currentExtent,
+            "type": "lampPole,spats"
+        });
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        cache:false,
+        contentType: 'application/json;charset=UTF-8',
+        url: urlConfig.typeRoadData,
+        data: _params,
+        success: function(res) {
+            // console.log("获取标识牌和红绿灯信息成功",res);
+            let _data = res.data;
+            if(_data.lampPole && _data.lampPole.length) {
+                //设置--红路灯杆
+                // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
+            }
+            if(_data.spats && _data.spats.length) {
+                //设置--红绿灯
+                // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
+            }
+            // if(_data.signs && _data.signs.length) {
+            //     //设置--标识牌
+            // }
+        },
+        error: function(err) {
+            console.log("获取标识牌和红绿灯信息失败",err);
+        }
+    })
+}
 function getMessage() {
     window.addEventListener('message', e => {
         // e.data为父页面发送的数据
@@ -177,32 +177,32 @@ function getMessage() {
                 getDevDis();
             }
         }
-        // if(eventData.type == 'updateLampPoleList') {
-        //     if(eventData.data) {
-        //         let _data = eventData.data;
-        //         if(_data.lampPole && _data.lampPole.length) {
-        //             //设置--红路灯杆
-        //             // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
-        //         }
-        //         if(_data.spats && _data.spats.length) {
-        //             //设置--红绿灯
-        //             // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
-        //         }
-        //         // if(_data.signs && _data.signs.length) {
-        //         //     //设置--标识牌
-        //         // }
-        //     }else {
-        //         // 获取标识牌和红绿灯信息
-        //         typeRoadData();
-        //     }
-        // }
+        if(eventData.type == 'updateLampPoleList') {
+            if(eventData.data) {
+                let _data = eventData.data;
+                if(_data.lampPole && _data.lampPole.length) {
+                    //设置--红路灯杆
+                    // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
+                }
+                if(_data.spats && _data.spats.length) {
+                    //设置--红绿灯
+                    // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
+                }
+                // if(_data.signs && _data.signs.length) {
+                //     //设置--标识牌
+                // }
+            }else {
+                // 获取标识牌和红绿灯信息
+                typeRoadData();
+            }
+        }
         if(eventData.type == 'updateCam') {
             if(eventData.data) {
                 camParam = eventData.data;
             }
             let {x, y, z, radius, pitch, yaw} = camParam;
             // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw, 5);
+            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
         }
         if(eventData.type == 'updatePosition') {
             let _currentExtent = getExtend(longitude,latitude,0.001);
@@ -212,8 +212,11 @@ function getMessage() {
 }
 function init3DMap() {
     gis3d.initload("cesiumContainer", false);
-    let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-    gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+
+    if(top.location == self.location){  
+        let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+        gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw);
+    }
 
     //初始化地图--道路数据
     GisData.initRoadDate(gis3d.cesium.viewer);

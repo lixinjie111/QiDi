@@ -16,6 +16,11 @@ class PerceptionCars {
     this.stepTime = '';
     // this.drawnObj = {};
   }
+
+  //接受数据
+  addPerceptionData(data, miniLabel) {
+    this.processPerceptionMesage(data, miniLabel);
+  }
   receiveData(sideList) {
     sideList.forEach(item => {
       // if(item.devId=='RCU_2046A10433DB_3100000000132000002801'){
@@ -225,7 +230,7 @@ class PerceptionCars {
   }
   //************************************* */ 地图部分******************************
   //绘制感知车
-  processPerceptionMesage(fusionList, flag) {
+  processPerceptionMesage(fusionList, miniLabel=false) {
     let _this = this;
     try {
       // _this.processPerceptionDataIntervalId = setInterval(() => {
@@ -250,12 +255,12 @@ class PerceptionCars {
         }
         if (d.targetType == 0) {//人
           this.addMoveModel(true, d, "person");
-          this.addMoveLable(d, "personlabel", 3);
+          this.addMoveLable(d, "personlabel", 3,miniLabel);
         }
         else if (d.targetType == 1) //自行车
         {
           this.addMoveModel(true, d, "bicycle");
-          this.addMoveLable(d, "bicyclelabel", 3);
+          this.addMoveLable(d, "bicyclelabel", 3,miniLabel);
         }
         else if (d.targetType == 2) { //感知车
           // console.log(d.vehicleId)
@@ -263,24 +268,24 @@ class PerceptionCars {
           this.addMoveModel(false, d, "carbox");
           ///////////////////////////end 
           //移动标签
-          this.addMoveLable(d, "carboxlabel", 3);
+          this.addMoveLable(d, "carboxlabel", 3,miniLabel);
         }
         else if (d.targetType == 3) //摩托车
         {
           this.addMoveModel(false, d, "motorbike");
-          this.addMoveLable(d, "motorbikelabel", 3);
+          this.addMoveLable(d, "motorbikelabel", 3,miniLabel);
         }
         else if (d.targetType == 5) //公交车
         {
           this.addMoveModel(false, d, "bus");
           //移动标签
-          this.addMoveLable(d, "buslabel", 5);
+          this.addMoveLable(d, "buslabel", 5,miniLabel);
         }
         else if (d.targetType == 7) //卡车
         {
           this.addMoveModel(false, d, "truck");
           //移动标签
-          this.addMoveLable(d, "trucklabel", 5);
+          this.addMoveLable(d, "trucklabel", 5,miniLabel);
         }
 
       }
@@ -291,10 +296,10 @@ class PerceptionCars {
     // },0); //
   }
   //增加和移动标签
-  addMoveLable(d, name, h) {
+  addMoveLable(d, name, h,miniTable) {
     var carlabel = this.viewer.entities.getById(d.vehicleId + name);
     if (carlabel == null || carlabel == undefined) {
-      this.addModeCarLabel(d, 5, name);
+      this.addModeCarLabel(d, 5, name,miniTable);
     }
     else {
       this.moveModelLabel(carlabel, d, h);
@@ -531,7 +536,7 @@ class PerceptionCars {
 
   }
   //增加文字标签
-  addModeCarLabel(d, height, name) {
+  addModeCarLabel(d, height, name,miniTable) {
     var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + height);
     ///////////////增加文字
     let h = d.heading.toFixed(1);
@@ -539,6 +544,14 @@ class PerceptionCars {
     let veh = d.vehicleId.substr(0, 4);
     // let text = "[" + h + ", " + s + ", " + veh + "]";
     let text = "[" + veh + ", " + h + "°]";
+
+    let scaleLabel;
+    if(miniTable){
+      scaleLabel =  new Cesium.NearFarScalar(50, 1, 120, 0);
+    }else{
+      scaleLabel =  new Cesium.NearFarScalar(200, 1, 2000, 0)
+    }
+
     let entityLabel = this.viewer.entities.add({
       id: d.vehicleId + name,
       position: position,
@@ -556,7 +569,7 @@ class PerceptionCars {
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         pixelOffset: new Cesium.Cartesian2(0.0, 0),
         // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.5),
-        scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
+        scaleByDistance: scaleLabel
       }
     });
   }

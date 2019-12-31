@@ -19,122 +19,28 @@
   <script src="../../static/config/config.js"></script>
   
   <style>
-    .c-box {
-      height: 180px;
-      margin-bottom: 40px;
-    }
-    .vehicle-header {
-      padding: 9px 10px;
-      font-size: 16px;
-      line-height: 22px;
-    }
-    .vehicle-header .level {
-      float: left;
-      width: 24px;
-      height: 22px;
-      background: #0b5330;
-      border-radius: 2px;
-      letter-spacing: 2px;
-      padding-left: 2px;
-      text-align: center;
-      color: #fff;
-    }
-    .vehicle-num {
-      float: left;
-      color: #ddd9d1;
-      margin-left: 10px;
-    }
-    .arrow-wrap {
-      float: right;
-    }
-    .arrow-img {
-      display: inline-block;
-      vertical-align: top;
-      width: 22px;
-      height: 22px;
-      background-size: auto 18px;
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-image: url(./images/default-arrow.png);
-    }
-    .arrow-img.arrow-right {
-      transform: rotate(180deg);
-    }
-    .arrow-wrap.left .arrow-left {
-      background-image: url(./images/active-arrow.png);
-    }
-    .arrow-wrap.right .arrow-right {
-      background-image: url(./images/active-arrow.png);
-    }
-    .vehicle-img {
-      height: 110px;
-      margin: 0 auto;
-    }
-    .progress-wrap {
-      text-align: center;
-      margin-top: 10px;
-      line-height: 0;
-    }
-    .progress-line {
-      position: relative;
-      display: inline-block;
-      width: 80px;
-      height: 2px;
-      vertical-align: top;
-    }
-    .progress-bar {
-      position: absolute;
-      left: 0;
-      top: -50%;
-      margin-top: -6px;
-      width: 4px;
-      height: 16px;
-    }
-    .oil-line {
-      background-color: #23b318;
-    }
-    .brake-line {
-      background-color: #c73610;
-      margin-left: 30px;
-    }
-    .oil-line .progress-bar {
-      background-color: #23b318;
-    }
-    .brake-line .progress-bar {
-      background-color: #c73610;
-    }
-    .single-car {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-    }
-    .travel-detail {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 240px;
-      z-index: 1;
-      font-size: 20px;
-      line-height: 28px;
-      text-align: center;
-    }
-    .travel-detail span {
-      display: inline-block;
-      padding: 5px 10px;
-    }
-    .travel-detail em {
-      display: inline-block;
-      padding-right: 5px;
-      color: #fff;
-      vertical-align: middle;
-    }
-    .travel-detail i {
-      display: inline-block;
-      color: #37ba7b;
-      vertical-align: middle;
-    }
+    .c-box {height: 180px; margin-bottom: 40px; }
+    .vehicle-header {padding: 9px 10px; font-size: 16px; line-height: 22px; }
+    .vehicle-header .level {float: left; width: 24px; height: 22px; background: #0b5330; border-radius: 2px; letter-spacing: 2px; padding-left: 2px; text-align: center; color: #fff; }
+    .vehicle-num {float: left; color: #ddd9d1; margin-left: 10px; }
+    .arrow-wrap {float: right; }
+    .arrow-img {display: inline-block; vertical-align: top; width: 22px; height: 22px; background-size: auto 18px; background-repeat: no-repeat; background-position: center center; background-image: url(./images/default-arrow.png); }
+    .arrow-img.arrow-right {transform: rotate(180deg); }
+    .arrow-wrap.left .arrow-left {background-image: url(./images/active-arrow.png); }
+    .arrow-wrap.right .arrow-right {background-image: url(./images/active-arrow.png); }
+    .vehicle-img {height: 110px; margin: 0 auto; }
+    .progress-wrap {text-align: center; margin-top: 10px; line-height: 0; }
+    .progress-line {position: relative; display: inline-block; width: 80px; height: 2px; vertical-align: top; }
+    .progress-bar {position: absolute; left: 0; top: -50%; margin-top: -6px; width: 4px; height: 16px; }
+    .oil-line {background-color: #23b318; }
+    .brake-line {background-color: #c73610; margin-left: 30px; }
+    .oil-line .progress-bar {background-color: #23b318; }
+    .brake-line .progress-bar {background-color: #c73610; }
+    .single-car {position: absolute; left: 0; right: 0; bottom: 0; width: 100%; }
+    .travel-detail {position: absolute; left: 0; right: 0; bottom: 240px; z-index: 1; font-size: 20px; line-height: 28px; text-align: center; }
+    .travel-detail span {display: inline-block; padding: 5px 10px; }
+    .travel-detail em {display: inline-block; padding-right: 5px; color: #fff; vertical-align: middle; }
+    .travel-detail i {display: inline-block; color: #37ba7b; vertical-align: middle; }
   </style>
 </head>
 <body>

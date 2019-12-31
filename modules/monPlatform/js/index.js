@@ -8,6 +8,7 @@ let perListArr = [];
 let perListObj = {};
 let postData = false;
 let removeTimer = {};
+let mini;
 /** 调用 **/
 $(function() {
   initMap3D();
@@ -48,6 +49,7 @@ function addEvent(){
         }
         
         if(eventData.type == "position"){
+          mini = eventData.size ? eventData.size : false;
           initPerSocket(eventData);
           timer();
         }
@@ -110,7 +112,7 @@ function onPerMessage(event) {
           perListArr.push(val);   
         })
     }
-    perceptionCars.addPerceptionData(perListArr);
+    perceptionCars.addPerceptionData(perListArr,mini);
     // perListObj = {};
     perListArr = [];
     postData = false;
