@@ -17,25 +17,17 @@ var GisData = {
     },
     //地图矢量数据初始化
     initRoadDate(viewer) {
-        var promise = Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs.geojson');
-        promise.then(function (dataSource) {
-            viewer.dataSources.add(dataSource);
-            //Get the array of entities
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-                //For each entity, create a random color based on the state name.
-                //Some states have multiple entities, so we store the color in a
-                //hash so that we use the same color for the entire state.
-                var entity = entities[i];
-                //Set the polygon material to our random color.
-                entity.polygon.material = Cesium.Color.ALICEBLUE.withAlpha(1).withAlpha(0.996);
-                //Remove the outlines.
-                entity.polygon.outline = false;
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            // window.alert(error);
-        });
+        for(let i=1;i<3;i++)
+        {
+            viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs0'+i+'.geojson', {
+                fill: Cesium.Color.fromCssColorString('#F0F8FF').withAlpha(0.996),//.withAlpha(1)
+                stroke: Cesium.Color.fromCssColorString('#F0F8FF').withAlpha(0.996),// Cesium.Color.ORANGE, 
+                // markerSymbol: '?',
+                // zIndex: 1,
+                show: true
+            }));  
+        }
+      
 
         // //标识（箭头）
         // viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs.geojson', {
