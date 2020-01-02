@@ -249,10 +249,22 @@ class ProcessCarTrack {
                         platCar['mainCar'] = cardata;
                         _this.moveTo(cardata);
                         //主车
-                    }else {
-                        if (cardata.devType == 2) {
-                            _this.poleToCar(cardata);
+                    }else { 
+                        if(cardata.source.length>0)
+                        {
+                            let isV2X=false;//是否有v2x车 OBU
+                            for(let i=0;i<cardata.source.length;i++)
+                            {
+                                if(cardata.source[i].toUpperCase().trim()=="V2X")
+                                {
+                                    isV2X=true;
+                                }
+                            } 
+                            if (isV2X) {
+                                _this.poleToCar(cardata);
+                            }
                         }
+                        
                     }
                 }else{
                     //消失机制
@@ -641,16 +653,16 @@ class ProcessCarTrack {
                 billboard.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2);
             }
 
-            if(d.source.length>0)
-            {
-                let isV2X=false;//是否有v2x车 OBU
-                for(let i=0;i<d.source.length;i++)
-                {
-                    if(d.source[i].toUpperCase().trim()=="V2X")
-                    {
-                        isV2X=true;
-                    }
-                } 
+            // if(d.source.length>0)
+            // {
+            //     let isV2X=false;//是否有v2x车 OBU
+            //     for(let i=0;i<d.source.length;i++)
+            //     {
+            //         if(d.source[i].toUpperCase().trim()=="V2X")
+            //         {
+            //             isV2X=true;
+            //         }
+            //     } 
             
                  //修改光环大小 
                     if (this.viewer.entities.getById(vid + "ellipse1")) {
@@ -666,7 +678,7 @@ class ProcessCarTrack {
                         this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
                     }
               
-            } 
+            // } 
 
         }
     }
