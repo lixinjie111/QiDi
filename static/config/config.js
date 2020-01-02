@@ -11,6 +11,12 @@ window.config = {
     // url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
     // socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
     // dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
+ 
+    //测试环境 内网
+    // operateUrl: 'http://10.0.1.181:9090/operateApp/',    //运营平台
+    // url: 'http://10.0.1.183:9093/monPlatApp/', //监控平台
+    // socketUrl:'ws://10.0.1.182:49999/ws',  //影子系统
+    // dlWmsUrl: 'http://10.0.1.199:8080/', //迪路
 
     //上海正式环境  外网 
     operateUrl: 'http://116.236.72.204:49090/operateApp/', //运营平台
