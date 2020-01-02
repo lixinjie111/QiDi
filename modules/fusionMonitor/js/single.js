@@ -80,7 +80,6 @@ $(function() {
         // console.log("是顶层窗口");
         // 获取路侧点位置
         getDevDis();
-        // 获取标识牌和红绿灯信息
     }else {
         // console.log("不是顶层窗口");
     }
@@ -130,25 +129,6 @@ function getMessage() {
             }else {
                 // 获取路侧点位置
                 getDevDis();
-            }
-        }
-        if(eventData.type == 'updateLampPoleList') {
-            if(eventData.data) {
-                let _data = eventData.data;
-                if(_data.lampPole && _data.lampPole.length) {
-                    //设置--红路灯杆
-                    // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
-                }
-                if(_data.spats && _data.spats.length) {
-                    //设置--红绿灯
-                    // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
-                }
-                // if(_data.signs && _data.signs.length) {
-                //     //设置--标识牌
-                // }
-            }else {
-                // 获取标识牌和红绿灯信息
-                typeRoadData();
             }
         }
     });
