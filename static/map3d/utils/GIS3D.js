@@ -105,25 +105,26 @@ class GIS3D {
 
         // this.textCar();
     }
-    //路口显示范围
-    addRectangle(xmin, ymin, xmax, ymax) {
+    //路口显示范围 
+    addRectangle(id, extent, color = '#0000ff', opacity = 0.1) {   
         
         //路口显示范围
-        let rec = this.cesium.viewer.entities.getById("rectanglefw")
+        let rec = this.cesium.viewer.entities.getById(id)
         if (!rec) {
             this.cesium.viewer.entities.add({
-                id: "rectanglefw",
+                id: id,
                 rectangle: {
-                    coordinates: Cesium.Rectangle.fromDegrees(xmin, ymin, xmax, ymax),
-                    material: Cesium.Color.AZURE.withAlpha(0.1),
+                    coordinates: Cesium.Rectangle.fromDegrees(extent[3][0],extent[3][1],extent[1][0],extent[1][1]),
+                    material: Cesium.Color.AZURE.withAlpha(opacity),
                     outline: true,
                     height: 0,
-                    outlineColor: Cesium.Color.BLUE
+                    // outlineColor: Cesium.Color.BLUE
+                    outlineColor: Cesium.Color.fromCssColorString(color)
                 }
             });
         }
         else {
-            this.cesium.viewer.entities.getById("rectanglefw").rectangle.coordinates = Cesium.Rectangle.fromDegrees(xmin, ymin, xmax, ymax);
+            this.cesium.viewer.entities.getById(id).rectangle.coordinates = Cesium.Rectangle.fromDegrees(extent[3][0],extent[3][1],extent[1][0],extent[1][1]);
         }
 
     }
@@ -282,8 +283,8 @@ class GIS3D {
     } 
 
     //二三维切换
-    updatePosition(minx, miny, maxx, maxy) {
-        var rectangle = new Cesium.Rectangle.fromDegrees(minx, miny, maxx, maxy);
+    updatePosition(extend) {
+        var rectangle = new Cesium.Rectangle.fromDegrees(extend[3][0],extend[3][1],extend[1][0],extend[1][1]);
         this.cesium.viewer.camera.flyTo({
             destination: rectangle
         });

@@ -17,25 +17,17 @@ var GisData = {
     },
     //地图矢量数据初始化
     initRoadDate(viewer) {
-        var promise = Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs.geojson');
-        promise.then(function (dataSource) {
-            viewer.dataSources.add(dataSource);
-            //Get the array of entities
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-                //For each entity, create a random color based on the state name.
-                //Some states have multiple entities, so we store the color in a
-                //hash so that we use the same color for the entire state.
-                var entity = entities[i];
-                //Set the polygon material to our random color.
-                entity.polygon.material = Cesium.Color.ALICEBLUE.withAlpha(1).withAlpha(0.996);
-                //Remove the outlines.
-                entity.polygon.outline = false;
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            // window.alert(error);
-        });
+        for(let i=1;i<3;i++)
+        {
+            viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs0'+i+'.geojson', {
+                fill: Cesium.Color.fromCssColorString('#F0F8FF').withAlpha(0.996),//.withAlpha(1)
+                stroke: Cesium.Color.fromCssColorString('#F0F8FF').withAlpha(0.996),// Cesium.Color.ORANGE, 
+                // markerSymbol: '?',
+                // zIndex: 1,
+                show: true
+            }));  
+        }
+      
 
         // //标识（箭头）
         // viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/bs.geojson', {
@@ -101,27 +93,31 @@ var GisData = {
             show: false
         }));
         //道路 长虚线
-        let dcdx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlcxx.geojson', {
-            stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1) 
-            strokeWidth: 1,
-            // markerSymbol: '?',
-            show: false
-        }));
-        dcdx.then(function (dataSource) {
-            var entities = dataSource.entities.values;
-            for (var i = 0; i < entities.length; i++) {
-
-                var entity = entities[i];
-                entity.polyline.material = new Cesium.PolylineDashMaterialProperty({
-                    color: Cesium.Color.ALICEBLUE.withAlpha(0.996),
-                    dashLength: 10.0
-                });
-                entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 3000);
-            }
-        }).otherwise(function (error) {
-            //Display any errrors encountered while loading.
-            //window.alert(error);
-        });
+        for(let i=1;i<5;i++)
+        {
+            let dcdx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlcxx0'+i+'.geojson', {
+                stroke: Cesium.Color.ALICEBLUE.withAlpha(0.996),// Cesium.Color.ORANGE, new Cesium.Color(135,75,43,1) 
+                strokeWidth: 1,
+                // markerSymbol: '?',
+                show: false
+            }));
+            dcdx.then(function (dataSource) {
+                var entities = dataSource.entities.values;
+                for (var i = 0; i < entities.length; i++) {
+    
+                    var entity = entities[i];
+                    entity.polyline.material = new Cesium.PolylineDashMaterialProperty({
+                        color: Cesium.Color.ALICEBLUE.withAlpha(0.996),
+                        dashLength: 10.0
+                    });
+                    entity.polyline.distanceDisplayCondition = new Cesium.DistanceDisplayCondition(0, 3000);
+                }
+            }).otherwise(function (error) {
+                //Display any errrors encountered while loading.
+                //window.alert(error);
+            });
+        }
+        
 
         //道路短虚线
         let dcxx = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dldxx.geojson', {
@@ -171,9 +167,9 @@ var GisData = {
                 //window.alert(error);
             });
         }
-
+        for (let i = 1; i < 5; i++) {
         //道路外边框
-        let dlbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlwbk.geojson', {
+        let dlbk = viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/dlwbk0'+i+'.geojson', {
             stroke: Cesium.Color.fromCssColorString('#516b03').withAlpha(0.996),// Cesium.Color.ALICEBLUE.withAlpha(0.996),
             strokeWidth: 2,
             // markerSymbol: '?',
@@ -189,6 +185,7 @@ var GisData = {
             //Display any errrors encountered while loading.
             //window.alert(error);
         });
+    }
         //   dlbk.then(function(dataSource) {  
         //     var entities = dataSource.entities.values;  
         //     for (var i = 0; i < entities.length; i++) { 
