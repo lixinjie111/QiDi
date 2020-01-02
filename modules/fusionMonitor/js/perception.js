@@ -145,12 +145,8 @@ function typeRoadData() {
             let _data = res.data;
             if(_data.lampPole && _data.lampPole.length) {
                 //设置--红路灯杆
-                // GisData.initLightModel(gis3d.cesium.viewer, _data.lampPole);
+                // window.initLight3D.initlight(gis3d.cesium.viewer, _data.lampPole);
             }
-            // if(_data.spats && _data.spats.length) {
-            //     //设置--红绿灯
-            //     // initLight3D.initlight(gis3d.cesium.viewer, _data.spats);
-            // }
             // if(_data.signs && _data.signs.length) {
             //     //设置--标识牌
             // }
