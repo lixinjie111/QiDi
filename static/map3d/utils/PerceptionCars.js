@@ -121,11 +121,10 @@ class PerceptionCars {
             }
         }
         //如果本次没找见 则清除所有的模型
-       /* if(!drawObj&&!Object.keys(drawObj).length) {
+        if(!drawObj&&!Object.keys(drawObj).length) {
             this.clearAllModel();
-        }*/
+        }
         this.processPerceptionMesage(list);
-        // console.log("**************")
         return devList;
     }
   getMinValue(devId, time, delayTime, cacheData) {
