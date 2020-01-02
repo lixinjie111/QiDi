@@ -23,47 +23,47 @@ window.initLight3D = {
      */
     initlight(viewer,data) {
 
-        let lights = '{"status":200,"message":"","data":{"lampPole":[{"spats":[{"lightPos":"121.175515894658147,31.2816177384530469,17.2018751525999996","lightDirection":"2","phaseId":[9],"spatId":"275"},{"lightPos":"121.175512059249741,31.2816164091917877,17.3258747482000004","lightDirection":"1","relative":1,"phaseId":[10],"spatId":"276"}],"lampPoleId":11111,"type":"T","heading":132.32321,"lampPos":"121.175512059249741,31.2816164091917877,17.3258747482000004"}]}}';
+//         let lights = '{"status":200,"message":"","data":{"lampPole":[{"spats":[{"lightPos":"121.175515894658147,31.2816177384530469,17.2018751525999996","lightDirection":"2","phaseId":[9],"spatId":"275"},{"lightPos":"121.175512059249741,31.2816164091917877,17.3258747482000004","lightDirection":"1","relative":1,"phaseId":[10],"spatId":"276"}],"lampPoleId":11111,"type":"T","heading":132.32321,"lampPos":"121.175512059249741,31.2816164091917877,17.3258747482000004"}]}}';
 
-        debugger
-        let dataLight = JSON.parse(lights).data.lampPole;
-        for (let i = 0; i < dataLight.length; i++) {
-debugger
-     GisUtils.loadModelColl(viewer,dataLight[0].lampPos.split(',')[0], dataLight[0].lampPos.split(',')[1],dataLight[0].heading,'I_RB',true);
+//         debugger
+//         let dataLight = JSON.parse(lights).data.lampPole;
+//         for (let i = 0; i < dataLight.length; i++) {
+// debugger
+//      GisUtils.loadModelColl(viewer,dataLight[0].lampPos.split(',')[0], dataLight[0].lampPos.split(',')[1],dataLight[0].heading,'I_RB',true);
 
-            for (let j = 0; j < dataLight[i].spats.length; j++) {
-                if (dataLight[i].spats[j].relative) {
-                    let L = new light3D();
-                    let type = 0;
-                    if (type == "T") {
-                        type = 1;
-                    }
-                    let xyR = [], xyL = [];
-                    if (dataLight[i].spats[j].relative == 2) //右边红绿灯
-                    {
-                        if (xyR.length == 0) {
-                            xyR = L.addLight(viewer, "276", dataLight[0].lampPos.split(',')[0], dataLight[0].lampPos.split(',')[1], dataLight[0].heading, type);
-                        }
-                        else
-                        {
-                            xyR = L.addLight(viewer, "276", xyR[0], xyR[1], dataLight[0].heading, type);
-                        }
+//             for (let j = 0; j < dataLight[i].spats.length; j++) {
+//                 if (dataLight[i].spats[j].relative) {
+//                     let L = new light3D();
+//                     let type = 0;
+//                     if (type == "T") {
+//                         type = 1;
+//                     }
+//                     let xyR = [], xyL = [];
+//                     if (dataLight[i].spats[j].relative == 2) //右边红绿灯
+//                     {
+//                         if (xyR.length == 0) {
+//                             xyR = L.addLight(viewer, "276", dataLight[0].lampPos.split(',')[0], dataLight[0].lampPos.split(',')[1], dataLight[0].heading, type);
+//                         }
+//                         else
+//                         {
+//                             xyR = L.addLight(viewer, "276", xyR[0], xyR[1], dataLight[0].heading, type);
+//                         }
                        
-                    }
-                    else if (dataLight[i].spats[j].relative == 1) {
-                        if (xyL.length ==0) {
-                            xyL = L.addLight(viewer, "276", dataLight[0].lampPos.split(',')[0] , dataLight[0].lampPos.split(',')[1] , dataLight[0].heading, type);
-                        }
-                        else
-                        {
-                            xyL = L.addLight(viewer, "276", xyL[0], xyL[1], dataLight[0].heading, type);
-                        }
-                    }
-                    this.light3DList.push(L);
-                }
+//                     }
+//                     else if (dataLight[i].spats[j].relative == 1) {
+//                         if (xyL.length ==0) {
+//                             xyL = L.addLight(viewer, "276", dataLight[0].lampPos.split(',')[0] , dataLight[0].lampPos.split(',')[1] , dataLight[0].heading, type);
+//                         }
+//                         else
+//                         {
+//                             xyL = L.addLight(viewer, "276", xyL[0], xyL[1], dataLight[0].heading, type);
+//                         }
+//                     }
+//                     this.light3DList.push(L);
+//                 }
 
-            }
-        }
+//             }
+//         }
 
         // let l276 = new light3D();
         // l276.addLight(viewer, "276", 121.17551589465815, 31.281617738453047, 250, 0);
