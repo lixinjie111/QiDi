@@ -2,6 +2,34 @@
  * 三维公共方法类
  */
 window.GisUtils = {
+    /**
+     * 加载灯杆
+     */
+    loadModelColl(viewer,x,y,heading,name, isHeading) {
+        //添加路灯杆和信息牌 
+        // console.log(item) 
+            var entity = null;
+            //合并写法
+            var instances = [];
+                var position = Cesium.Cartesian3.fromDegrees(x, y, 0);
+                //  
+                var heading = Cesium.Math.toRadians(0);
+                //是否旋转
+                if (isHeading) {
+                    heading = Cesium.Math.toRadians(heading);
+                }
+                var pitch = Cesium.Math.toRadians(0);
+                var roll = 0;
+                var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+                instances.push({
+                    modelMatrix: modelMatrix
+                });
+            viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
+                url: '../../static/map3d/model/' + name + '.glb',
+                instances: instances
+            })); 
+    },
     //度数转换
     getRad(d) {
         var PI = Math.PI;
