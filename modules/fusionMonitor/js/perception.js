@@ -335,7 +335,8 @@ function onPulseMessage(message){
 
         //当平台车开始插值时，调用其他接口
         // processDataTime = result.timestamp-delayTime;
-        processDataTime = TDate.formatTime(result.timestamp-delayTime,'yy-mm-dd hh:mm:ss:ms');
+        let processTime = result.timestamp-delayTime;
+        processDataTime = TDate.formatTime(processTime,'yy-mm-dd hh:mm:ss:ms');
         document.querySelector('.c-pulse-time').innerHTML = processDataTime;
         //平台车
         if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
@@ -351,15 +352,15 @@ function onPulseMessage(message){
         }
 
         //取消告警
-        if(processData.cancelWarning.length>0){
+        if(Object.keys(processData.cancelWarning).length>0){
             let cancelData = [];
             //查找现有告警是否有取消告警
-            processData.cancelWarning.forEach(warnId=>{
-                //如果有告警 则进行删除
-                if(warningData[warnId]){
+            for(let warnId in processData.cancelWarning){
+                // console.log(processData.cancelWarning[warnId],processTime)
+                if(warningData[warnId]&&processData.cancelWarning[warnId].time<=processTime){
                     cancelData.push(warnId);
                 }
-            })
+            }
             if(cancelData.length>0){
                 processCancelWarn(cancelData);
             }
@@ -588,9 +589,13 @@ function onCancelWarningMessage(message) {
         "type":2
     }
     let cancelWarningMsg = JSON.stringify(cancelWarning);
+    let obj = {
+        warnId:warnId,
+        time:json.time
+    }
     cancelWarningWebsocket.sendMsg(cancelWarningMsg);
-    if(processData.cancelWarning.indexOf(warnId)==-1){
-        processData.cancelWarning.push(warnId);
+    if(!processData.cancelWarning[warnId]){
+        processData.cancelWarning[warnId]=obj;
     }
 }
 function processPerData(data){
