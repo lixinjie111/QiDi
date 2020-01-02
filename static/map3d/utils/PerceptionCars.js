@@ -59,9 +59,7 @@ class PerceptionCars {
       cdata.nowRecieveData = d;
       this.cacheAndInterpolateDataByDevId[devId] = cdata;
     } else {//存在该路侧杆的数据
-
       cdata.nowRecieveData = d;
-
       if (cdata.nowRecieveData.gpsTime < cdata.lastRecieveData.gpsTime || cdata.nowRecieveData.gpsTime == cdata.lastRecieveData.gpsTime) {
         // console.log("到达顺序错误或重复数据");
         return;
@@ -100,8 +98,7 @@ class PerceptionCars {
         let devList = [];
         let list = [];
         let drawObj = {};
-        // console.log("-----------");
-        for (let devId in this.cacheAndInterpolateDataByDevId) {
+        for (let devId in this.cacheAndInterpolateDataByDevId){
             let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
             if (devCacheData && devCacheData.cacheData.length > 0) {
                 let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
