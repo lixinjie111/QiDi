@@ -162,6 +162,11 @@ function initMap() {
 }
 //行程概览--绘制
 function drawLine(data){
+
+    //如果经纬度不存在不进行转换
+    if(!data.longitude&&!data.latitude){
+        return;
+    }
     let p = ConvertCoord.wgs84togcj02(data.longitude, data.latitude);
     let point = new AMap.LngLat(p[0], p[1]);
     let pointPath = [];
@@ -172,7 +177,20 @@ function drawLine(data){
         //绘制线
         pointPath.push(prevLastPoint);
         pointPath.push(point);
-        let polyline = new AMap.Polyline({
+        //判断两个点
+        let lngDiff = Math.abs(prevLastPoint.lng-point.lng)*10080;
+        lngDiff = lngDiff.toFixed(1);
+        let latDiff = Math.abs(prevLastPoint.lat-point.lat)*10080;
+        latDiff = latDiff.toFixed(1);
+        //如果传入的值距离太远 重新绘制点
+        if(lngDiff>30||latDiff>30){
+            let marker = new AMap.Marker({
+                position: point,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+                icon:'./images/start.png',
+                offset: new AMap.Pixel(-10, -10)
+            });
+        }else{
+            let polyline = new AMap.Polyline({
                 map: distanceMap,
                 path: pointPath,
                 strokeColor: "#03812e",
@@ -185,9 +203,10 @@ function drawLine(data){
                 lineCap: 'round',
                 zIndex: 50
             });
-        markers.polyline.push(polyline);
-        //绘制终点
-        distanceMapEnd(point,data.heading);
+            markers.polyline.push(polyline);
+            //绘制终点
+            distanceMapEnd(point,data.heading);
+        }
     }
     prevLastPoint=point;
 }
@@ -439,7 +458,7 @@ function onPulseMessage(message){
 
         if(routePulseCount==0||routePulseCount>route){
             routePulseCount=1;
-            if(mainCar){
+            if(mainCar&&Object.keys(mainCar).length>0){
                 mainCar.tabIsExist = tabIsExist;
                 drawLine(mainCar);
             }

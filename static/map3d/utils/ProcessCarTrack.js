@@ -25,6 +25,7 @@ class ProcessCarTrack {
         this.sideList = [];//存储发射信号
         this.ispoleToCar = true;//是否连接感知杆
         this.removeObj={};
+        this.vehObj = {};
         // this.i=0;
     }
 
@@ -79,11 +80,16 @@ class ProcessCarTrack {
             let diff1 = json.time - data[vehicleId][0].gpsTime;
             let diff2 = new Date().getTime() - json.time
             // console.log("vehicleId:"+vehicleId+",send:"+DateFormat.formatTime(json.time,'hh:mm:ss')+",gpsTime:"+DateFormat.formatTime(data[vehicleId][0].gpsTime,'hh:mm:ss')+",pulseTime"+DateFormat.formatTime(time,'hh:mm:ss')+",local："+DateFormat.formatTime(new Date().getTime(),'hh:mm:ss')+",'local-send'"+diff2+",'local-gps:'"+diff+",'send-gps:'"+diff1)
-            let vehList = data[vehicleId];
+            let vehList = data[vehicleId]||[];
             let cdata = this.platObj[vehicleId];
             if (cdata == null) {
                 cdata = new Array();
             }
+            let veh = this.vehObj[vehicleId];
+            if(!veh&&vehList.length>0){
+                this.vehObj[vehicleId] = vehList[0];
+            }
+
             //单车视角
             if (mainCarId && vehicleId == mainCarId) {
                 this.mainCarVID = mainCarId;
@@ -223,7 +229,17 @@ class ProcessCarTrack {
             'carData':new Object()
         };
 
-        for (var vid in _this.cacheAndInterpolateDataByVid) {
+        for (var vid in _this.cacheAndInterpolateDataByVid){
+            let vehObj = this.vehObj[vid];
+            if(Object.keys(vehObj).length>0){
+                // console.log(cardata)
+                if(vehObj.devType==1){
+                    platVeh++;
+                }
+                if(vehObj.devType==2){
+                    v2xVeh++;
+                }
+            }
             let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
             // console.log(carCacheData.nowReceiveData.gpsTime)
             if (carCacheData) {
@@ -236,14 +252,7 @@ class ProcessCarTrack {
                         return;
                     }
                     platCar.carData[vid]=cardata;
-                    // console.log(cardata)
-                    if(cardata.devType==1){
-                        platVeh++;
-                    }
-                    if(cardata.devType==2){
-                        v2xVeh++;
-                    }
-                    _this.moveCar(cardata); 
+                    _this.moveCar(cardata);
                     if (_this.mainCarVID == cardata.vehicleId){
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata;
@@ -285,7 +294,7 @@ class ProcessCarTrack {
         platCar['vehData'] = vehData;
         return platCar;
     }
-   /* processPlatformCarsTrack1(time,delayTime,isStart) {
+   /* platProcess(time,delayTime,isStart) {
         let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
