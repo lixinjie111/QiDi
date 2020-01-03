@@ -285,6 +285,7 @@ class ProcessCarTrack {
                         delete this.removeObj[vid];
                         delete this.cacheAndInterpolateDataByVid[vid];
                         delete this.platObj[vid];
+                        delete this.vehObj[vid];
                     }
                 }
             }

@@ -186,7 +186,7 @@ function drawLine(data){
         if(lngDiff>30||latDiff>30){
             let marker = new AMap.Marker({
                 position: point,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-                icon:'./images/start.png',
+                icon:'./images/circle.png',
                 offset: new AMap.Pixel(-10, -10)
             });
         }else{
