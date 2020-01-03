@@ -14,6 +14,7 @@ class PerceptionCars {
     this.perMaxValue = '';
     this.cacheAndInterpolateDataByDevId = {};
     this.stepTime = '';
+    this.count=0;
     // this.drawnObj = {};
   }
 
@@ -106,6 +107,7 @@ class PerceptionCars {
                     // console.log("没有找到相应的值")
                     return;
                 }
+                this.count=0;
                 /*if (this.drawnObj[devId] != '' && devData.batchId == this.drawnObj[devId]) {
                   // console.log("重复绘制的点"+devId+"  ,"+DateFormat.formatTime(devData.batchId,'hh:mm:ss'))
                   return;
@@ -119,8 +121,11 @@ class PerceptionCars {
             }
         }
         //如果本次没找见 则清除所有的模型
-        if(!drawObj&&!Object.keys(drawObj).length) {
-            this.clearAllModel();
+        if(!drawObj) {
+            this.count++;
+            if(this.count>=10){
+                this.clearAllModel();
+            }
         }
         this.processPerceptionMesage(list);
         return devList;
@@ -187,12 +192,16 @@ class PerceptionCars {
     if (minDiff && minDiff > this.perMaxValue && !this.cacheAndInterpolateDataByDevId[devId].isFirst) {
       return;
     }
+
+
     // console.log("最小索引:",devId,minIndex,minDiff,time,minData.data.length);
     // if(minData){
     //     minData.data.forEach(item=>{
     //         console.log(parseInt(minData.gpsTime),item.vehicleId,item.targetType);
     //     });
     // }
+
+
     //对其后，找不到符合范围的  最小值保留
     if (minDiff && minDiff > this.perMaxValue && this.cacheAndInterpolateDataByDevId[devId].isFirst) {
       // console.log(devId,"不在范围内")
