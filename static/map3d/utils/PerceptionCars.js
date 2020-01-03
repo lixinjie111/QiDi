@@ -3,10 +3,10 @@ class PerceptionCars {
   constructor() {
     this.defualtZ = window.defualtZ;
     this.cacheModelNum = 200,//初始化车辆总数
-      this.carColor = 0x80f77a,//感知车颜色
-      this.pitch = 0,
-      this.yaw = 0,
-      this.roll = Math.PI * (10 / 90);
+    this.carColor = 0x80f77a,//感知车颜色
+    this.pitch = 0,
+    this.yaw = 0,
+    this.roll = Math.PI * (10 / 90);
     this.deviceModels = { cars: {}, persons: [], texts: [] };
     this.viewer = null;
     this.devObj = {};
@@ -14,6 +14,7 @@ class PerceptionCars {
     this.perMaxValue = '';
     this.cacheAndInterpolateDataByDevId = {};
     this.stepTime = '';
+    this.count=0;
     // this.drawnObj = {};
   }
 
@@ -21,6 +22,49 @@ class PerceptionCars {
   addPerceptionData(data, miniLabel) {
     this.processPerceptionMesage(data, miniLabel);
   }
+
+  addPerceptionOneFrame(fusionList) {
+    console.log(fusionList)
+
+      try {
+
+        this.clearAllModel();
+             
+        for (let i = 0; i < fusionList.length; i++) {
+          let d = fusionList[i];
+          if (d.heading < 0) {     
+            continue;
+          }
+          if (d.type == 0) {//人
+            this.addMoveModel(true, d, "person");
+          }
+          else if (d.type == 1) //自行车
+          {
+            this.addMoveModel(true, d, "bicycle");
+          }
+          else if (d.type == 2) { //感知车
+            /////////////处理感知车数据
+            this.addMoveModel(false, d, "carbox");
+          }
+          else if (d.type == 3) //摩托车
+          {
+            this.addMoveModel(false, d, "motorbike");
+          }
+          else if (d.type == 5) //公交车
+          {
+            this.addMoveModel(false, d, "bus");
+          }
+          else if (d.type == 7) //卡车
+          {
+            this.addMoveModel(false, d, "truck");
+          }   
+        }
+      }
+      catch (error) {
+  
+      }
+  }
+
   receiveData(sideList) {
     sideList.forEach(item => {
       // if(item.devId=='RCU_2046A10433DB_3100000000132000002801'){
@@ -106,6 +150,7 @@ class PerceptionCars {
                     // console.log("没有找到相应的值")
                     return;
                 }
+                this.count=0;
                 /*if (this.drawnObj[devId] != '' && devData.batchId == this.drawnObj[devId]) {
                   // console.log("重复绘制的点"+devId+"  ,"+DateFormat.formatTime(devData.batchId,'hh:mm:ss'))
                   return;
@@ -114,12 +159,16 @@ class PerceptionCars {
                 drawObj[devId] = devData;
                 let fusionList = devData.data||[];
                 list.push.apply(list,fusionList);
+                // console.log("list:",list)
                 devList.push(devData);
             }
         }
         //如果本次没找见 则清除所有的模型
-        if(!drawObj&&!Object.keys(drawObj).length) {
-            this.clearAllModel();
+        if(!drawObj) {
+            this.count++;
+            if(this.count>=10){
+                this.clearAllModel();
+            }
         }
         this.processPerceptionMesage(list);
         return devList;
@@ -183,15 +232,19 @@ class PerceptionCars {
     // console.log("感知车最小索引:",devId,minIndex,minDiff,cacheData.length,DateFormat.formatTime(time,'hh:mm:ss:ms'),DateFormat.formatTime((minData.gpsTime+delayTime),'hh:mm:ss:ms'),DateFormat.formatTime(new Date().getTime(),'hh:mm:ss:ms'));
     // console.log("找到最小值",parseInt(minData.gpsTime),minData.batchId);
     //标尺还没对齐  return;
-    // if (minDiff && minDiff > this.perMaxValue && !this.cacheAndInterpolateDataByDevId[devId].isFirst) {
-    //   return;
-    // }
+    if (minDiff && minDiff > this.perMaxValue && !this.cacheAndInterpolateDataByDevId[devId].isFirst) {
+      return;
+    }
+
+
     // console.log("最小索引:",devId,minIndex,minDiff,time,minData.data.length);
     // if(minData){
     //     minData.data.forEach(item=>{
     //         console.log(parseInt(minData.gpsTime),item.vehicleId,item.targetType);
     //     });
     // }
+
+
     //对其后，找不到符合范围的  最小值保留
     if (minDiff && minDiff > this.perMaxValue && this.cacheAndInterpolateDataByDevId[devId].isFirst) {
       // console.log(devId,"不在范围内")
@@ -233,11 +286,7 @@ class PerceptionCars {
       if (fusionList.length <= 0) return;
       for (let i = 0; i < fusionList.length; i++) {
         let d = fusionList[i];
-
-        if (d.type == 1) {
-          //平台车
-          continue;
-        }
+ 
         // if (d.heading >=360) {
         //     // 不处理大于360的的数据
         //     continue;
@@ -280,7 +329,7 @@ class PerceptionCars {
           //移动标签
           this.addMoveLable(d, "trucklabel", 5,miniLabel);
         }
-
+      
       }
     }
     catch (error) {
@@ -300,7 +349,8 @@ class PerceptionCars {
   }
   //增加移动模型
   addMoveModel(isAnimation, d, name) {
-    let carModel = this.getModelForPrimitive(d.vehicleId + name);//this.deviceModels.cars[d.vehicleId+"car"];
+    let vehicleId = d.vehicleId || d.uuid;
+    let carModel = this.getModelForPrimitive(vehicleId + name);//this.deviceModels.cars[d.vehicleId+"car"];
     if (carModel == null) {
       // console.log("新增："+d.vehicleId + name)
       //初始化增加车辆 如果没有隐藏车辆的模型
@@ -317,8 +367,10 @@ class PerceptionCars {
   }
   removeAllModelPrimitives() {
     var primitives = this.viewer.scene.primitives;
+  
     for (var i = 0; i < primitives.length; i++) {
       var primitive = primitives.get(i);
+      console.log(primitive.id)
       if (primitive.id) {
         if (primitive instanceof Cesium.Model && primitive.id.search("carbox") != -1 || primitive.id.search("person") != -1 || primitive.id.search("bicycle") != -1 ||
           primitive.id.search("motorbike") != -1 || primitive.id.search("bus") != -1 || primitive.id.search("truck") != -1) {
@@ -423,7 +475,7 @@ class PerceptionCars {
   }
   /**
    * 增加车辆
-   * @param {数据} d
+   * @param {数据} 
    */
   addModeCar(isAnimation, d, name, glbName) {
     var position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ);
@@ -434,8 +486,9 @@ class PerceptionCars {
     let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
     var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms)
 
+    let vehicleId = d.vehicleId || d.uuid;
     let model = this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
-      id: d.vehicleId + name,
+      id: vehicleId + name,
       modelMatrix: modelMatrix,
       url: '../../static/map3d/model/' + glbName + '.glb',
       minimumPixelSize: 1,
