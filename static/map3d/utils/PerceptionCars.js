@@ -114,6 +114,7 @@ class PerceptionCars {
                 drawObj[devId] = devData;
                 let fusionList = devData.data||[];
                 list.push.apply(list,fusionList);
+                // console.log("list:",list)
                 devList.push(devData);
             }
         }
@@ -183,9 +184,9 @@ class PerceptionCars {
     // console.log("感知车最小索引:",devId,minIndex,minDiff,cacheData.length,DateFormat.formatTime(time,'hh:mm:ss:ms'),DateFormat.formatTime((minData.gpsTime+delayTime),'hh:mm:ss:ms'),DateFormat.formatTime(new Date().getTime(),'hh:mm:ss:ms'));
     // console.log("找到最小值",parseInt(minData.gpsTime),minData.batchId);
     //标尺还没对齐  return;
-    // if (minDiff && minDiff > this.perMaxValue && !this.cacheAndInterpolateDataByDevId[devId].isFirst) {
-    //   return;
-    // }
+    if (minDiff && minDiff > this.perMaxValue && !this.cacheAndInterpolateDataByDevId[devId].isFirst) {
+      return;
+    }
     // console.log("最小索引:",devId,minIndex,minDiff,time,minData.data.length);
     // if(minData){
     //     minData.data.forEach(item=>{
