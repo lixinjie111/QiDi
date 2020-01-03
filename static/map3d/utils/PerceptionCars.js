@@ -243,11 +243,7 @@ class PerceptionCars {
       if (fusionList.length <= 0) return;
       for (let i = 0; i < fusionList.length; i++) {
         let d = fusionList[i];
-
-        if (d.type == 1) {
-          //平台车
-          continue;
-        }
+ 
         // if (d.heading >=360) {
         //     // 不处理大于360的的数据
         //     continue;

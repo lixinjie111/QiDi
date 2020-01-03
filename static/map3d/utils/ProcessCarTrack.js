@@ -845,8 +845,18 @@ class ProcessCarTrack {
         for (var i = 0; i < primitives.length; i++) {
             var primitive = primitives.get(i);
             if (primitive.id) {
-                if (primitive instanceof Cesium.Model  && primitive.id==carId) {
+                if (primitive instanceof Cesium.Model && primitive.id == carId) {
                     this.viewer.scene.primitives.remove(primitive);
+                }
+            }
+        }
+        //移除连接线 ，标签，标示
+        var entities = this.viewer.entities._entities._array;
+        for (var i = 0; i < entities.length; i++) {
+            if (entities[i].id) {
+                if (entities[i].id.search(vehicleId + "line") != -1||entities[i].id.search(vehicleId + "billboard") != -1||entities[i].id.search(vehicleId + "lblpt") != -1
+                ||entities[i].id.search(vehicleId + "ellipse") != -1) {
+                    this.viewer.entities.remove(entities[i]);
                 }
             }
         }
