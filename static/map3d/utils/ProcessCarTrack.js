@@ -285,7 +285,7 @@ class ProcessCarTrack {
         platCar['vehData'] = vehData;
         return platCar;
     }
-    processPlatformCarsTrack1(time,delayTime,isStart) {
+   /* processPlatformCarsTrack1(time,delayTime,isStart) {
         let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
@@ -310,14 +310,14 @@ class ProcessCarTrack {
                     }
                     //等于主车
                     // if(_this.mainCarVID == vid){
-                    /*if(isStart=='start'){
+                    /!*if(isStart=='start'){
                         _this.addModel(cardata);
 
                     }
                     if(isStart=='end'){
                         _this.moveTo1(cardata);
                         return;
-                    }*/
+                    }*!/
                     platCar.carData[vid]=cardata;
                     // console.log(cardata)
                     if(cardata.devType==1){
@@ -369,7 +369,7 @@ class ProcessCarTrack {
         vehData.v2xVeh = v2xVeh;
         platCar['vehData'] = vehData;
         return platCar;
-    }
+    }*/
     //检测感知杆和单车关联
     poleToCar(d) {
         let vid = d.vehicleId;
