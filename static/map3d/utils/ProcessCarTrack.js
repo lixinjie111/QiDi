@@ -24,7 +24,7 @@ class ProcessCarTrack {
         this.billboards = {};//存储发射信号
         this.sideList = [];//存储发射信号
         this.ispoleToCar = true;//是否连接感知杆
-        this.removeObj={};
+        this.removeObj = {};
         // this.i=0;
     }
 
@@ -211,16 +211,16 @@ class ProcessCarTrack {
             cdata.lastReceiveData = cdata.nowReceiveData;
         }
     }
-    processPlatformCarsTrack(time,delayTime) {
-        let _this=this;
+    processPlatformCarsTrack(time, delayTime) {
+        let _this = this;
         let platVeh = 0;
         let v2xVeh = 0;
         let vehData = {};
 
         let platCar = {
-            'mainCar':{},
-            'vehData':new Object(),
-            'carData':new Object()
+            'mainCar': {},
+            'vehData': new Object(),
+            'carData': new Object()
         };
 
         for (var vid in _this.cacheAndInterpolateDataByVid) {
@@ -230,48 +230,45 @@ class ProcessCarTrack {
                 //缓存数据
                 let cacheData = carCacheData.cacheData;
                 if (cacheData.length > 0) {
-                    this.removeObj[vid]=0;
+                    this.removeObj[vid] = 0;
                     let cardata = _this.getMinValue(vid, time, delayTime);
                     if (!cardata) {
                         return;
                     }
-                    platCar.carData[vid]=cardata;
+                    platCar.carData[vid] = cardata;
                     // console.log(cardata)
-                    if(cardata.devType==1){
+                    if (cardata.devType == 1) {
                         platVeh++;
                     }
-                    if(cardata.devType==2){
+                    if (cardata.devType == 2) {
                         v2xVeh++;
                     }
-                    _this.moveCar(cardata); 
-                    if (_this.mainCarVID == cardata.vehicleId){
+                    _this.moveCar(cardata);
+                    if (_this.mainCarVID == cardata.vehicleId) {
                         // mainCar= cardata;
                         platCar['mainCar'] = cardata;
                         _this.moveTo(cardata);
                         //主车
-                    }else { 
-                        if(cardata.source.length>0)
-                        {
-                            let isV2X=false;//是否有v2x车 OBU
-                            for(let i=0;i<cardata.source.length;i++)
-                            {
-                                if(cardata.source[i].toUpperCase().trim()=="V2X")
-                                {
-                                    isV2X=true;
+                    } else {
+                        if (cardata.source.length > 0) {
+                            let isV2X = false;//是否有v2x车 OBU
+                            for (let i = 0; i < cardata.source.length; i++) {
+                                if (cardata.source[i].toUpperCase().trim() == "V2X") {
+                                    isV2X = true;
                                 }
-                            } 
+                            }
                             if (isV2X) {
                                 _this.poleToCar(cardata);
                             }
                         }
-                        
+
                     }
-                }else{
+                } else {
                     //消失机制
                     this.removeObj[vid]++;
                     console.log(this.removeObj[vid])
                     //超过3s没有缓存数就让消失
-                    if(this.removeObj[vid]>75){
+                    if (this.removeObj[vid] > 75) {
                         console.log("到达3s，消失了");
                         this.removeModelPrimitives(vid);
                         delete this.removeObj[vid];
@@ -286,16 +283,16 @@ class ProcessCarTrack {
         platCar['vehData'] = vehData;
         return platCar;
     }
-    processPlatformCarsTrack1(time,delayTime,isStart) {
-        let _this=this;
+    processPlatformCarsTrack1(time, delayTime, isStart) {
+        let _this = this;
         let platVeh = 0;
         let v2xVeh = 0;
         let vehData = {};
 
         let platCar = {
-            'mainCar':{},
-            'vehData':new Object(),
-            'carData':new Object()
+            'mainCar': {},
+            'vehData': new Object(),
+            'carData': new Object()
         };
         for (var vid in _this.cacheAndInterpolateDataByVid) {
             let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
@@ -304,7 +301,7 @@ class ProcessCarTrack {
                 //缓存数据
                 let cacheData = carCacheData.cacheData;
                 if (cacheData.length > 0) {
-                    this.removeObj[vid]=0;
+                    this.removeObj[vid] = 0;
                     let cardata = _this.getMinValue(vid, time, delayTime);
                     if (!cardata) {
                         return;
@@ -319,12 +316,12 @@ class ProcessCarTrack {
                         _this.moveTo1(cardata);
                         return;
                     }*/
-                    platCar.carData[vid]=cardata;
+                    platCar.carData[vid] = cardata;
                     // console.log(cardata)
-                    if(cardata.devType==1){
+                    if (cardata.devType == 1) {
                         platVeh++;
                     }
-                    if(cardata.devType==2){
+                    if (cardata.devType == 2) {
                         v2xVeh++;
                     }
                     _this.moveCar(cardata);
@@ -334,30 +331,27 @@ class ProcessCarTrack {
                         _this.moveTo(cardata);
                         //主车
                     }
-                    else { 
-                        if(cardata.source.length>0)
-                        {
-                            let isV2X=false;//是否有v2x车 OBU
-                            for(let i=0;i<cardata.source.length;i++)
-                            {
-                                if(cardata.source[i].toUpperCase().trim()=="V2X")
-                                {
-                                    isV2X=true;
+                    else {
+                        if (cardata.source.length > 0) {
+                            let isV2X = false;//是否有v2x车 OBU
+                            for (let i = 0; i < cardata.source.length; i++) {
+                                if (cardata.source[i].toUpperCase().trim() == "V2X") {
+                                    isV2X = true;
                                 }
-                            } 
+                            }
                             if (isV2X) {
                                 _this.poleToCar(cardata);
                             }
                         }
-                        
+
                     }
                     // }
-                }else{
+                } else {
                     //消失机制
                     this.removeObj[vid]++;
                     //超过3s没有缓存数就让消失
-                    if(this.removeObj[vid]>75){
-                        console.log("平台车辆消失：",vid)
+                    if (this.removeObj[vid] > 75) {
+                        console.log("平台车辆消失：", vid)
                         this.removeModelPrimitives(vid);
                         delete this.removeObj[vid];
                         delete this.cacheAndInterpolateDataByVid[vid];
@@ -537,25 +531,21 @@ class ProcessCarTrack {
                 url = '../../static/map3d/model/car_near_Black.glb';
             }
 
-            if(d.source.length>0)
-            {
-                let isV2X=false;//是否有v2x车 OBU
-                for(let i=0;i<d.source.length;i++)
-                {
-                    if(d.source[i].toUpperCase().trim()=="V2X")
-                    {
-                        isV2X=true;
+            if (d.source.length > 0) {
+                let isV2X = false;//是否有v2x车 OBU
+                for (let i = 0; i < d.source.length; i++) {
+                    if (d.source[i].toUpperCase().trim() == "V2X") {
+                        isV2X = true;
                     }
-                } 
+                }
                 if (isV2X) {
                     //增加光环
-                    this.addEllipse(vid, position,'#f4f422');
+                    this.addEllipse(vid, position, '#f4f422');
                 }
-                else
-                {
-                    this.addEllipse(vid, position,'#A9A9A9');
+                else {
+                    this.addEllipse(vid, position, '#A9A9A9');
                 }
-            }  
+            }
 
             this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
                 id: vid + "car",
@@ -588,12 +578,11 @@ class ProcessCarTrack {
                     scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
                 }
             });
-            let urlImg = '../../static/map3d/images/4g.png'; 
-            
+            let urlImg = '../../static/map3d/images/4g.png';
+
             if (d.source.length > 0) { //判断类型车
-                if(d.source.length==1)
-                { 
-                    if (d.source[0].toUpperCase().trim()== "4G") {
+                if (d.source.length == 1) {
+                    if (d.source[0].toUpperCase().trim() == "4G") {
                         urlImg = '../../static/map3d/images/4g.png';
                     }
                     else if (d.source[0].toUpperCase().trim() == "V2X") {
@@ -603,9 +592,8 @@ class ProcessCarTrack {
                         urlImg = '../../static/map3d/images/4gv2x.png';
                     }
                 }
-                else
-                {
-                    urlImg = '../../static/map3d/images/4gv2x.png'; 
+                else {
+                    urlImg = '../../static/map3d/images/4gv2x.png';
                 }
             }
             var entity = this.viewer.entities.add({
@@ -665,27 +653,27 @@ class ProcessCarTrack {
             //             isV2X=true;
             //         }
             //     } 
-            
-                 //修改光环大小 
-                    if (this.viewer.entities.getById(vid + "ellipse1")) {
-                        this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-                    }
-                    if (this.viewer.entities.getById(vid + "ellipse2")) {
-                        this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-                    }
-                    if (this.viewer.entities.getById(vid + "ellipse3")) {
-                        this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-                    }
-                    if (this.viewer.entities.getById(vid + "ellipse4")) {
-                        this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
-                    }
-              
+
+            //修改光环大小 
+            if (this.viewer.entities.getById(vid + "ellipse1")) {
+                this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+            }
+            if (this.viewer.entities.getById(vid + "ellipse2")) {
+                this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+            }
+            if (this.viewer.entities.getById(vid + "ellipse3")) {
+                this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+            }
+            if (this.viewer.entities.getById(vid + "ellipse4")) {
+                this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+            }
+
             // } 
 
         }
     }
-     //添加光环
-    addEllipse(vid, position,color) {
+    //添加光环
+    addEllipse(vid, position, color) {
         //光环
         var r1 = 0, r2 = 2.5, r3 = 5, r4 = 7.5;
         function changeR1() { //这是callback，参数不能内传
@@ -846,8 +834,18 @@ class ProcessCarTrack {
         for (var i = 0; i < primitives.length; i++) {
             var primitive = primitives.get(i);
             if (primitive.id) {
-                if (primitive instanceof Cesium.Model  && primitive.id==carId) {
+                if (primitive instanceof Cesium.Model && primitive.id == carId) {
                     this.viewer.scene.primitives.remove(primitive);
+                }
+            }
+        } 
+        //移除连接线 ，标签，标示
+        var entities = this.viewer.entities._entities._array;
+        for (var i = 0; i < entities.length; i++) {
+            if (entities[i].id) {
+                if (entities[i].id.search(vehicleId + "line") != -1||entities[i].id.search(vehicleId + "billboard") != -1||entities[i].id.search(vehicleId + "lblpt") != -1
+                ||entities[i].id.search(vehicleId + "ellipse") != -1) {
+                    this.viewer.entities.remove(entities[i]);
                 }
             }
         }
