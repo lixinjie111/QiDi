@@ -57,7 +57,7 @@ function addEvent(){
 }
 
 function getData(e) {    
-  perceptionCars.addPerceptionData(e.data.row);      
+  perceptionCars.addPerceptionOneFrame(e.data.row);      
 }
 
 
