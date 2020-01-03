@@ -269,10 +269,9 @@ class ProcessCarTrack {
                 }else{
                     //消失机制
                     this.removeObj[vid]++;
-                    console.log(this.removeObj[vid])
                     //超过3s没有缓存数就让消失
                     if(this.removeObj[vid]>75){
-                        console.log("到达3s，消失了");
+                        console.log(vid,"到达3s，消失了");
                         this.removeModelPrimitives(vid);
                         delete this.removeObj[vid];
                         delete this.cacheAndInterpolateDataByVid[vid];
@@ -286,7 +285,7 @@ class ProcessCarTrack {
         platCar['vehData'] = vehData;
         return platCar;
     }
-    processPlatformCarsTrack1(time,delayTime,isStart) {
+   /* processPlatformCarsTrack1(time,delayTime,isStart) {
         let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
@@ -311,14 +310,14 @@ class ProcessCarTrack {
                     }
                     //等于主车
                     // if(_this.mainCarVID == vid){
-                    /*if(isStart=='start'){
+                    /!*if(isStart=='start'){
                         _this.addModel(cardata);
 
                     }
                     if(isStart=='end'){
                         _this.moveTo1(cardata);
                         return;
-                    }*/
+                    }*!/
                     platCar.carData[vid]=cardata;
                     // console.log(cardata)
                     if(cardata.devType==1){
@@ -370,7 +369,7 @@ class ProcessCarTrack {
         vehData.v2xVeh = v2xVeh;
         platCar['vehData'] = vehData;
         return platCar;
-    }
+    }*/
     //检测感知杆和单车关联
     poleToCar(d) {
         let vid = d.vehicleId;
@@ -846,8 +845,18 @@ class ProcessCarTrack {
         for (var i = 0; i < primitives.length; i++) {
             var primitive = primitives.get(i);
             if (primitive.id) {
-                if (primitive instanceof Cesium.Model  && primitive.id==carId) {
+                if (primitive instanceof Cesium.Model && primitive.id == carId) {
                     this.viewer.scene.primitives.remove(primitive);
+                }
+            }
+        }
+        //移除连接线 ，标签，标示
+        var entities = this.viewer.entities._entities._array;
+        for (var i = 0; i < entities.length; i++) {
+            if (entities[i].id) {
+                if (entities[i].id.search(vehicleId + "line") != -1||entities[i].id.search(vehicleId + "billboard") != -1||entities[i].id.search(vehicleId + "lblpt") != -1
+                ||entities[i].id.search(vehicleId + "ellipse") != -1) {
+                    this.viewer.entities.remove(entities[i]);
                 }
             }
         }
