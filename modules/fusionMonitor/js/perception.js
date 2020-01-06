@@ -177,10 +177,10 @@ function getMessage() {
         if(eventData.type == 'updateCam') {
             if(eventData.data) {
                 camParam = eventData.data;
+                let {x, y, z, radius, pitch, yaw} = camParam;
+                // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
+                gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw, eventData.animationZ);
             }
-            let {x, y, z, radius, pitch, yaw} = camParam;
-            // let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
-            gis3d.updateCameraPosition(x, y, z, radius, pitch, yaw, eventData.animationZ);
         }
         if(eventData.type == 'updatePosition') {
             let _currentExtent = getExtend(longitude,latitude,0.001);
@@ -368,12 +368,12 @@ function onPulseMessage(message){
         if(Object.keys(perceptionCars.devObj).length>0){
             let perList = perceptionCars.processPerTrack(result.timestamp,delayTime);
             if(perList){
+                let pernum = 0;
+                let persons = 0;
+                let nonNum = 0;
+                let perData={};
                 if(perList.length>0){
                     processPerData(perList[0]);
-                    let pernum = 0;
-                    let persons = 0;
-                    let nonNum = 0;
-                    let perData={};
                     perList.forEach(item=>{
                         let cars = item.data;
                         if(cars&&cars.length>0) {
@@ -393,16 +393,16 @@ function onPulseMessage(message){
                             }
                         }
                     });
-                    perData['veh']=pernum;
-                    perData['person'] = persons;
-                    perData['noMotor'] = nonNum;
-                    let _camData = {
-                        isParent: true,
-                        type: 'perceptionData',
-                        data: perData
-                    }
-                    parent.postMessage(_camData,"*");
                 }
+                perData['veh']=pernum;
+                perData['person'] = persons;
+                perData['noMotor'] = nonNum;
+                let _camData = {
+                    isParent: true,
+                    type: 'perceptionData',
+                    data: perData
+                }
+                parent.postMessage(_camData,"*");
             }
         }
     }

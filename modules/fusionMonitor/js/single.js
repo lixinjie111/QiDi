@@ -70,6 +70,8 @@ let removeWarning = [];
 
 let isStart = false;
 
+let timeCount = 0;
+
 /** 调用 **/
 $(function() {
     // 初始化高德地图
@@ -177,11 +179,19 @@ function drawLine(data){
         //绘制线
         pointPath.push(prevLastPoint);
         pointPath.push(point);
+        // timeCount++;
+        let lngDiff = 0;
+        let latDiff = 0;
+        // if(timeCount>1000&&timeCount<2000){
+        //     lngDiff=40;
+        //     latDiff=40
+        // }
+
         //判断两个点
-        let lngDiff = Math.abs(prevLastPoint.lng-point.lng)*10080;
-        lngDiff = lngDiff.toFixed(1);
-        let latDiff = Math.abs(prevLastPoint.lat-point.lat)*10080;
-        latDiff = latDiff.toFixed(1);
+        // let lngDiff = Math.abs(prevLastPoint.lng-point.lng)*10080;
+        // lngDiff = lngDiff.toFixed(1);
+        // let latDiff = Math.abs(prevLastPoint.lat-point.lat)*10080;
+        // latDiff = latDiff.toFixed(1);
         //如果传入的值距离太远 重新绘制点
         if(lngDiff>30||latDiff>30){
             let marker = new AMap.Marker({

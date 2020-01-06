@@ -281,6 +281,12 @@ class ProcessCarTrack {
                     //超过3s没有缓存数就让消失
                     if(this.removeObj[vid]>75){
                         console.log(vid,"到达3s，消失了");
+                        if(vehObj.devType==1&&platVeh>0){
+                            platVeh--;
+                        }
+                        if(vehObj.devType==2&&v2xVeh>0){
+                            v2xVeh--;
+                        }
                         this.removeModelPrimitives(vid);
                         delete this.removeObj[vid];
                         delete this.cacheAndInterpolateDataByVid[vid];
