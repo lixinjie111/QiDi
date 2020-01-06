@@ -226,17 +226,17 @@ function initWebsocketData() {
     perceptionCars.stepTime = perPulse;
     perceptionCars.pulseInterval = perPulse*0.8;
     perceptionCars.perMaxValue = perPulse*1.5;
-    per = 80/pulseInterval;    //默认2
+    per = perPulse/pulseInterval;    //默认2
 
     let spatPulse = 400;
     processData.spatPulseInterval = spatPulse*0.8;
     processData.spatMaxValue =  spatPulse*1.5;
-    spat = 400/pulseInterval;  //默认10
+    spat = spatPulse/pulseInterval;  //默认10
 
     let warnPulse = 400;
     processData.warnPulseInterval = warnPulse*0.8;
     processData.warnMaxValue = warnPulse*1.5;
-    warning = 400/pulseInterval;  //默认10
+    warning = warnPulse/pulseInterval;  //默认10
 }
 /** websocket **/
 function initPulseWebSocket() {
