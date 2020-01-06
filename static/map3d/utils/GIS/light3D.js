@@ -9,7 +9,7 @@ class light3D {
         this.img2 = '../../static/images/light/red_0.png';
         this.img3 = '../../static/images/light/red_0.png';
         // this.type=0;//对应等杆类型 0对应 柱形杆，1对应L型杆，2对应T型杆
-        this.height=0;//高度
+        this.height=1;//高度
     }
     //增加红路灯
     addLight(viewer,id, x, y, angle,type) { 
