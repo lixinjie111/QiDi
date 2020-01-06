@@ -21,96 +21,54 @@ window.initLight3D = {
      * 
      * @param {地图视图} viewer 
      */
-    initlight(viewer,data) {
+    initlight(viewer, dataLight) { 
+        if (!dataLight) return;
+        for (let i = 0; i < dataLight.length; i++) {
 
-//         let lights = '{"status":200,"message":"","data":{"lampPole":[{"spats":[{"lightPos":"121.175515894658147,31.2816177384530469,17.2018751525999996","lightDirection":"2","phaseId":[9],"spatId":"275"},{"lightPos":"121.175512059249741,31.2816164091917877,17.3258747482000004","lightDirection":"1","relative":1,"phaseId":[10],"spatId":"276"}],"lampPoleId":11111,"type":"T","heading":132.32321,"lampPos":"121.175512059249741,31.2816164091917877,17.3258747482000004"}]}}';
+            //增加杆模型
+            GisUtils.loadModelColl(viewer, dataLight[i].lampPos.split(',')[0], dataLight[i].lampPos.split(',')[1], dataLight[i].heading, 'B1', true);
+            //增加红绿灯
+            for (let j = 0; j < dataLight[i].spats.length; j++) {
+                if (dataLight[i].spats[j].poleRelative) {
+                    let L = new light3D();
+                    let type = 0;
+                    if (dataLight[i].type.indexOf('B') != -1) { //判断类型
+                        type = 0;
+                    }
+                    else if (dataLight[i].type.indexOf('L') != -1) {
+                        type = 1;
+                    }
+                    else if (dataLight[i].type.indexOf('T') != -1) {
+                        type = 2;
+                    }
+                    let xyR = [], xyL = [];
+                    let x = parseFloat(dataLight[i].lampPos.split(',')[0]);//经度
+                    let y = parseFloat(dataLight[i].lampPos.split(',')[1]);//维度
 
-//         debugger
-//         let dataLight = JSON.parse(lights).data.lampPole;
-//         for (let i = 0; i < dataLight.length; i++) {
-// debugger
-//      GisUtils.loadModelColl(viewer,dataLight[0].lampPos.split(',')[0], dataLight[0].lampPos.split(',')[1],dataLight[0].heading,'I_RB',true);
+                    if (dataLight[i].spats[j].poleRelative == 2) //右边红绿灯
+                    {
+                        if (xyR.length == 0) {
+                            xyR = L.addLight(viewer, dataLight[i].spats[j].spatId, x, y, dataLight[i].heading - 90, type);
+                        }
+                        else {
+                            xyR = L.addLight(viewer, dataLight[i].spats[j].spatId, xyR[0], xyR[1], dataLight[i].heading - 90, type);
+                        }
 
-//             for (let j = 0; j < dataLight[i].spats.length; j++) {
-//                 if (dataLight[i].spats[j].relative) {
-//                     let L = new light3D();
-//                     let type = 0;
-//                     if (type == "T") {
-//                         type = 1;
-//                     }
-//                     let xyR = [], xyL = [];
-//                     if (dataLight[i].spats[j].relative == 2) //右边红绿灯
-//                     {
-//                         if (xyR.length == 0) {
-//                             xyR = L.addLight(viewer, "276", dataLight[0].lampPos.split(',')[0], dataLight[0].lampPos.split(',')[1], dataLight[0].heading, type);
-//                         }
-//                         else
-//                         {
-//                             xyR = L.addLight(viewer, "276", xyR[0], xyR[1], dataLight[0].heading, type);
-//                         }
-                       
-//                     }
-//                     else if (dataLight[i].spats[j].relative == 1) {
-//                         if (xyL.length ==0) {
-//                             xyL = L.addLight(viewer, "276", dataLight[0].lampPos.split(',')[0] , dataLight[0].lampPos.split(',')[1] , dataLight[0].heading, type);
-//                         }
-//                         else
-//                         {
-//                             xyL = L.addLight(viewer, "276", xyL[0], xyL[1], dataLight[0].heading, type);
-//                         }
-//                     }
-//                     this.light3DList.push(L);
-//                 }
+                    }
+                    else if (dataLight[i].spats[j].poleRelative == 1) {
+                        if (xyL.length == 0) {
+                            let index = parseInt(dataLight[i].type.substring(1, 2));
+                            xyL = L.addLight(viewer, dataLight[i].spats[j].spatId, x - Math.sin(180 * (Math.PI / 180)) * 0.00003 * index, y - Math.cos(180 * (Math.PI / 180)) * 0.00003 * index);
+                        }
+                        else {
+                            xyL = L.addLight(viewer, dataLight[i].spats[j].spatId, xyL[0], xyL[1], dataLight[i].heading - 90, type);
+                        }
+                    }
+                    this.light3DList.push(L);
+                }
 
-//             }
-//         }
-
-        // let l276 = new light3D();
-        // l276.addLight(viewer, "276", 121.17551589465815, 31.281617738453047, 250, 0);
-        // this.light3DList.push(l276);
-
-        // // let l275 = new light3D();
-        // // l275.addLight2(viewer, "275", 121.17557385020773, 31.281633267595755, 250);
-        // // this.light3DList.push(l275);
-
-        // // let l277 = new light3D();
-        // // l277.addLight2(viewer, "277", 121.17512933327903, 31.28169112844802, -30);
-        // // this.light3DList.push(l277);
-
-        // // let l278 = new light3D();
-        // // l278.addLight2(viewer, "278", 121.17510881207043, 31.281747510005268, -30);
-        // // this.light3DList.push(l278);
-
-        // // let l282 = new light3D();
-        // // l282.addLight2(viewer, "282", 121.17534995826606, 31.282071700494583, 60);
-        // // this.light3DList.push(l282);
-
-        // //////////测试L型杆
-        // let l561 = new light3D();
-        // let xy = l561.addLight(viewer, "561", 121.1849806, 31.2764686, 180, 1);
-        // this.light3DList.push(l561);
-
-        // let l562 = new light3D();
-        // let xy2 = l562.addLight(viewer, "562", xy[0], xy[1], 180, 1);
-        // l562.img3 = '../../static/images/light/red_2.png'
-        // this.light3DList.push(l562);
-
-
-        // let l59 = new light3D();
-        // l59.addLight(viewer, "59", xy2[0], xy2[1], 180, 1);
-        // l59.img3 = '../../static/images/light/red_3.png'
-        // this.light3DList.push(l59);
-
-
-
-        // // let xT = 121.1849806 - Math.sin(180 * (Math.PI / 180)) * 0.00012;
-        // // let yT = 31.2764686 - Math.cos(180 * (Math.PI / 180)) * 0.00012;
-        // // let l60 = new light3D();
-        // // l60.addLight(viewer, "60", xT,yT, 180,1);
-        // // l60.img3='../../static/images/light/red_4.png'
-        // // this.light3DList.push(l60);
-
-
+            }
+        }
 
     }
 }

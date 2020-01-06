@@ -11,17 +11,23 @@ window.GisUtils = {
             var entity = null;
             //合并写法
             var instances = [];
-                var position = Cesium.Cartesian3.fromDegrees(x, y, 0);
-                //  
-                var heading = Cesium.Math.toRadians(0);
+                var position = Cesium.Cartesian3.fromDegrees(x, y, 0); 
                 //是否旋转
                 if (isHeading) {
                     heading = Cesium.Math.toRadians(heading);
                 }
+                else
+                {
+                    heading = Cesium.Math.toRadians(0);
+                }
                 var pitch = Cesium.Math.toRadians(0);
                 var roll = 0;
+                // var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+                // var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
                 var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+                let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
+                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms)
+                
                 instances.push({
                     modelMatrix: modelMatrix
                 });
