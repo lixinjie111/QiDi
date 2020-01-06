@@ -203,7 +203,7 @@ function init3DMap() {
 
     // 框区域
     gis3d.addRectangle('rectangleOne', currentExtent);
-    gis3d.addRectangle('rectangleTwo', perExtent, "#ffffff",);
+    gis3d.addRectangle('rectangleTwo', perExtent, "#ffffff", 0);
 
     perceptionCars.viewer = gis3d.cesium.viewer;
     platCars.viewer = gis3d.cesium.viewer;

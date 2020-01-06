@@ -87,7 +87,8 @@ function init3DMap() {
     GisData.initThreeData(gis3d.cesium.viewer);
 
     // 框区域
-    gis3d.addRectangle(currentExtent[3][0],currentExtent[3][1],currentExtent[1][0],currentExtent[1][1]);
+
+    gis3d.addRectangle('rectangleTest', currentExtent);
 
     perceptionCars.viewer = gis3d.cesium.viewer;
 
