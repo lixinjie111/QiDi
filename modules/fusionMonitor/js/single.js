@@ -70,7 +70,8 @@ let removeWarning = [];
 
 let isStart = false;
 
-let timeCount = 0;
+// let timeCount = 0;
+let isDistance = false;
 
 /** 调用 **/
 $(function() {
@@ -177,14 +178,24 @@ function drawLine(data){
         distanceMapStart(point);
     }else{
         //绘制线
-        pointPath.push(prevLastPoint);
+        if(Object.keys(prevLastPoint).length>0){
+            pointPath.push(prevLastPoint);
+        }
         pointPath.push(point);
         // timeCount++;
         let lngDiff = 0;
         let latDiff = 0;
-        // if(timeCount>1000&&timeCount<2000){
+        // console.log(timeCount);
+        // if(timeCount>20&&timeCount<50){
         //     lngDiff=40;
-        //     latDiff=40
+        //     latDiff=40;
+        // }else{
+        if(Object.keys(prevLastPoint).length>0){
+            lngDiff = Math.abs(prevLastPoint.lng-point.lng)*10080;
+            lngDiff = lngDiff.toFixed(1);
+            latDiff = Math.abs(prevLastPoint.lat-point.lat)*10080;
+            latDiff = latDiff.toFixed(1);
+        }
         // }
 
         //判断两个点
@@ -194,12 +205,25 @@ function drawLine(data){
         // latDiff = latDiff.toFixed(1);
         //如果传入的值距离太远 重新绘制点
         if(lngDiff>30||latDiff>30){
-            let marker = new AMap.Marker({
-                position: point,   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
-                icon:'./images/circle.png',
-                offset: new AMap.Pixel(-10, -10)
-            });
+            prevLastPoint=[];
+            isDistance = true;
+            return;
         }else{
+            if(isDistance){
+                let marker = new AMap.CircleMarker({
+                    center:point,
+                    strokeWeight:0,
+                    strokeOpacity:0,
+                    fillColor:'#ff0000',
+                    fillOpacity:0.5,
+                    zIndex:10,
+                    bubble:true,
+                    cursor:'pointer',
+                    radius:2
+                })
+                distanceMap.add(marker);
+                isDistance=false;
+            }
             let polyline = new AMap.Polyline({
                 map: distanceMap,
                 path: pointPath,
