@@ -361,16 +361,23 @@ function onPulseMessage(message){
         perPulseCount++
 
         //平台车
-        if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
-           let platCar =  platCars.processPlatformCarsTrack(result.timestamp,delayTime,perCars);
-           if(platCar){
+        if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0) {
+            let platCar = platCars.processPlatformCarsTrack(result.timestamp, delayTime, perCars);
+            if (platCar) {
                 let _camData = {
                     isParent: true,
                     type: 'vehData',
                     data: platCar['vehData']
                 }
-                parent.postMessage(_camData,"*");
-           }
+                parent.postMessage(_camData, "*");
+                if (perCars && perCars.length > 0) {
+                    perceptionCars.processPerceptionMesage(platCar['perData']);
+                }
+            } else {
+                if (perCars && perCars.length > 0) {
+                    perceptionCars.processPerceptionMesage(perCars);
+                }
+            }
         }
 
         //取消告警

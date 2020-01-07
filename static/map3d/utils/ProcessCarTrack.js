@@ -226,9 +226,13 @@ class ProcessCarTrack {
 
         let platCar = {
             'mainCar':{},
-            'vehData':new Object()
+            'vehData':new Object(),
+            'perData':[]
         };
-
+        console.log("######################");
+        if(perCars&&perCars.length>0){
+            console.log("融合前感知车辆的长度：",perCars.length)
+        }
         for (var vid in _this.cacheAndInterpolateDataByVid){
             let vehObj = this.vehObj[vid];
             if(Object.keys(vehObj).length>0){
@@ -253,6 +257,7 @@ class ProcessCarTrack {
                     }
                     //融合结果
                     if(perCars&&perCars.length>0){
+                        // debugger
                         let platLng = cardata.longitude*10800;
                         let platLat = cardata.latitude*10800;
                         let platHeading = cardata.heading;
@@ -260,12 +265,14 @@ class ProcessCarTrack {
                             let perLng = perCars[i].longitude*10800;
                             let perLat = perCars[i].latitude*10800;
                             let perHeading = perCars[i].heading;
-                            let lngDiff = Math.abs(perLng-platLng);
-                            let latDiff = Math.abs(platLat-perLat);
+                            let lngDiff = Math.abs(perLng-platLng).toFixed(1);
+                            let latDiff = Math.abs(platLat-perLat).toFixed(1);
                             let headingDiff = Math.abs(perHeading-platHeading);
                             //平台和感知进行融合了
                             if((lngDiff<window.fusionLng||latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
                                 cardata.isFusion = true;
+                                console.log(lngDiff,latDiff,headingDiff,perCars[i].vehicleId.substring(0,4),cardata.plateNo);
+                                perCars.splice(i,1);
                                 break;
                             }
                         }
@@ -316,9 +323,13 @@ class ProcessCarTrack {
                 }
             }
         }
+        if(perCars&&perCars.length>0){
+            console.log("融合后感知车辆的长度：",perCars.length)
+        }
         vehData.platVeh = platVeh;
         vehData.v2xVeh = v2xVeh;
         platCar['vehData'] = vehData;
+        platCar['perData'] = perCars;
         return platCar;
     }
    /* platProcess(time,delayTime,isStart) {
@@ -601,7 +612,6 @@ class ProcessCarTrack {
                 maximumScale: 100,
             }));
             this.models[vid] = vid; 
-            debugger
             if (d.isFusion) {
                 modelCar.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
             }
@@ -687,7 +697,6 @@ class ProcessCarTrack {
 
             let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
             Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carpt.modelMatrix)
-            debugger
             if (d.isFusion) {
                 carpt.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
             }

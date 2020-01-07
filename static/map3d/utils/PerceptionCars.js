@@ -169,7 +169,6 @@ class PerceptionCars {
                 this.clearAllModel();
             }
         }
-        this.processPerceptionMesage(list);
         return list;
     }
   getMinValue(devId, time, delayTime, cacheData) {
