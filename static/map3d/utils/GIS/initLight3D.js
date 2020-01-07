@@ -26,8 +26,8 @@ window.initLight3D = {
         for (let i = 0; i < dataLight.length; i++) {
 
             //增加杆模型
-            GisUtils.loadModelColl(viewer, dataLight[i].lampPos.split(',')[0], dataLight[i].lampPos.split(',')[1], dataLight[i].heading, 'B1', true);
-            if (!dataLight[i].spats) {
+            GisUtils.loadModelColl(viewer, dataLight[i].lampPos.split(',')[0], dataLight[i].lampPos.split(',')[1], dataLight[i].heading,dataLight[i].type, true,dataLight[i].lampPoleId);
+            if (dataLight[i].spats) {
                 //增加红绿灯
                 for (let j = 0; j < dataLight[i].spats.length; j++) {
                     if (dataLight[i].spats[j].poleRelative) {
