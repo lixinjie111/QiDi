@@ -332,8 +332,8 @@ function onPulseMessage(message){
                     let nonNum = 0;
                     let perData={};
                     // processPerData(cars[0]);
-                    for (let i = 0; i < cars.length; i++) {
-                        let obj = cars[i];
+                    for (let i = 0; i < perCars.length; i++) {
+                        let obj = perCars[i];
                         if (obj.targetType == 0){
                             persons++;
                         }

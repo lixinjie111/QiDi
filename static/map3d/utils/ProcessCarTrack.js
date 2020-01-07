@@ -298,7 +298,7 @@ class ProcessCarTrack {
                     this.removeObj[vid]++;
                     //超过5s没有缓存数就让消失
                     if(this.removeObj[vid]>125){
-                        console.log(vid,"到达3s，消失了");
+                        console.log(vid,"到达5s，消失了");
                         // console.log("消失前：",platVeh,v2xVeh);
                         if(vehObj.devType==1&&platVeh>0){
                             platVeh--;
