@@ -12,8 +12,6 @@ class ProcessData {
         this.dynamicWarning={};
         this.staticWarning={};
         this.cancelWarning={};
-
-        this.poleObj={};
     }
 
     receiveLightData(data){
@@ -22,17 +20,6 @@ class ProcessData {
                 this.spatObj[item.spatId] = new Array();
             }
             this.spatObj[item.spatId].push(item);
-            if(!this.poleObj[item.poleId]){
-                this.poleObj[item.poleId]=new Object();
-            }
-            let obj = {
-                "poleHeading": item.poleHeading,
-                "poleId": item.poleId,
-                "polePos": item.polePos,
-                "poleRelative": item.poleRelative,
-                "poleType": item.poleType,
-            }
-
         });
     }
     receiveCanData(data){

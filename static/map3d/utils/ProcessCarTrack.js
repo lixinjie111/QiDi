@@ -136,7 +136,8 @@ class ProcessCarTrack {
             heading: car.heading,
             devType: car.devType,
             type: car.type,
-            source: car.source
+            source: car.source,
+            isFusion:false
         };
         if (cdata == null)//没有该车的数据
         {
@@ -217,7 +218,7 @@ class ProcessCarTrack {
             cdata.lastReceiveData = cdata.nowReceiveData;
         }
     }
-    processPlatformCarsTrack(time,delayTime) {
+    processPlatformCarsTrack(time,delayTime,perCars){
         let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
@@ -225,11 +226,10 @@ class ProcessCarTrack {
 
         let platCar = {
             'mainCar':{},
-            'vehData':new Object(),
-            'carData':new Object()
+            'vehData':new Object()
         };
 
-        for (var vid in _this.cacheAndInterpolateDataByVid){
+        for(var vid in _this.cacheAndInterpolateDataByVid){
             let vehObj = this.vehObj[vid];
             if(Object.keys(vehObj).length>0){
                 // console.log(cardata)
@@ -251,7 +251,25 @@ class ProcessCarTrack {
                     if (!cardata) {
                         return;
                     }
-                    platCar.carData[vid]=cardata;
+                    //融合结果
+                    if(perCars&&perCars.length>0){
+                        let platLng = cardata.longitude*10800;
+                        let platLat = cardata.latitude*10800;
+                        let platHeading = cardata.heading;
+                        for(let i = 0;i<perCars.length;i++){
+                            let perLng = perCars[i].longitude*10800;
+                            let perLat = perCars[i].latitude*10800;
+                            let perHeading = perCars[i].heading;
+                            let lngDiff = Math.abs(perLng-platLng);
+                            let latDiff = Math.abs(platLat-perLat);
+                            let headingDiff = Math.abs(perHeading-platHeading);
+                            //平台和感知进行融合了
+                            if((lngDiff<window.fusionLng||latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
+                                cardata.isFusion = true;
+                                break;
+                            }
+                        }
+                    }
                     _this.moveCar(cardata);
                     if (_this.mainCarVID == cardata.vehicleId){
                         // mainCar= cardata;
@@ -278,8 +296,8 @@ class ProcessCarTrack {
                 }else{
                     //消失机制
                     this.removeObj[vid]++;
-                    //超过3s没有缓存数就让消失
-                    if(this.removeObj[vid]>75){
+                    //超过5s没有缓存数就让消失
+                    if(this.removeObj[vid]>125){
                         console.log(vid,"到达3s，消失了");
                         // console.log("消失前：",platVeh,v2xVeh);
                         if(vehObj.devType==1&&platVeh>0){

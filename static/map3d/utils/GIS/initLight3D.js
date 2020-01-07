@@ -21,7 +21,7 @@ window.initLight3D = {
      * 
      * @param {地图视图} viewer 
      */
-    initlight(viewer, dataLight) { 
+    initlight(viewer, dataLight) {
         if (!dataLight) return;
         for (let i = 0; i < dataLight.length; i++) {
 
