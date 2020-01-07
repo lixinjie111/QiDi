@@ -196,10 +196,10 @@ function init3DMap() {
     GisData.initServer(gis3d.cesium.viewer);
     //初始化模型数据--树
     GisData.initThreeData(gis3d.cesium.viewer);
-    //初始化模型--红路灯
-    GisData.initLightModel(gis3d.cesium.viewer);
-    //初始化模型--红路灯牌
-    initLight3D.initlight(gis3d.cesium.viewer);
+    // //初始化模型--红路灯
+    // GisData.initLightModel(gis3d.cesium.viewer);
+    // //初始化模型--红路灯牌
+    // initLight3D.initlight(gis3d.cesium.viewer);
 
     // 框区域
     gis3d.addRectangle('rectangleOne', currentExtent);
