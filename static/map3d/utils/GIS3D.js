@@ -10,7 +10,6 @@ class GIS3D {
     }
     //初始化地图
     initload(id, isFXAA) {
-        document.getElementById(id);
         let cesiumContainer = document.getElementById(id);
         this.initCesium(cesiumContainer); // Initialize Cesium renderer  
         if (!isFXAA) {
