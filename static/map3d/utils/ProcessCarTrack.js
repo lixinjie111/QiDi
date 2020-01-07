@@ -271,7 +271,7 @@ class ProcessCarTrack {
                             } 
                             if (isV2X) {
                                 _this.poleToCar(cardata);
-                            }
+                            } 
                         }
                         
                     }
@@ -280,7 +280,7 @@ class ProcessCarTrack {
                     this.removeObj[vid]++;
                     //超过3s没有缓存数就让消失
                     if(this.removeObj[vid]>75){
-                        console.log(vid,"到达3s，消失了");
+                        console. log(vid,"到达3s，消失了");
                         // console.log("消失前：",platVeh,v2xVeh);
                         if(vehObj.devType==1&&platVeh>0){
                             platVeh--;
@@ -869,30 +869,17 @@ class ProcessCarTrack {
             if (primitive.id) {
                 if (primitive instanceof Cesium.Model && primitive.id == carId) {
                     this.viewer.scene.primitives.remove(primitive);
+                    break;
                 }
             }
         }
-        //移除光圈
-        for (let i = 1; i <= 4; i++) {
-            if (this.viewer.entities.getById(vehicleId + "ellipse" + i)) {
-                this.viewer.entities.remove(this.viewer.entities.getById(vehicleId + "ellipse" + i));
-            }
-        }
-        //移除标签
-        if (this.viewer.entities.getById(vehicleId + "lblpt")) {
-            this.viewer.entities.remove(this.viewer.entities.getById(vehicleId + "lblpt"));
-        }
-        //移除信号指示
-        let billboard = this.viewer.entities.getById(vehicleId + "billboard");
-        if (billboard != null) {
-            this.viewer.entities.remove(billboard);
-        } 
         // //移除连接线 
         var entities = this.viewer.entities._entities._array;
         for (var i = 0; i < entities.length; i++) {
             if (entities[i].id) {
-                if (entities[i].id.indexOf(vehicleId + "line") != -1) {
+                if (entities[i].id.indexOf(vehicleId) != -1) {
                     this.viewer.entities.remove(entities[i]);
+                    i--;
                 }
             }
         }
