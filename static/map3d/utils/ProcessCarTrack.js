@@ -592,7 +592,7 @@ class ProcessCarTrack {
                 }
             }  
 
-            this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
+          let modelCar=this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
                 id: vid + "car",
                 modelMatrix: modelMatrix,
                 url: url,
@@ -600,8 +600,15 @@ class ProcessCarTrack {
                 show: true,
                 maximumScale: 100,
             }));
-            this.models[vid] = vid;
-
+            this.models[vid] = vid; 
+            debugger
+            if (d.isFusion) {
+                modelCar.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
+            }
+            else {
+                //清除第一次 出现360数据，第二次颜色问题
+                 modelCar.color = new Cesium.Color(1, 1, 1, 1);
+            }
 
             ////////////////////////
             let entityLabel = this.viewer.entities.add({
@@ -680,6 +687,14 @@ class ProcessCarTrack {
 
             let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
             Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carpt.modelMatrix)
+            debugger
+            if (d.isFusion) {
+                carpt.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
+            }
+            else {
+                //清除第一次 出现360数据，第二次颜色问题
+                carpt.color = new Cesium.Color(1, 1, 1, 1);
+            }
 
             var carlabelpt = this.viewer.entities.getById(vid + "lblpt");
             carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 3);
