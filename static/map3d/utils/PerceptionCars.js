@@ -366,14 +366,13 @@ class PerceptionCars {
   }
   removeAllModelPrimitives() {
     var primitives = this.viewer.scene.primitives;
-  
     for (var i = 0; i < primitives.length; i++) {
       var primitive = primitives.get(i);
-      console.log(primitive.id)
       if (primitive.id) {
-        if (primitive instanceof Cesium.Model && primitive.id.search("carbox") != -1 || primitive.id.search("person") != -1 || primitive.id.search("bicycle") != -1 ||
+        if (primitive.id.search("carbox") != -1 || primitive.id.search("person") != -1 || primitive.id.search("bicycle") != -1 ||
           primitive.id.search("motorbike") != -1 || primitive.id.search("bus") != -1 || primitive.id.search("truck") != -1) {
           this.viewer.scene.primitives.remove(primitive);
+          i--;
         }
       }
     }
@@ -384,6 +383,7 @@ class PerceptionCars {
       if (entities[i].id) {
         if (entities[i].id.search("label") != -1) {
           this.viewer.entities.remove(entities[i]);
+          i--;
         }
       }
     }
@@ -520,6 +520,7 @@ class PerceptionCars {
       if (primitive.id) {
         if (primitive instanceof Cesium.Model && !primitive.show && primitive.id.search(name) != -1) {
           this.viewer.scene.primitives.remove(primitive);
+          i--;
         }
       }
     }
@@ -530,6 +531,7 @@ class PerceptionCars {
       if (entities[i].id) {
         if (!entities[i].show && entities[i].id.search(name) != -1) {
           this.viewer.entities.remove(entities[i]);
+          i--;
         }
       }
     }
