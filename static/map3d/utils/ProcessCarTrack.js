@@ -212,6 +212,7 @@ class ProcessCarTrack {
                     d2.devType = cdata.nowReceiveData.devType;
                     d2.source = cdata.nowReceiveData.source;
                     d2.steps = i;
+                    d2.isFusion = false;
                     cdata.cacheData.push(d2);
                 }
             }
@@ -268,6 +269,7 @@ class ProcessCarTrack {
                             let lngDiff = Math.abs(perLng-platLng).toFixed(1);
                             let latDiff = Math.abs(platLat-perLat).toFixed(1);
                             let headingDiff = Math.abs(perHeading-platHeading);
+                            console.log("++++++++",cardata)
                             //平台和感知进行融合了
                             if((lngDiff<window.fusionLng||latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
                                 cardata.isFusion = true;
