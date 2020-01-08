@@ -284,7 +284,7 @@ function init3DMap() {
     //初始化地图--道路数据
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
-    GisData.initServer(gis3d.cesium.viewer);
+    // GisData.initServer(gis3d.cesium.viewer);
     //初始化模型数据--树
     GisData.initThreeData(gis3d.cesium.viewer);
     //初始化模型--红路灯杆
