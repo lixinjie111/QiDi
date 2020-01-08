@@ -514,12 +514,21 @@ class PerceptionCars {
   }
   removeModelPrimitives(name) {
     var primitives = this.viewer.scene.primitives;
+    let index=0; //保留其中一个模型
     for (var i = 0; i < primitives.length; i++) {
       var primitive = primitives.get(i);
       if (primitive.id) {
         if (primitive instanceof Cesium.Model && !primitive.show && primitive.id.search(name) != -1) {
-          this.viewer.scene.primitives.remove(primitive);
-          i--;
+          if(index==0)
+          {
+            index++
+          }
+          else
+          {
+            this.viewer.scene.primitives.remove(primitive);
+            i--;
+          } 
+       
         }
       }
     }
