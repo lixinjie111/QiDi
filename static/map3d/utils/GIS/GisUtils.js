@@ -5,36 +5,58 @@ window.GisUtils = {
     /**
      * 加载灯杆
      */
-    loadModelColl(viewer,x,y,heading,name, isHeading) {
+    loadModelColl(viewer, x, y, heading, name, isHeading,id) {
         //添加路灯杆和信息牌 
         // console.log(item) 
-            var entity = null;
-            //合并写法
-            var instances = [];
-                var position = Cesium.Cartesian3.fromDegrees(x, y, 0); 
-                //是否旋转
-                if (isHeading) {
-                    heading = Cesium.Math.toRadians(heading);
-                }
-                else
-                {
-                    heading = Cesium.Math.toRadians(0);
-                }
-                var pitch = Cesium.Math.toRadians(0);
-                var roll = 0;
-                // var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-                // var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
-                var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-                let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
-                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms)
-                
-                instances.push({
-                    modelMatrix: modelMatrix
-                });
-            viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
-                url: '../../static/map3d/model/' + name + '.glb',
-                instances: instances
-            })); 
+        var entity = null; 
+        var position1= Cesium.Cartesian3.fromDegrees(x,y,5.0);
+        let entityLabel =viewer.entities.add({  
+          id:id+"light",
+          position: position1,
+          point: {
+            color: Cesium.Color.RED,    //点位颜色
+            pixelSize: 0,         //像素点大小
+            scaleByDistance: new Cesium.NearFarScalar(200, 0, 2000, 1)
+          },
+          label: {
+            text: id+","+heading,
+            fillColor: Cesium.Color.fromCssColorString('#2f2f2f'),
+            backgroundColor: Cesium.Color.fromCssColorString('#F5F5DC').withAlpha(0.5),
+            font: '12px',
+            showBackground: true,
+            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+            pixelOffset: new Cesium.Cartesian2(0.0, 0),
+            // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.5),
+            scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
+          }
+        });
+        
+        //合并写法
+        var instances = [];
+
+        var position = Cesium.Cartesian3.fromDegrees(x, y, 0.0);
+        //是否旋转
+        if (isHeading) {
+            heading = Cesium.Math.toRadians(heading);
+        }
+        else {
+            heading = Cesium.Math.toRadians(0);
+        }
+        var pitch = Cesium.Math.toRadians(0);
+        var roll = 0;
+        // var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+        // var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+        var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+        let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
+        var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms)
+
+        instances.push({
+            modelMatrix: modelMatrix
+        });
+        viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
+            url: '../../static/map3d/model/' + name + '.glb',
+            instances: instances
+        }));
     },
     //度数转换
     getRad(d) {

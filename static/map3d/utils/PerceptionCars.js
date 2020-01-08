@@ -24,7 +24,6 @@ class PerceptionCars {
   }
 
   addPerceptionOneFrame(fusionList) {
-    console.log(fusionList)
 
       try {
 
@@ -139,12 +138,12 @@ class PerceptionCars {
     }
   }
   processPerTrack(time, delayTime) {
-        let devList = [];
+        // let devList = [];
         let list = [];
         let drawObj = {};
         for (let devId in this.cacheAndInterpolateDataByDevId){
             let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
-            if (devCacheData && devCacheData.cacheData.length > 0) {
+            if (devCacheData && devCacheData.cacheData.length > 0){
                 let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
                 if (!devData){
                     // console.log("没有找到相应的值")
@@ -160,18 +159,17 @@ class PerceptionCars {
                 let fusionList = devData.data||[];
                 list.push.apply(list,fusionList);
                 // console.log("list:",list)
-                devList.push(devData);
+                // devList.push(devData);
             }
         }
         //如果本次没找见 则清除所有的模型
-        if(!drawObj) {
+        if(!drawObj){
             this.count++;
             if(this.count>=10){
                 this.clearAllModel();
             }
         }
-        this.processPerceptionMesage(list);
-        return devList;
+        return list;
     }
   getMinValue(devId, time, delayTime, cacheData) {
     /* let minDiff = Math.abs(time-minData.gpsTime-delayTime);*/
@@ -516,12 +514,21 @@ class PerceptionCars {
   }
   removeModelPrimitives(name) {
     var primitives = this.viewer.scene.primitives;
+    let index=0; //保留其中一个模型
     for (var i = 0; i < primitives.length; i++) {
       var primitive = primitives.get(i);
       if (primitive.id) {
         if (primitive instanceof Cesium.Model && !primitive.show && primitive.id.search(name) != -1) {
-          this.viewer.scene.primitives.remove(primitive);
-          i--;
+          if(index==0)
+          {
+            index++
+          }
+          else
+          {
+            this.viewer.scene.primitives.remove(primitive);
+            i--;
+          } 
+       
         }
       }
     }

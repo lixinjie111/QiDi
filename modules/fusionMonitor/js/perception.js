@@ -196,10 +196,10 @@ function init3DMap() {
     GisData.initServer(gis3d.cesium.viewer);
     //初始化模型数据--树
     GisData.initThreeData(gis3d.cesium.viewer);
-    //初始化模型--红路灯
-    GisData.initLightModel(gis3d.cesium.viewer);
-    //初始化模型--红路灯牌
-    initLight3D.initlight(gis3d.cesium.viewer);
+    // //初始化模型--红路灯
+    // GisData.initLightModel(gis3d.cesium.viewer);
+    // //初始化模型--红路灯牌
+    // initLight3D.initlight(gis3d.cesium.viewer);
 
     // 框区域
     gis3d.addRectangle('rectangleOne', currentExtent);
@@ -321,17 +321,63 @@ function onPulseMessage(message){
         let processTime = result.timestamp-delayTime;
         processDataTime = TDate.formatTime(processTime,'yy-mm-dd hh:mm:ss:ms');
         document.querySelector('.c-pulse-time').innerHTML = processDataTime;
+        let perCars;
+        if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>per){
+            perPulseCount=1;
+            if(Object.keys(perceptionCars.devObj).length>0){
+                perCars = perceptionCars.processPerTrack(result.timestamp,delayTime);
+                if(perCars&&perCars.length>0){
+                    let pernum = 0;
+                    let persons = 0;
+                    let nonNum = 0;
+                    let perData={};
+                    // processPerData(cars[0]);
+                    for (let i = 0; i < perCars.length; i++) {
+                        let obj = perCars[i];
+                        if (obj.targetType == 0){
+                            persons++;
+                        }
+
+                        if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
+                            pernum++;
+                        }
+
+                        if(obj.targetType == 1 || obj.targetType == 3){
+                            nonNum++;
+                        }
+                    }
+                    perData['veh']=pernum;
+                    perData['person'] = persons;
+                    perData['noMotor'] = nonNum;
+                    let _camData = {
+                        isParent: true,
+                        type: 'perceptionData',
+                        data: perData
+                    }
+                    parent.postMessage(_camData,"*");
+                }
+            }
+        }
+        perPulseCount++
+
         //平台车
-        if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
-           let platCar =  platCars.processPlatformCarsTrack(result.timestamp,delayTime);
-           if(platCar){
+        if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0) {
+            let platCar = platCars.processPlatformCarsTrack(result.timestamp, delayTime, perCars);
+            if (platCar) {
                 let _camData = {
                     isParent: true,
                     type: 'vehData',
                     data: platCar['vehData']
                 }
-                parent.postMessage(_camData,"*");
-           }
+                parent.postMessage(_camData, "*");
+                if (perCars && perCars.length > 0) {
+                    perceptionCars.processPerceptionMesage(platCar['perData']);
+                }
+            } else {
+                if (perCars && perCars.length > 0) {
+                    perceptionCars.processPerceptionMesage(perCars);
+                }
+            }
         }
 
         //取消告警
@@ -362,51 +408,6 @@ function onPulseMessage(message){
         spatPulseCount++;
 
     }
-
-    if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>per){
-        perPulseCount=1;
-        if(Object.keys(perceptionCars.devObj).length>0){
-            let perList = perceptionCars.processPerTrack(result.timestamp,delayTime);
-            if(perList){
-                let pernum = 0;
-                let persons = 0;
-                let nonNum = 0;
-                let perData={};
-                if(perList.length>0){
-                    processPerData(perList[0]);
-                    perList.forEach(item=>{
-                        let cars = item.data;
-                        if(cars&&cars.length>0) {
-                            for (let i = 0; i < cars.length; i++) {
-                                let obj = cars[i];
-                                if (obj.targetType == 0){
-                                    persons++;
-                                }
-
-                                if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
-                                    pernum++;
-                                }
-
-                                if(obj.targetType == 1 || obj.targetType == 3){
-                                    nonNum++;
-                                }
-                            }
-                        }
-                    });
-                }
-                perData['veh']=pernum;
-                perData['person'] = persons;
-                perData['noMotor'] = nonNum;
-                let _camData = {
-                    isParent: true,
-                    type: 'perceptionData',
-                    data: perData
-                }
-                parent.postMessage(_camData,"*");
-            }
-        }
-    }
-    perPulseCount++
 
     //执行动态告警
     if(warningCacheCount>pulseNum&&(warningPulseCount==0||warningPulseCount>warning)){
@@ -581,8 +582,7 @@ function onCancelWarningMessage(message) {
         processData.cancelWarning[warnId]=obj;
     }
 }
-function processPerData(data){
-    let cars = data.data;
+function processPerData(cars){
     if(cars.length>0) {
         let pcarnum = 0;
         let persons = 0;

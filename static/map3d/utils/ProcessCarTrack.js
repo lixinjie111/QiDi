@@ -136,7 +136,8 @@ class ProcessCarTrack {
             heading: car.heading,
             devType: car.devType,
             type: car.type,
-            source: car.source
+            source: car.source,
+            isFusion:false
         };
         if (cdata == null)//没有该车的数据
         {
@@ -217,7 +218,7 @@ class ProcessCarTrack {
             cdata.lastReceiveData = cdata.nowReceiveData;
         }
     }
-    processPlatformCarsTrack(time,delayTime) {
+    processPlatformCarsTrack(time,delayTime,perCars){
         let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
@@ -226,9 +227,12 @@ class ProcessCarTrack {
         let platCar = {
             'mainCar':{},
             'vehData':new Object(),
-            'carData':new Object()
+            'perData':[]
         };
-
+        console.log("######################");
+        if(perCars&&perCars.length>0){
+            console.log("融合前感知车辆的长度：",perCars.length)
+        }
         for (var vid in _this.cacheAndInterpolateDataByVid){
             let vehObj = this.vehObj[vid];
             if(Object.keys(vehObj).length>0){
@@ -251,7 +255,28 @@ class ProcessCarTrack {
                     if (!cardata) {
                         return;
                     }
-                    platCar.carData[vid]=cardata;
+                    //融合结果
+                    if(perCars&&perCars.length>0){
+                        // debugger
+                        let platLng = cardata.longitude*10800;
+                        let platLat = cardata.latitude*10800;
+                        let platHeading = cardata.heading;
+                        for(let i = 0;i<perCars.length;i++){
+                            let perLng = perCars[i].longitude*10800;
+                            let perLat = perCars[i].latitude*10800;
+                            let perHeading = perCars[i].heading;
+                            let lngDiff = Math.abs(perLng-platLng).toFixed(1);
+                            let latDiff = Math.abs(platLat-perLat).toFixed(1);
+                            let headingDiff = Math.abs(perHeading-platHeading);
+                            //平台和感知进行融合了
+                            if((lngDiff<window.fusionLng||latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
+                                cardata.isFusion = true;
+                                console.log(lngDiff,latDiff,headingDiff,perCars[i].vehicleId.substring(0,4),cardata.plateNo);
+                                perCars.splice(i,1);
+                                break;
+                            }
+                        }
+                    }
                     _this.moveCar(cardata);
                     if (_this.mainCarVID == cardata.vehicleId){
                         // mainCar= cardata;
@@ -271,16 +296,16 @@ class ProcessCarTrack {
                             } 
                             if (isV2X) {
                                 _this.poleToCar(cardata);
-                            } 
+                            }
                         }
                         
                     }
                 }else{
                     //消失机制
                     this.removeObj[vid]++;
-                    //超过3s没有缓存数就让消失
-                    if(this.removeObj[vid]>75){
-                        console. log(vid,"到达3s，消失了");
+                    //超过5s没有缓存数就让消失
+                    if(this.removeObj[vid]>125){
+                        console.log(vid,"到达5s，消失了");
                         // console.log("消失前：",platVeh,v2xVeh);
                         if(vehObj.devType==1&&platVeh>0){
                             platVeh--;
@@ -298,9 +323,13 @@ class ProcessCarTrack {
                 }
             }
         }
+        if(perCars&&perCars.length>0){
+            console.log("融合后感知车辆的长度：",perCars.length)
+        }
         vehData.platVeh = platVeh;
         vehData.v2xVeh = v2xVeh;
         platCar['vehData'] = vehData;
+        platCar['perData'] = perCars;
         return platCar;
     }
    /* platProcess(time,delayTime,isStart) {
@@ -574,7 +603,7 @@ class ProcessCarTrack {
                 }
             }  
 
-            this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
+          let modelCar=this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
                 id: vid + "car",
                 modelMatrix: modelMatrix,
                 url: url,
@@ -582,8 +611,14 @@ class ProcessCarTrack {
                 show: true,
                 maximumScale: 100,
             }));
-            this.models[vid] = vid;
-
+            this.models[vid] = vid; 
+            if (d.isFusion) {
+                modelCar.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
+            }
+            else {
+                //清除第一次 出现360数据，第二次颜色问题
+                 modelCar.color = new Cesium.Color(1, 1, 1, 1);
+            }
 
             ////////////////////////
             let entityLabel = this.viewer.entities.add({
@@ -662,6 +697,13 @@ class ProcessCarTrack {
 
             let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
             Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms, carpt.modelMatrix)
+            if (d.isFusion) {
+                carpt.color = Cesium.Color.fromAlpha(Cesium.Color.RED, parseFloat(1));
+            }
+            else {
+                //清除第一次 出现360数据，第二次颜色问题
+                carpt.color = new Cesium.Color(1, 1, 1, 1);
+            }
 
             var carlabelpt = this.viewer.entities.getById(vid + "lblpt");
             carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 3);

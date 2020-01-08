@@ -161,8 +161,9 @@ class GIS3D {
         position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5),
         polyline: {
             positions: positions,
-            width: 3,
-            material: Cesium.Color.fromCssColorString('#ab6503')
+            width: 2,
+            material: Cesium.Color.fromCssColorString('#ab6503'),
+            distanceDisplayCondition : new Cesium.DistanceDisplayCondition(0.0, 1000.0)
         },
         label: {
             text: text, 
@@ -171,7 +172,7 @@ class GIS3D {
             showBackground: true,
             horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
             pixelOffset: new Cesium.Cartesian2(0.0, 0),
-            scaleByDistance: new Cesium.NearFarScalar(100, 1.3, 500, 0)
+            scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
         }
     });
 
