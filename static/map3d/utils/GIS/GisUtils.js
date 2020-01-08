@@ -3,34 +3,114 @@
  */
 window.GisUtils = {
     /**
+     * 控制图层是否显示
+     * @param {三维} viewer 
+     * @param {是否显示} isShow 
+     */
+    isShowDataSources(viewer, isShow) {
+        if (viewer.dataSources.length > 0) {
+            for (var i = 0; i < viewer.dataSources.length; i++) {
+                viewer.dataSources.get(i).show = isShow;
+            }
+        }
+    },
+    /**
+     * 控制信号灯显示
+     * @param {三维视图} viewer 
+     * @param {是否显示，true，false} isShow 
+     */
+    isShowLights(viewer, isShow) {
+        this.isShowModels(viewer, "B1", isShow);
+        this.isShowModels(viewer, "L2", isShow);
+        this.isShowModels(viewer, "L3", isShow);
+        this.isShowModels(viewer, "T2", isShow);
+        this.isShowModels(viewer, "T3", isShow);
+        this.isShowLableModels(viewer, "ligth", isShow);
+    },
+    /**
+     * 是否显示事件（预警信息）
+     * @param {三维视图} viewer 
+     * @param {是否显示，true，false} isShow 
+     */
+    isShowEvents(viewer, isShow) {
+        this.isShowLableModels(viewer, "Event", isShow);
+    },
+
+    /**
+     * 是否显示树
+     * @param {三维视图} viewer 
+     * @param {是否显示，true，false} isShow 
+     */
+    isShowTree(viewer, isShow) {
+        this.isShowModels(viewer, "tree", isShow)
+    },
+    /**
+     * 是否显示感知杆
+     * @param {三维视图} viewer 
+     * @param {是否显示，true，false} isShow 
+     */
+    isShowPole(viewer, isShow) {
+        this.isShowModels(viewer, "pole", isShow)
+    },
+    /**
+     * 是否显示模型，模型名称，是否显示
+     */
+   isShowModels(viewer, nameModels, isShow) {
+        var primitives = viewer.scene.primitives;
+        for (var i = 0; i < primitives.length; i++) {
+            var primitive = primitives.get(i);
+            if (primitive._url.url) {
+                if (primitive._url.url.search(nameModels) != -1) {
+                    primitive.show = isShow;
+                }
+            }
+        }
+    },
+    /**
+     * 是否展示信息
+     * @param {三维} viewer 
+     * @param {名称} nameModels 
+     * @param {是否显示} isShow 
+     */
+    isShowLableModels(viewer, nameModels, isShow) {
+        var entities = viewer.entities._entities._array;
+        for (var i = 0; i < entities.length; i++) {
+            if (entities[i].id) {
+                if (entities[i].id.search(nameModels) != -1) {
+                    entities[i].show = isShow;
+                }
+            }
+        }
+    },
+    /**
      * 加载灯杆
      */
-    loadModelColl(viewer, x, y, heading, name, isHeading,id) {
+    loadModelColl(viewer, x, y, heading, name, isHeading, id) {
         //添加路灯杆和信息牌 
         // console.log(item) 
-        var entity = null; 
-        var position1= Cesium.Cartesian3.fromDegrees(x,y,5.0);
-        let entityLabel =viewer.entities.add({  
-          id:id+"light",
-          position: position1,
-          point: {
-            color: Cesium.Color.RED,    //点位颜色
-            pixelSize: 0,         //像素点大小
-            scaleByDistance: new Cesium.NearFarScalar(200, 0, 2000, 1)
-          },
-          label: {
-            text: id+","+heading,
-            fillColor: Cesium.Color.fromCssColorString('#2f2f2f'),
-            backgroundColor: Cesium.Color.fromCssColorString('#F5F5DC').withAlpha(0.5),
-            font: '12px',
-            showBackground: true,
-            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-            pixelOffset: new Cesium.Cartesian2(0.0, 0),
-            // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.5),
-            scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
-          }
+        var entity = null;
+        var position1 = Cesium.Cartesian3.fromDegrees(x, y, 5.0);
+        let entityLabel = viewer.entities.add({
+            id: id + "light",
+            position: position1,
+            point: {
+                color: Cesium.Color.RED,    //点位颜色
+                pixelSize: 0,         //像素点大小
+                scaleByDistance: new Cesium.NearFarScalar(200, 0, 2000, 1)
+            },
+            label: {
+                text: id + "," + heading,
+                fillColor: Cesium.Color.fromCssColorString('#2f2f2f'),
+                backgroundColor: Cesium.Color.fromCssColorString('#F5F5DC').withAlpha(0.5),
+                font: '12px',
+                showBackground: true,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                pixelOffset: new Cesium.Cartesian2(0.0, 0),
+                // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.5),
+                scaleByDistance: new Cesium.NearFarScalar(200, 1, 2000, 0)
+            }
         });
-        
+
         //合并写法
         var instances = [];
 

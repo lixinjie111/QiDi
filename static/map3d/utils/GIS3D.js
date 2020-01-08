@@ -5,8 +5,9 @@ class GIS3D {
     constructor() {
         this.cesium = { viewer: null };
         this.modelsInforLabel = {};
-        window.defualtZ = window.defualtZ;
+        this.defualtZ = window.defualtZ;
         this.isload = false;
+        this.isShowData = true;//是否显示道路图层 
     }
     //初始化地图
     initload(id, isFXAA) {
@@ -37,7 +38,7 @@ class GIS3D {
                 url: '../../static/map3d/images/back.png'//透明图片
             }),
             shouldAnimate: true,
-            selectionIndicator:false
+            selectionIndicator: false
         });
         this.cesium.viewer.scene.globe.depthTestAgainstTerrain = false;
         // this.cesium.viewer.scene.postProcessStages.fxaa.enabled = true;
@@ -68,36 +69,32 @@ class GIS3D {
 
         //去除版权信息
         this.cesium.viewer._cesiumWidget._creditContainer.style.display = "none";
-
-        let v = this.cesium.viewer;
-        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () {
-            if (v.dataSources.length == 0) return;
-            var currentMagnitude = v.camera.getMagnitude();
+ 
+        let _this=this;
+        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () { 
+            if (_this.cesium.viewer.dataSources.length == 0) return;
+            var currentMagnitude = _this.cesium.viewer.camera.getMagnitude();
             if (currentMagnitude <= 6373057.350774223) {
-                if (v.dataSources.length > 0) {
-                    if (!v.dataSources._dataSources[0].show) {
-                        for (var i = 0; i < v.dataSources.length; i++) {
-                            v.dataSources.get(i).show = true;
-                        }
+                if (_this.cesium.viewer.dataSources.length > 0) {
+                    for (var i = 0; i < _this.cesium.viewer.dataSources.length; i++) {
+                        _this.cesium.viewer.dataSources.get(i).show = _this.isShowData;
                     }
                 }
-                if (v.imageryLayers.length == 2) {
-                    if (v.imageryLayers._layers[1]) {
-                        v.imageryLayers.get(1).show = false;
+                if (_this.cesium.viewer.imageryLayers.length == 2) {
+                    if (_this.cesium.viewer.imageryLayers._layers[1]) {
+                        _this.cesium.viewer.imageryLayers.get(1).show = false;
                     }
                 }
             }
             else {
-                if (v.dataSources.length > 0) {
-                    if (v.dataSources._dataSources[0].show) {
-                        for (var i = 0; i < v.dataSources.length; i++) {
-                            v.dataSources.get(i).show = false;
-                        }
+                if (_this.cesium.viewer.dataSources.length > 0) {
+                    for (var i = 0; i < _this.cesium.viewer.dataSources.length; i++) {
+                        _this.cesium.viewer.dataSources.get(i).show = _this.isShowData;
                     }
                 }
-                if (v.imageryLayers.length == 2) {
-                    if (!v.imageryLayers._layers[1].show) {
-                        v.imageryLayers.get(1).show = true;
+                if (_this.cesium.viewer.imageryLayers.length == 2) {
+                    if (!_this.cesium.viewer.imageryLayers._layers[1].show) {
+                        _this.cesium.viewer.imageryLayers.get(1).show = true;
                     }
                 }
             }
@@ -106,15 +103,15 @@ class GIS3D {
         // this.textCar();
     }
     //路口显示范围 
-    addRectangle(id, extent, color = '#0000ff', opacity = 0.1) {   
-        
+    addRectangle(id, extent, color = '#0000ff', opacity = 0.1) {
+
         //路口显示范围
         let rec = this.cesium.viewer.entities.getById(id)
         if (!rec) {
             this.cesium.viewer.entities.add({
                 id: id,
                 rectangle: {
-                    coordinates: Cesium.Rectangle.fromDegrees(extent[3][0],extent[3][1],extent[1][0],extent[1][1]),
+                    coordinates: Cesium.Rectangle.fromDegrees(extent[3][0], extent[3][1], extent[1][0], extent[1][1]),
                     material: Cesium.Color.AZURE.withAlpha(opacity),
                     outline: true,
                     height: 0,
@@ -124,7 +121,7 @@ class GIS3D {
             });
         }
         else {
-            this.cesium.viewer.entities.getById(id).rectangle.coordinates = Cesium.Rectangle.fromDegrees(extent[3][0],extent[3][1],extent[1][0],extent[1][1]);
+            this.cesium.viewer.entities.getById(id).rectangle.coordinates = Cesium.Rectangle.fromDegrees(extent[3][0], extent[3][1], extent[1][0], extent[1][1]);
         }
 
     }
@@ -140,45 +137,46 @@ class GIS3D {
       * 修改事件数值
     */
     update3DInfoLabel(id, text) {
-        let entities = this.cesium.viewer.entities.getById(id);
+        let entities = this.cesium.viewer.entities.getById(id + "Event");
         if (entities) {
-            this.cesium.viewer.entities.getById(id).label.text = text;
+            this.cesium.viewer.entities.getById(id + "Event").label.text = text;
         }
     }
+    //根据名称获取事件
     get3DInfoLabel(id) {
-        let entities = this.cesium.viewer.entities.getById(id);
+        let entities = this.cesium.viewer.entities.getById(id + "Event");
         if (entities) {
-            return this.cesium.viewer.entities.getById(id).label.text
+            return this.cesium.viewer.entities.getById(id + "Event").label.text
         }
 
     }
-  //添加事件
-  add3DInfoLabel(name, text, x, y, z=0) {
-    let positions = [];
-    positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
-    positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5));
-    let lableModel = this.cesium.viewer.entities.add({
-        id: name,
-        position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5),
-        polyline: {
-            positions: positions,
-            width: 2,
-            material: Cesium.Color.fromCssColorString('#ab6503'),
-            distanceDisplayCondition : new Cesium.DistanceDisplayCondition(0.0, 1000.0)
-        },
-        label: {
-            text: text, 
-            backgroundColor: Cesium.Color.fromCssColorString('#894b2b'),
-            font: '30px sans-serif',
-            showBackground: true,
-            horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-            pixelOffset: new Cesium.Cartesian2(0.0, 0),
-            scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
-        }
-    });
+    //添加事件
+    add3DInfoLabel(name, text, x, y, z = 0) {
+        let positions = [];
+        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
+        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5));
+        let lableModel = this.cesium.viewer.entities.add({
+            id: name + "Event",
+            position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5),
+            polyline: {
+                positions: positions,
+                width: 2,
+                material: Cesium.Color.fromCssColorString('#ab6503'),
+                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 1000.0)
+            },
+            label: {
+                text: text,
+                backgroundColor: Cesium.Color.fromCssColorString('#894b2b'),
+                font: '30px sans-serif',
+                showBackground: true,
+                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                pixelOffset: new Cesium.Cartesian2(0.0, 0),
+                scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
+            }
+        });
 
-    this.modelsInforLabel[name] = lableModel;
-}
+        this.modelsInforLabel[name] = lableModel;
+    }
     getExtent() {
         // this.cesium.viewer
     }
@@ -243,8 +241,8 @@ class GIS3D {
 
     }
     //定位地图
-    updateCameraPosition(x, y, z, radius=0, pitch=0, yaw=0, duration = 0) {
-        var heading = Cesium.Math.toRadians(radius); 
+    updateCameraPosition(x, y, z, radius = 0, pitch = 0, yaw = 0, duration = 0) {
+        var heading = Cesium.Math.toRadians(radius);
         var hpr = new Cesium.HeadingPitchRoll(heading, pitch, yaw);
         this.cesium.viewer.camera.flyTo({
             duration: duration,
@@ -253,58 +251,58 @@ class GIS3D {
         });
     }
 
-    zoomModule(x, y, z, radius=0, pitch=0, yaw=0, duration = 0) {
-        let rect= Cesium.Rectangle.fromDegrees(x-0.0001, y-0.0001, x+0.0001, y+0.0001);
-        let loactionTectEntity = this.cesium.viewer.entities.add({
-            name: 'locationRectangle',
-            id: 'locationRectangle',
-            rectangle: {
-                coordinates: rect,
-                material: Cesium.Color.GREEN.withAlpha(1.0),
-                height: 10.0,
-                outline: false
-            }
-        });
-        var heading = Cesium.Math.toRadians(radius); 
-        var flyPromise = this.cesium.viewer.flyTo(loactionTectEntity, {
-            duration: 0,
-            offset: new Cesium.HeadingPitchRange(heading, pitch)
-        });
-        let _this=this;
-        flyPromise.then(function () {
-        
-            var center = Cesium.Rectangle.center(rect);
-            var car = Cesium.Cartesian3.fromRadians(center.longitude, center.latitude);
-            var range = Cesium.Cartesian3.distance(car, _this.cesium.viewer.camera.position) * Math.cos(20);
-           
-            _this.cesium.viewer.zoomTo(loactionTectEntity, new Cesium.HeadingPitchRange(heading,  pitch, range));
-          
-            _this.cesium.viewer.entities.remove(loactionTectEntity);
-        });  
-    } 
+    zoomModule(x, y, z, radius = 0, pitch = 0, yaw = 0, duration = 0) {
+        let rect = Cesium.Rectangle.fromDegrees(x - 0.0001, y - 0.0001, x + 0.0001, y + 0.0001);
+        let loactionTectEntity = this.cesium.viewer.entities.add({
+            name: 'locationRectangle',
+            id: 'locationRectangle',
+            rectangle: {
+                coordinates: rect,
+                material: Cesium.Color.GREEN.withAlpha(1.0),
+                height: 10.0,
+                outline: false
+            }
+        });
+        var heading = Cesium.Math.toRadians(radius);
+        var flyPromise = this.cesium.viewer.flyTo(loactionTectEntity, {
+            duration: 0,
+            offset: new Cesium.HeadingPitchRange(heading, pitch)
+        });
+        let _this = this;
+        flyPromise.then(function () {
+
+            var center = Cesium.Rectangle.center(rect);
+            var car = Cesium.Cartesian3.fromRadians(center.longitude, center.latitude);
+            var range = Cesium.Cartesian3.distance(car, _this.cesium.viewer.camera.position) * Math.cos(20);
+
+            _this.cesium.viewer.zoomTo(loactionTectEntity, new Cesium.HeadingPitchRange(heading, pitch, range));
+
+            _this.cesium.viewer.entities.remove(loactionTectEntity);
+        });
+    }
 
     //二三维切换
     updatePosition(extend) {
-        var rectangle = new Cesium.Rectangle.fromDegrees(extend[3][0],extend[3][1],extend[1][0],extend[1][1]);
+        var rectangle = new Cesium.Rectangle.fromDegrees(extend[3][0], extend[3][1], extend[1][0], extend[1][1]);
         this.cesium.viewer.camera.flyTo({
             destination: rectangle
         });
     }
     //绘制面
-       //绘制面
-        addPolygon(hierarchy) {
-            this.cesium.viewer.entities.add({
-                polygon: {
-                    hierarchy: Cesium.Cartesian3.fromDegreesArray(hierarchy),
-                    height: 0.03, 
-                    material: Cesium.Color.fromCssColorString('#6d596e').withAlpha(1),
-                    closetop: false,
-                    closeBottom:false,
-                    outline: false
-                     
-                }
-            });
-        }
+    //绘制面
+    addPolygon(hierarchy) {
+        this.cesium.viewer.entities.add({
+            polygon: {
+                hierarchy: Cesium.Cartesian3.fromDegreesArray(hierarchy),
+                height: 0.03,
+                material: Cesium.Color.fromCssColorString('#6d596e').withAlpha(1),
+                closetop: false,
+                closeBottom: false,
+                outline: false
+
+            }
+        });
+    }
     /**
      * 增加车辆
      * @param {数据} d 
