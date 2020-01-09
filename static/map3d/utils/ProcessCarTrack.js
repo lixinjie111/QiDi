@@ -298,12 +298,12 @@ class ProcessCarTrack {
                 _this.moveTo( list[i]);
                 //主车
             }else {
-                if( list[i].source&&list[i].source.length>0)
+                if(list[i].source&&list[i].source.length>0)
                 {
                     let isV2X=false;//是否有v2x车 OBU
-                    for(let i=0;i< list[i].source.length;i++)
+                    for(let j=0;j< list[i].source.length;j++)
                     {
-                        if( list[i].source[i].toUpperCase().trim()=="V2X")
+                        if( list[i].source[j].toUpperCase().trim()=="V2X")
                         {
                             isV2X=true;
                         }
@@ -312,7 +312,6 @@ class ProcessCarTrack {
                         _this.poleToCar( list[i]);
                     }
                 }
-
             }
         }
     }
