@@ -69,9 +69,9 @@ class GIS3D {
 
         //去除版权信息
         this.cesium.viewer._cesiumWidget._creditContainer.style.display = "none";
- 
-        let _this=this;
-        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () { 
+
+        let _this = this;
+        this.cesium.viewer.scene.camera.moveEnd.addEventListener(function () {
             if (_this.cesium.viewer.dataSources.length == 0) return;
             var currentMagnitude = _this.cesium.viewer.camera.getMagnitude();
             if (currentMagnitude <= 6373057.350774223) {
@@ -99,6 +99,7 @@ class GIS3D {
                 }
             }
         })
+
 
         // this.textCar();
     }
@@ -152,30 +153,32 @@ class GIS3D {
     }
     //添加事件
     add3DInfoLabel(name, text, x, y, z = 0) {
-        let positions = [];
-        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
-        positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5));
-        let lableModel = this.cesium.viewer.entities.add({
-            id: name + "Event",
-            position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5),
-            polyline: {
-                positions: positions,
-                width: 2,
-                material: Cesium.Color.fromCssColorString('#ab6503'),
-                distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 1000.0)
-            },
-            label: {
-                text: text,
-                backgroundColor: Cesium.Color.fromCssColorString('#894b2b'),
-                font: '30px sans-serif',
-                showBackground: true,
-                horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-                pixelOffset: new Cesium.Cartesian2(0.0, 0),
-                scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
-            }
-        });
+        if (name) {
+            let positions = [];
+            positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
+            positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5));
+            let lableModel = this.cesium.viewer.entities.add({
+                id: name + "Event",
+                position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5),
+                polyline: {
+                    positions: positions,
+                    width: 2,
+                    material: Cesium.Color.fromCssColorString('#ab6503'),
+                    distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0.0, 1000.0)
+                },
+                label: {
+                    text: text,
+                    backgroundColor: Cesium.Color.fromCssColorString('#894b2b'),
+                    font: '30px sans-serif',
+                    showBackground: true,
+                    horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                    pixelOffset: new Cesium.Cartesian2(0.0, 0),
+                    scaleByDistance: new Cesium.NearFarScalar(100, 1, 1000, 0)
+                }
+            });
 
-        this.modelsInforLabel[name] = lableModel;
+            this.modelsInforLabel[name] = lableModel;
+        }
     }
     getExtent() {
         // this.cesium.viewer
