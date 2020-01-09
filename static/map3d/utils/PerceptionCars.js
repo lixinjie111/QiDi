@@ -203,7 +203,6 @@ class PerceptionCars {
           }
       }
       obj.perList=list;
-      console.log(".............")
       return obj;
   }
   getMinValue(devId, time, delayTime, cacheData) {
