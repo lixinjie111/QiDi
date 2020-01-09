@@ -26,6 +26,7 @@ class ProcessCarTrack {
         this.ispoleToCar = true;//是否连接感知杆
         this.removeObj={};
         this.vehObj = {};
+        this.fusionList=[];
         // this.i=0;
     }
 
@@ -219,21 +220,19 @@ class ProcessCarTrack {
             cdata.lastReceiveData = cdata.nowReceiveData;
         }
     }
-    processPlatformCarsTrack(time,delayTime,perCars){
+    //平台车基础数据的处理
+    processPlatformCarsTrack(time,delayTime){
         let _this=this;
         let platVeh = 0;
         let v2xVeh = 0;
         let vehData = {};
 
-        let platCar = {
+        let platCars = {
             'mainCar':{},
             'vehData':new Object(),
-            'perData':[]
+            'platCars':[]
         };
-        console.log("######################");
-        if(perCars&&perCars.length>0){
-            console.log("融合前感知车辆的长度：",perCars.length)
-        }
+
         for (var vid in _this.cacheAndInterpolateDataByVid){
             let vehObj = this.vehObj[vid];
             if(Object.keys(vehObj).length>0){
@@ -247,60 +246,19 @@ class ProcessCarTrack {
             }
             let carCacheData = _this.cacheAndInterpolateDataByVid[vid];
             // console.log(carCacheData.nowReceiveData.gpsTime)
-            if (carCacheData) {
+            if (carCacheData){
                 //缓存数据
                 let cacheData = carCacheData.cacheData;
-                if (cacheData.length > 0) {
+                if (cacheData.length > 0){
                     this.removeObj[vid]=0;
                     let cardata = _this.getMinValue(vid, time, delayTime);
-                    if (!cardata) {
+                    if (!cardata){
                         return;
                     }
-                    //融合结果
-                    if(perCars&&perCars.length>0){
-                        // debugger
-                        let platLng = cardata.longitude*10800;
-                        let platLat = cardata.latitude*10800;
-                        let platHeading = cardata.heading;
-                        for(let i = 0;i<perCars.length;i++){
-                            let perLng = perCars[i].longitude*10800;
-                            let perLat = perCars[i].latitude*10800;
-                            let perHeading = perCars[i].heading;
-                            let lngDiff = Math.abs(perLng-platLng).toFixed(1);
-                            let latDiff = Math.abs(platLat-perLat).toFixed(1);
-                            let headingDiff = Math.abs(perHeading-platHeading);
-                            console.log("++++++++",cardata)
-                            //平台和感知进行融合了
-                            if((lngDiff<window.fusionLng||latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
-                                cardata.isFusion = true;
-                                console.log(lngDiff,latDiff,headingDiff,perCars[i].vehicleId.substring(0,4),cardata.plateNo);
-                                perCars.splice(i,1);
-                                break;
-                            }
-                        }
-                    }
-                    _this.moveCar(cardata);
+                    platCars.platCars.push(cardata);
                     if (_this.mainCarVID == cardata.vehicleId){
-                        // mainCar= cardata;
-                        platCar['mainCar'] = cardata;
-                        _this.moveTo(cardata);
+                        platCars['mainCar'] = cardata;
                         //主车
-                    }else { 
-                        if(cardata.source.length>0)
-                        {
-                            let isV2X=false;//是否有v2x车 OBU
-                            for(let i=0;i<cardata.source.length;i++)
-                            {
-                                if(cardata.source[i].toUpperCase().trim()=="V2X")
-                                {
-                                    isV2X=true;
-                                }
-                            } 
-                            if (isV2X) {
-                                _this.poleToCar(cardata);
-                            }
-                        }
-                        
                     }
                 }else{
                     //消失机制
@@ -325,14 +283,38 @@ class ProcessCarTrack {
                 }
             }
         }
-        if(perCars&&perCars.length>0){
-            console.log("融合后感知车辆的长度：",perCars.length)
-        }
         vehData.platVeh = platVeh;
         vehData.v2xVeh = v2xVeh;
-        platCar['vehData'] = vehData;
-        platCar['perData'] = perCars;
-        return platCar;
+        platCars['vehData'] = vehData;
+        return platCars;
+    }
+    moveCars(list){
+        let _this=this;
+        for(let i=0;i<list.length;i++){
+            _this.moveCar(list[i]);
+            if (_this.mainCarVID ==  list[i].vehicleId){
+                // mainCar= cardata;
+                // platCar['mainCar'] =  list[i];
+                _this.moveTo( list[i]);
+                //主车
+            }else {
+                if( list[i].source&&list[i].source.length>0)
+                {
+                    let isV2X=false;//是否有v2x车 OBU
+                    for(let i=0;i< list[i].source.length;i++)
+                    {
+                        if( list[i].source[i].toUpperCase().trim()=="V2X")
+                        {
+                            isV2X=true;
+                        }
+                    }
+                    if (isV2X) {
+                        _this.poleToCar( list[i]);
+                    }
+                }
+
+            }
+        }
     }
    /* platProcess(time,delayTime,isStart) {
         let _this=this;
@@ -476,7 +458,7 @@ class ProcessCarTrack {
         let rangeData = null;
         let startIndex = -1;
         let minIndex = -1;
-        let minData = {};
+        let minData = null;
         let minDiff;
         // console.log("找到最小值前："+cacheData.length);
         //找到满足条件的范围
@@ -706,7 +688,7 @@ class ProcessCarTrack {
                 //清除第一次 出现360数据，第二次颜色问题
                 carpt.color = new Cesium.Color(1, 1, 1, 1);
             }
-
+            // console.log(d.isFusion,d.plateNo)
             var carlabelpt = this.viewer.entities.getById(vid + "lblpt");
             carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 3);
             carlabelpt.label.text = plateNo;

@@ -15,6 +15,7 @@ class PerceptionCars {
     this.cacheAndInterpolateDataByDevId = {};
     this.stepTime = '';
     this.count=0;
+    this.perCars=[];
     // this.drawnObj = {};
   }
 
@@ -137,9 +138,14 @@ class PerceptionCars {
       }*/
     }
   }
-  processPerTrack(time, delayTime) {
+  processPerTrack(time, delayTime,platCars) {
         // let devList = [];
         let list = [];
+        let obj = {
+          "perList":[],
+          "platFusionList":new Array(),
+          "perFusionCars":new Array()
+        }
         let drawObj = {};
         for (let devId in this.cacheAndInterpolateDataByDevId){
             let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
@@ -169,14 +175,43 @@ class PerceptionCars {
                 this.clearAllModel();
             }
         }
-        return list;
-    }
+      //融合结果
+
+      if(list&&list.length>0&&platCars&&platCars.length>0){
+          //遍历平台车
+          for(let i=0;i<platCars.length;i++){
+              let platLng = platCars[i].longitude*10800;
+              let platLat = platCars[i].latitude*10800;
+              let platHeading = platCars[i].heading;
+              let isFusion = false;
+              //遍历感知车
+              for(let j=0;j<list.length;j++){
+                  let perLng = list[j].longitude*10800;
+                  let perLat = list[j].latitude*10800;
+                  let perHeading = list[j].heading;
+                  let lngDiff = Math.abs(perLng-platLng).toFixed(1);
+                  let latDiff = Math.abs(platLat-perLat).toFixed(1);
+                  let headingDiff = Math.abs(perHeading-platHeading);
+                  if((lngDiff<window.fusionLng||latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
+                      obj.platFusionList.push(platCars[i]);
+                      let per = list.splice(j,1);
+                      obj.perFusionCars.push(per[0]);
+                      // console.log(platCars[i].vehicleId,per[0].vehicleId);
+                      break;
+                  }
+              }
+          }
+      }
+      obj.perList=list;
+      console.log(".............")
+      return obj;
+  }
   getMinValue(devId, time, delayTime, cacheData) {
     /* let minDiff = Math.abs(time-minData.gpsTime-delayTime);*/
     let rangeData = null;
     let startIndex = -1;
     let minIndex = -1;
-    let minData = {};
+    let minData = null;
     let minDiff;
     // console.log("找到最小值前："+cacheData.length);
     //找到满足条件的范围

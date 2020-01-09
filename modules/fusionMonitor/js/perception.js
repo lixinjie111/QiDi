@@ -27,7 +27,7 @@ let camParam = window.defaultMapParam;
 //3d地图参数
 let gis3d = new GIS3D();
 let perceptionCars = new PerceptionCars();
-let platCars = new ProcessCarTrack();
+let platformCars = new ProcessCarTrack();
 let processData = new ProcessData();
 
 let pulseWebsocket = null;
@@ -167,7 +167,7 @@ function getMessage() {
         let eventData = e.data;
         if(eventData.type == 'updateSideList') {
             if(eventData.data) {
-                platCars.sideList = eventData.data;
+                platformCars.sideList = eventData.data;
                 GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer);
             }else {
                 // 获取路侧点位置
@@ -206,7 +206,7 @@ function init3DMap() {
     gis3d.addRectangle('rectangleTwo', perExtent, "#ffffff", 0);
 
     perceptionCars.viewer = gis3d.cesium.viewer;
-    platCars.viewer = gis3d.cesium.viewer;
+    platformCars.viewer = gis3d.cesium.viewer;
 
     if(top.location == self.location){  
         let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;
@@ -218,9 +218,9 @@ function init3DMap() {
 }
 function initWebsocketData() {
     //初始化车辆步长以及平台车阀域范围
-    platCars.stepTime = pulseInterval;
-    platCars.pulseInterval = pulseInterval*0.8;//设置阀域范围 脉冲时间的100%
-    platCars.platMaxValue = pulseInterval*1.5;
+    platformCars.stepTime = pulseInterval;
+    platformCars.pulseInterval = pulseInterval*0.8;//设置阀域范围 脉冲时间的100%
+    platformCars.platMaxValue = pulseInterval*1.5;
 
     let perPulse = 80;
     perceptionCars.stepTime = perPulse;
@@ -286,14 +286,14 @@ function onPulseMessage(message){
         }
     }
 
-    if (Object.keys(platCars.platObj).length > 0) {
-        for (let vehicleId in platCars.platObj) {
-            let dataList = platCars.platObj[vehicleId];
-            if (dataList.length > 0) {
+    if (Object.keys(platformCars.platObj).length > 0) {
+        for (let vehicleId in platformCars.platObj) {
+            let dataList = platformCars.platObj[vehicleId];
+            if (dataList.length > 0){
                 //分割之前将车辆移动到上一个点
                 //将第一个点进行分割
                 let data = dataList.shift();
-                platCars.cacheAndInterpolatePlatformCar(data);
+                platformCars.cacheAndInterpolatePlatformCar(data);
             }
         }
     }
@@ -313,71 +313,115 @@ function onPulseMessage(message){
     }
     //缓存的时间
     let pulseNum = delayTime/40;
+    let platCars;
     if(pulseCount>pulseNum) {
-
-
         //当平台车开始插值时，调用其他接口
         // processDataTime = result.timestamp-delayTime;
         let processTime = result.timestamp-delayTime;
         processDataTime = TDate.formatTime(processTime,'yy-mm-dd hh:mm:ss:ms');
         document.querySelector('.c-pulse-time').innerHTML = processDataTime;
-        let perCars;
+
+        //平台车
+        if(Object.keys(platformCars.cacheAndInterpolateDataByVid).length>0) {
+            platCars = platformCars.processPlatformCarsTrack(result.timestamp, delayTime);
+        }
+
+        //感知车
         if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>per){
             perPulseCount=1;
             if(Object.keys(perceptionCars.devObj).length>0){
-                perCars = perceptionCars.processPerTrack(result.timestamp,delayTime);
-                if(perCars&&perCars.length>0){
-                    let pernum = 0;
-                    let persons = 0;
-                    let nonNum = 0;
-                    let perData={};
-                    // processPerData(cars[0]);
-                    for (let i = 0; i < perCars.length; i++) {
-                        let obj = perCars[i];
-                        if (obj.targetType == 0){
-                            persons++;
+                let platFusionList=[];
+                if(platCars){
+                    platFusionList = platCars.platCars;
+                }
+                let obj = perceptionCars.processPerTrack(result.timestamp,delayTime,platFusionList);
+                if(obj){
+                    let perCars = obj.perList;
+                    platformCars.fusionList = obj.platFusionList;
+                    if(perCars&&perCars.length>0){
+                        //绘制感知车
+                        perceptionCars.processPerceptionMesage(perCars);
+                        let pernum = 0;
+                        let persons = 0;
+                        let nonNum = 0;
+                        let perData={};
+                        // processPerData(cars[0]);
+                        //绘制感知车辆的计数
+                        for (let i = 0; i < perCars.length; i++) {
+                            let obj = perCars[i];
+                            if (obj.targetType == 0){
+                                persons++;
+                            }
+
+                            if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
+                                pernum++;
+                            }
+
+                            if(obj.targetType == 1 || obj.targetType == 3){
+                                nonNum++;
+                            }
                         }
 
-                        if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
-                            pernum++;
+                        //融合车辆的计数
+                        let perFusionCars = obj.perFusionCars;
+                        let fusionPernum = 0;
+                        let fusionPersons = 0;
+                        let fusionNonNum = 0;
+                        if(perFusionCars.length>0){
+                            //判断的融合的类型
+                            perFusionCars.forEach(item=>{
+                                if (item.targetType == 0){
+                                    fusionPersons++;
+                                }
+
+                                if (item.targetType == 2||item.targetType == 5 || item.targetType == 7){
+                                    fusionPernum++;
+                                }
+
+                                if(item.targetType == 1 || item.targetType == 3){
+                                    fusionNonNum++;
+                                }
+                            })
+                            perData['fusionVeh']=fusionPernum;
+                            perData['fusionPerson'] = fusionPersons;
+                            perData['fusionNoMotor'] = fusionNonNum;
+
+                            perData['veh']=pernum+fusionPernum;
+                            perData['person'] = persons+fusionPersons;
+                            perData['noMotor'] = nonNum+fusionNonNum;
+                            let _camData = {
+                                isParent: true,
+                                type: 'perceptionData',
+                                data: perData
+                            }
+                            parent.postMessage(_camData,"*");
                         }
 
-                        if(obj.targetType == 1 || obj.targetType == 3){
-                            nonNum++;
-                        }
                     }
-                    perData['veh']=pernum;
-                    perData['person'] = persons;
-                    perData['noMotor'] = nonNum;
-                    let _camData = {
-                        isParent: true,
-                        type: 'perceptionData',
-                        data: perData
-                    }
-                    parent.postMessage(_camData,"*");
                 }
             }
         }
-        perPulseCount++
+        perPulseCount++;
 
-        //平台车
-        if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0) {
-            let platCar = platCars.processPlatformCarsTrack(result.timestamp, delayTime, perCars);
-            if (platCar) {
-                let _camData = {
-                    isParent: true,
-                    type: 'vehData',
-                    data: platCar['vehData']
-                }
-                parent.postMessage(_camData, "*");
-                if (perCars && perCars.length > 0) {
-                    perceptionCars.processPerceptionMesage(platCar['perData']);
-                }
-            } else {
-                if (perCars && perCars.length > 0) {
-                    perceptionCars.processPerceptionMesage(perCars);
-                }
+        //融合后结果
+        if (platCars){
+            let _camData = {
+                isParent: true,
+                type: 'vehData',
+                data: platCars['vehData']
             }
+            parent.postMessage(_camData, "*");
+            let carList = platCars.platCars; //所有的平台车
+            if(platformCars.fusionList&&platformCars.fusionList.length>0){ //需要融合的平台车辆
+                platformCars.fusionList.forEach(item=>{
+                    carList.forEach(carItem=>{
+                        if(carItem.vehicleId==item.vehicleId){
+                            carItem.isFusion=true;
+                        }
+                    })
+                })
+            }
+            platformCars.moveCars(carList);
         }
 
         //取消告警
@@ -467,7 +511,7 @@ function initPlatformWebSocket() {
 }
 function onPlatformMessage(message) {
     let json = JSON.parse(message.data);
-    platCars.receiveData(json, pulseNowTime);
+    platformCars.receiveData(json, pulseNowTime);
 }
 function initPerceptionWebSocket() {
     let _params = {
@@ -481,6 +525,7 @@ function initPerceptionWebSocket() {
 }
 function shutDown(){
     perceptionWebsocket&&perceptionWebsocket.webSocket.close();
+    platformWebsocket&&platformWebsocket.webSocket.close();
 }
 function onPerceptionMessage(message) {
     let data = JSON.parse(message.data)
