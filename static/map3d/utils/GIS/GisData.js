@@ -443,7 +443,8 @@ var GisData = {
                 url: '../../static/map3d/model/' + name + '.glb',
                 instances: instances
             }));
-        }
+        } 
+
     },
     /**
        * 加载感知杆
