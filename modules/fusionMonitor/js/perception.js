@@ -327,7 +327,7 @@ function onPulseMessage(message){
         }
 
         //感知车
-        if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>per){
+        if(perCacheCount>pulseNum&&(perPulseCount==0||perPulseCount>per)){
             perPulseCount=1;
             if(Object.keys(perceptionCars.devObj).length>0){
                 let platFusionList=[];
@@ -439,7 +439,7 @@ function onPulseMessage(message){
             }
         }
 
-        //每隔80ms一次
+        //每隔400ms一次
         if(spatPulseCount==0||spatPulseCount>spat){
             spatPulseCount=1;
             if(Object.keys(processData.spatObj).length>0){
@@ -448,6 +448,7 @@ function onPulseMessage(message){
                     drawnSpat(data);
                 }
             }
+
         }
         spatPulseCount++;
 

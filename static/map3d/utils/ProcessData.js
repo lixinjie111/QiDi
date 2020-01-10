@@ -12,6 +12,8 @@ class ProcessData {
         this.dynamicWarning={};
         this.staticWarning={};
         this.cancelWarning={};
+
+        this.poleObj={};
     }
 
     receiveLightData(data){
@@ -21,6 +23,25 @@ class ProcessData {
             }
             this.spatObj[item.spatId].push(item);
         });
+    }
+    receiveSingleLightData(data){
+        let realSpat = data.realSpat;
+        let lampPole = data.lampPole;
+        if(realSpat&&realSpat.length>0){
+            realSpat.forEach(item=>{
+                if(!this.spatObj[item.spatId]){
+                    this.spatObj[item.spatId] = new Array();
+                }
+                this.spatObj[item.spatId].push(item);
+            });
+        }
+        if(lampPole&&lampPole.length>0){
+            lampPole.forEach(item=>{
+                if(!this.poleObj[item.lampPoleId]){
+                    this.poleObj[item.lampPoleId]=item;
+                }
+            });
+        }
     }
     receiveCanData(data){
         this.canList.push.apply(this.canList,data);

@@ -72,6 +72,5 @@ window.initLight3D = {
             }
 
         }
-
     }
 }

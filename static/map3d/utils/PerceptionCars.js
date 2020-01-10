@@ -197,7 +197,7 @@ class PerceptionCars {
                       obj.perFusionCars.push(per[0]);
                       // let per = list;
                       // list[j].td=1;
-                      // console.log("************",list[j]);
+                      // console.log("************",list[j].vehicleId);
                       // console.log(platCars[i].vehicleId,per[0].vehicleId);
                       break;
                   }

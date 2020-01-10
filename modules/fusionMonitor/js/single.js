@@ -72,6 +72,7 @@ let isStart = false;
 
 // let timeCount = 0;
 let isDistance = false;
+let poleList = [];
 
 /** 调用 **/
 $(function() {
@@ -577,6 +578,18 @@ function onPulseMessage(message){
             let spatData = processData.processSpatData(result.timestamp,_delayTime);
             drawnSpat(spatData);
         }
+        let poles = [];
+        if(Object.keys(processData.poleObj).length>0){
+            for(let poleId in  processData.poleObj){
+                if(poleList.indexOf(poleId)==-1){
+                    poles.push( processData.poleObj[poleId]);
+                    poleList.push(poleId);
+                }
+            }
+            if(poles.length>0){
+                window.initLight3D.initlight(gis3d.cesium.viewer,poles);
+            }
+        }
     }
     spatPulseCount++;
 
@@ -734,16 +747,16 @@ function onWarningMessage(message) {
 }
 function initSpatWebSocket() {
     let _params = {
-                    "action": "spat",
-                    "vehicleId": vehicleId,
-                    "type": 1
-                };
+            "action": "spat",
+            "vehicleId": vehicleId,
+            "type": 1
+        };
     spatWebsocket = new WebSocketObj(window.config.socketUrl, _params, onSpatMessage);
 }
 function onSpatMessage(message) {
     let json = JSON.parse(message.data);
     let data = json.result.data;
-    processData.receiveLightData(data);
+    processData.receiveSingleLightData(data);
 }
 function initCancelWarningWebSocket() {
     let _params = {
