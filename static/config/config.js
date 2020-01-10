@@ -58,6 +58,6 @@ window.count=30;//空闲车辆
 window.extend = 0.02;
 window.currentExtent = [[121.158117,31.298408000000002],[121.194117,31.298408000000002],[121.194117,31.262408],[121.158117,31.262408]];
 
-window.fusionLng = 3;
-window.fusionLat = 3;
+window.fusionLng = 0.000025;
+window.fusionLat = 0.000025;
 window.fusionHeading = 10;

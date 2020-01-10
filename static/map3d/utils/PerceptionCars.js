@@ -180,24 +180,24 @@ class PerceptionCars {
       if(list&&list.length>0&&platCars&&platCars.length>0){
           //遍历平台车
           for(let i=0;i<platCars.length;i++){
-              let platLng = platCars[i].longitude*10800;
-              let platLat = platCars[i].latitude*10800;
+              let platLng = platCars[i].longitude;
+              let platLat = platCars[i].latitude;
               let platHeading = platCars[i].heading;
               //遍历感知车
               for(let j=0;j<list.length;j++){
-                  let perLng = list[j].longitude*10800;
-                  let perLat = list[j].latitude*10800;
+                  let perLng = list[j].longitude;
+                  let perLat = list[j].latitude;
                   let perHeading = list[j].heading;
-                  let lngDiff = Math.abs(perLng-platLng).toFixed(1);
-                  let latDiff = Math.abs(platLat-perLat).toFixed(1);
+                  let lngDiff = Math.abs(perLng-platLng).toFixed(6);
+                  let latDiff = Math.abs(platLat-perLat).toFixed(6);
                   let headingDiff = Math.abs(perHeading-platHeading);
-                  if((lngDiff<window.fusionLng||latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
+                  if((lngDiff<window.fusionLng&&latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
                       obj.platFusionList.push(platCars[i]);
                       let per = list.splice(j,1);
                       obj.perFusionCars.push(per[0]);
-                      // let per = list;
-                      // list[j].td=1;
-                      // console.log("************",list[j].vehicleId);
+                     /* let per = list;
+                      list[j].td=1;
+                      console.log("************",list[j].vehicleId);*/
                       // console.log(platCars[i].vehicleId,per[0].vehicleId);
                       break;
                   }

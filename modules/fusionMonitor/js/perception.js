@@ -417,6 +417,7 @@ function onPulseMessage(message){
                     carList.forEach(carItem=>{
                         if(carItem.vehicleId==item.vehicleId){
                             carItem.isFusion=true;
+                            // console.log("vehicleId:",carItem.vehicleId)
                         }
                     })
                 })

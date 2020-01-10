@@ -295,7 +295,7 @@ class ProcessCarTrack {
             if (_this.mainCarVID ==  list[i].vehicleId){
                 // mainCar= cardata;
                 // platCar['mainCar'] =  list[i];
-                _this.moveTo( list[i]);
+                _this.moveTo(list[i]);
                 //主车
             }else {
                 if(list[i].source&&list[i].source.length>0)
