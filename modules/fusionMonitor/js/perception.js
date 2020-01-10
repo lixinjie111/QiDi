@@ -98,7 +98,7 @@ function getDevDis() {
         success: function(res) {
             // console.log("获取路侧点位置成功",res);
             //初始化感知模型--杆
-            platCars.sideList = res.data;
+            platformCars.sideList = res.data;
             GisData.initPoleModelDate(res.data,gis3d.cesium.viewer);
         },
         error: function(err) {

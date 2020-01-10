@@ -183,7 +183,6 @@ class PerceptionCars {
               let platLng = platCars[i].longitude*10800;
               let platLat = platCars[i].latitude*10800;
               let platHeading = platCars[i].heading;
-              let isFusion = false;
               //遍历感知车
               for(let j=0;j<list.length;j++){
                   let perLng = list[j].longitude*10800;
@@ -196,6 +195,9 @@ class PerceptionCars {
                       obj.platFusionList.push(platCars[i]);
                       let per = list.splice(j,1);
                       obj.perFusionCars.push(per[0]);
+                      // let per = list;
+                      // list[j].td=1;
+                      // console.log("************",list[j]);
                       // console.log(platCars[i].vehicleId,per[0].vehicleId);
                       break;
                   }
@@ -671,7 +673,13 @@ class PerceptionCars {
     let h = d.heading.toFixed(1);
     let s = d.speed.toFixed(1);
     let veh = d.vehicleId.substr(0, 4);
-    // let text = "[" + h + ", " + s + ", " + veh + "]";
+    // let td = d.td;
+    // let text;
+    // if(td){
+    //     text = "[" + veh + ", " + h + "°,"+td+"]";
+    // }else{
+    //     text = "[" + veh + ", " + h + "°]";
+    // }
     let text = "[" + veh + ", " + h + "°]";
     carlabel.show = true;
     carlabel.label.text = text;
