@@ -60,4 +60,7 @@ window.currentExtent = [[121.158117,31.298408000000002],[121.194117,31.298408000
 
 window.fusionLng = 0.000025;
 window.fusionLat = 0.000025;
+
+// window.fusionLng = 0.001;
+// window.fusionLat = 0.001;
 window.fusionHeading = 10;
