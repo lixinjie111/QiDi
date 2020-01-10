@@ -731,7 +731,7 @@ class ProcessCarTrack {
         //光环
         var r1 = 0, r2 = 2.5, r3 = 5, r4 = 7.5;
         function changeR1() { //这是callback，参数不能内传
-            r1 = r1 + 0.1;
+            r1 = r1 + 0.05;
             if (r1 >= 10) {
                 r1 = 0;
             }
@@ -739,21 +739,21 @@ class ProcessCarTrack {
         }
         //光环回调
         function changeR2() {
-            r2 = r2 + 0.1;
+            r2 = r2 + 0.05;
             if (r2 >= 10) {
                 r2 = 0;
             }
             return r2;
         }
         function changeR3() {
-            r3 = r3 + 0.1;
+            r3 = r3 + 0.05;
             if (r3 >= 10) {
                 r3 = 0;
             }
             return r3;
         }
         function changeR4() {
-            r4 = r4 + 0.1;
+            r4 = r4 + 0.05;
             if (r4 >= 10) {
                 r4 = 0;
             }
