@@ -435,7 +435,7 @@ class ProcessCarTrack {
                                     distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
                                     // This callback updates positions each frame.
                                     positions: new Cesium.CallbackProperty(_line, false),// Cesium.Cartesian3.fromDegreesArrayHeights([ d.longitude, d.latitude,0.1, 121.17070961131611, 31.285431834985424,1]),//
-                                    width: 5,
+                                    width: 3,
                                     material: new Cesium.PolylineGlowMaterialProperty({
                                         color: Cesium.Color.DEEPSKYBLUE,
                                         glowPower: 0.25
