@@ -435,7 +435,7 @@ class ProcessCarTrack {
                                     distanceDisplayCondition: new Cesium.DistanceDisplayCondition(0, 2000),
                                     // This callback updates positions each frame.
                                     positions: new Cesium.CallbackProperty(_line, false),// Cesium.Cartesian3.fromDegreesArrayHeights([ d.longitude, d.latitude,0.1, 121.17070961131611, 31.285431834985424,1]),//
-                                    width: 5,
+                                    width: 3,
                                     material: new Cesium.PolylineGlowMaterialProperty({
                                         color: Cesium.Color.DEEPSKYBLUE,
                                         glowPower: 0.25
@@ -710,16 +710,16 @@ class ProcessCarTrack {
             
                  //修改光环大小 
                     if (this.viewer.entities.getById(vid + "ellipse1")) {
-                        this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                        this.viewer.entities.getById(vid + "ellipse1").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 0.1);
                     }
                     if (this.viewer.entities.getById(vid + "ellipse2")) {
-                        this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                        this.viewer.entities.getById(vid + "ellipse2").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 0.1);
                     }
                     if (this.viewer.entities.getById(vid + "ellipse3")) {
-                        this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                        this.viewer.entities.getById(vid + "ellipse3").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 0.1);
                     }
                     if (this.viewer.entities.getById(vid + "ellipse4")) {
-                        this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, this.defualtZ + 4);
+                        this.viewer.entities.getById(vid + "ellipse4").position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 0.1);
                     }
               
             // } 
@@ -768,7 +768,7 @@ class ProcessCarTrack {
                     return r1
                 }, false),
                 semiMajorAxis: new Cesium.CallbackProperty(changeR1, false),
-                height: this.defualtZ + 0.3,
+                height: 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
                 outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
@@ -784,7 +784,7 @@ class ProcessCarTrack {
                     return r2
                 }, false),
                 semiMajorAxis: new Cesium.CallbackProperty(changeR2, false),
-                height: this.defualtZ + 0.3,
+                height: 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
                 outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
@@ -800,7 +800,7 @@ class ProcessCarTrack {
                     return r3
                 }, false),
                 semiMajorAxis: new Cesium.CallbackProperty(changeR3, false),
-                height: this.defualtZ + 0.3,
+                height: 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
                 outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
@@ -815,7 +815,7 @@ class ProcessCarTrack {
                     return r4
                 }, false),
                 semiMajorAxis: new Cesium.CallbackProperty(changeR4, false),
-                height: this.defualtZ + 0.3,
+                height: 0.3,
                 outline: true, //必须设置height，否则ouline无法显示
                 outlineColor: Cesium.Color.fromCssColorString(color).withAlpha(1),
                 outlineWidth: 2.0,//不能设置，固定为1
