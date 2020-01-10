@@ -25,7 +25,7 @@ let markers = {
 //3d地图参数
 let gis3d = new GIS3D();
 let perceptionCars = new PerceptionCars();
-let platCars = new ProcessCarTrack();
+let platformCars = new ProcessCarTrack();
 let processData = new ProcessData();
 
 let pulseWebsocket = null;
@@ -113,7 +113,7 @@ function getDevDis() {
         success: function(res) {
             // console.log("获取路侧点位置成功",res);
             //初始化感知模型--杆
-            platCars.sideList = res.data;
+            platformCars.sideList = res.data;
             GisData.initPoleModelDate(res.data,gis3d.cesium.viewer);
         },
         error: function(err) {
@@ -127,7 +127,7 @@ function getMessage() {
         let eventData = e.data;
         if(eventData.type == 'updateSideList') {
             if(eventData.data) {
-                platCars.sideList = eventData.data;
+                platformCars.sideList = eventData.data;
                 GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer);
             }else {
                 // 获取路侧点位置
@@ -293,15 +293,15 @@ function init3DMap() {
     initLight3D.initlight(gis3d.cesium.viewer);
 
     perceptionCars.viewer = gis3d.cesium.viewer;
-    platCars.viewer = gis3d.cesium.viewer;
+    platformCars.viewer = gis3d.cesium.viewer;
     // 不连接感知杆，默认ture是连接感知杆儿
-    platCars.ispoleToCar=false;
+    platformCars.ispoleToCar=false;
 }
 function initWebsocketData() {
     //初始化车辆步长以及平台车阀域范围
-    platCars.stepTime = pulseInterval;
-    platCars.pulseInterval = pulseInterval*0.8;//设置阀域范围 脉冲时间的100%
-    platCars.platMaxValue = platCars.pulseInterval*1.5;
+    platformCars.stepTime = pulseInterval;
+    platformCars.pulseInterval = pulseInterval*0.8;//设置阀域范围 脉冲时间的100%
+    platformCars.platMaxValue = platformCars.pulseInterval*1.5;
 
     //脉冲间隔80ms 数据间隔100ms
     let perPulse = 80;
@@ -362,14 +362,14 @@ function onPulseMessage(message){
     let processTime = result.timestamp-_delayTime;
 
     //平台车分割
-    if (Object.keys(platCars.platObj).length > 0) {
-        for (let vehicleId in platCars.platObj) {
-            let dataList = platCars.platObj[vehicleId];
+    if (Object.keys(platformCars.platObj).length > 0) {
+        for (let vehicleId in platformCars.platObj) {
+            let dataList = platformCars.platObj[vehicleId];
             if (dataList.length > 0) {
                 //分割之前将车辆移动到上一个点
                 //将第一个点进行分割
                 let data = dataList.shift();
-                platCars.cacheAndInterpolatePlatformCar(data);
+                platformCars.cacheAndInterpolatePlatformCar(data);
             }
         }
     }
@@ -444,6 +444,7 @@ function onPulseMessage(message){
     }
 
     let mainCar;
+    let platCars
     //平台车  缓存4s
     if(pulseCount>pulseNum){
         //当平台车开始插值时，调用其他接口
@@ -451,11 +452,11 @@ function onPulseMessage(message){
         processDataTime = TDate.formatTime(processTime,'yy-mm-dd hh:mm:ss:ms');
         document.querySelector('.c-pulse-time').innerHTML = processDataTime;
 //                    console.log(pulseCount,pulseCount%3,Object.keys(perceptionCars.devObj).length);
-        if(Object.keys(platCars.cacheAndInterpolateDataByVid).length>0){
-            let platCar = platCars.processPlatformCarsTrack(result.timestamp,_delayTime);
-            // let platCar = platCars.processPlatformCarsTrack1(result.timestamp,_delayTime,isStart);
-            if(platCar&&platCar.mainCar){
-                mainCar = platCar.mainCar;
+        if(Object.keys(platformCars.cacheAndInterpolateDataByVid).length>0){
+            platCars = platformCars.processPlatformCarsTrack(result.timestamp,_delayTime);
+            // let platCar = platformCars.processPlatformCarsTrack1(result.timestamp,_delayTime,isStart);
+            if(platCars&&platCars.mainCar){
+                mainCar = platCars.mainCar;
             }
         }
         //距离计算次数的控制  1200ms计算一次
@@ -468,6 +469,7 @@ function onPulseMessage(message){
                 if(staticExist.length>0){
                     staticExist.forEach((item,index)=>{
                         if(item.longitude<currentExtend[1][0]&&item.latitude<currentExtend[1][1]&&item.longitude>currentExtend[3][0]&&item.latitude>currentExtend[3][1]){
+                           // console.log("static:",item)
                             let s = computeDistance(mainCar,item);
                             processWarn(item,s);
                         }else{
@@ -482,6 +484,7 @@ function onPulseMessage(message){
                 //动态事件
                 if(warningExist.length>0){
                     warningExist.forEach(item=>{
+                        // console.log("dynatic:",item)
                         let s = computeDistance(mainCar,item);
                         processWarn(item,s);
                     })
@@ -532,13 +535,40 @@ function onPulseMessage(message){
     }
 
     //感知车 缓存+80ms调用一次  pulseInterval为40  this.PER = 2
-    if(perCacheCount>pulseNum&&perPulseCount==0||perPulseCount>per){
+    if(perCacheCount>pulseNum&&(perPulseCount==0||perPulseCount>per)){
         perPulseCount=1;
         if(Object.keys(perceptionCars.devObj).length>0){
-            let processPerCar = perceptionCars.processPerTrack(result.timestamp,delayTime);
+            let platFusionList=[];
+            if(platCars){
+                platFusionList = platCars.platCars;
+            }
+            let obj = perceptionCars.processPerTrack(result.timestamp,delayTime,platFusionList);
+            if(obj){
+                let perCars = obj.perList;
+                platformCars.fusionList = obj.platFusionList;
+                if(perCars&&perCars.length>0){
+                    //绘制感知车
+                    perceptionCars.processPerceptionMesage(perCars);
+                }
+            }
         }
     }
     perPulseCount++;
+
+    //融合后结果
+    if (platCars){
+        let carList = platCars.platCars;
+        if(platformCars.fusionList&&platformCars.fusionList.length>0){
+            platformCars.fusionList.forEach(item=>{
+                carList.forEach(carItem=>{
+                    if(carItem.vehicleId==item.vehicleId){
+                        carItem.isFusion=true;
+                    }
+                })
+            })
+        }
+        platformCars.moveCars(carList);
+    }
 
     //红绿灯  缓存400ms调用一次   pulseInterval为40   this.SPAT=10
     if(spatCount>pulseNum&&(spatPulseCount==0||spatPulseCount>spat)){
@@ -558,7 +588,8 @@ function onPulseMessage(message){
             for(let warnId in processData.dynamicWarning){
                 let data = processData.processWarningData(result.timestamp,_delayTime,warnId);
                 if(data){
-                    warningExist.push(warnId);
+                    warningExist.push(data[warnId]);
+                    // console.log("动态告警事件最小值：",data)
                     processWarn(data);
                 }
             }
@@ -621,7 +652,7 @@ function initPlatformWebSocket() {
 }
 function onPlatformMessage(message) {
     let json = JSON.parse(message.data);
-    platCars.receiveData(json, pulseNowTime, vehicleId);
+    platformCars.receiveData(json, pulseNowTime, vehicleId);
 }
 function initPerceptionWebSocket() {
     let _params = {
@@ -688,6 +719,7 @@ function onWarningMessage(message) {
                     }
                     processData.staticWarning[item.warnId]=item;
                 }else{
+                    // console.log("item:",item)
                     let array = processData.dynamicWarning[warnId];
                     if(!array){
                         processData.dynamicWarning[warnId] = new Array();
@@ -756,6 +788,7 @@ function computeDistance(mainCar,warningItem){
         Math.cos(radLat1)*Math.cos(radLat2)*Math.pow(Math.sin(b/2),2)));
     s = s *6378.137 ;// EARTH_RADIUS;
     s = parseInt(Math.round(s * 10000) / 10);
+    // console.log(lat1,lat2,lng1,lng2,s)
     return s;
 }
 function processWarn(data,distance){

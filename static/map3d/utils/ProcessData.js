@@ -43,7 +43,7 @@ class ProcessData {
         let rangeData=null;
         let startIndex=-1;
         let minIndex=-1;
-        let minData = {};
+        let minData = null;
         let minDiff;
         // console.log("spatId:"+spatId+",找到最小值前："+cacheData.length);
         //找到满足条件的范围
@@ -124,6 +124,7 @@ class ProcessData {
         //返回距离标尺的最小插值的数据
         return minData;
     }
+
     processWarningData(time,delayTime,warnId){
         let warningData = this.getWarnMinValue(time,delayTime,warnId);
         return warningData;
@@ -133,7 +134,7 @@ class ProcessData {
         let rangeData=null;
         let startIndex=-1;
         let minIndex=-1;
-        let minData = {};
+        let minData =null;
         let minDiff;
         //找到满足条件的范围
         if(cacheData.length>0){
@@ -282,7 +283,7 @@ class ProcessData {
             }
         }
         let minIndex=-1;
-        let minData = {};
+        let minData = null;
         let minDiff;
         //如果能找到最小范围
         // console.log(rangeData)

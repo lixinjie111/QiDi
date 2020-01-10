@@ -265,7 +265,7 @@ var GisData = {
             [121.18162377957718, 31.276374588131208],
             [121.186568038037208, 31.276370259317293],
             [121.186488101211282, 31.27613644772218],
-            [121.188028651958675, 31.275721152159875],
+            // [121.188028651958675, 31.275721152159875],
             [121.187772485887706, 31.275550947522206],
             [121.188714298669908, 31.275122198418362],
             [121.189390926511507, 31.27425267325301],
@@ -329,7 +329,8 @@ var GisData = {
         // let itemSide2 = [[121.17551589465815, 31.281617738453047, 0.0, 250],
         // [121.17510881207043, 31.281747510005268, 0.0, -10],
         // [121.17533995826606, 31.282071700494583, 0.0, 60], [121.1849806, 31.2764686, 0.0, 270]]
-        // this.initTree(itemSide2, viewer, "I_RB", true);
+        let itemSide2 = [[121.17551589465815, 31.281617738453047, 0.0, 0]]
+        this.initTree(itemSide2, viewer, "I_RB", true);
     },
     /**
      * 初始化感知杆模型
@@ -433,8 +434,11 @@ var GisData = {
                 }
                 var pitch = Cesium.Math.toRadians(0);
                 var roll = 0;
+                // var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+                // var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
                 var hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
-                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr);
+                let fixedFrameTransforms = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west')
+                var modelMatrix = Cesium.Transforms.headingPitchRollToFixedFrame(position, hpr, Cesium.Ellipsoid.WGS84, fixedFrameTransforms) 
                 instances.push({
                     modelMatrix: modelMatrix
                 });

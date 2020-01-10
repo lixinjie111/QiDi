@@ -49,10 +49,10 @@ window.initLight3D = {
                         if (dataLight[i].spats[j].poleRelative == 2) //右边红绿灯
                         {
                             if (xyR.length == 0) {
-                                xyR = L.addLight(viewer, dataLight[i].spats[j].spatId, x, y, dataLight[i].heading - 90, type);
+                                xyR = L.addLight(viewer, dataLight[i].spats[j].spatId, x, y, dataLight[i].heading  , type);
                             }
                             else {
-                                xyR = L.addLight(viewer, dataLight[i].spats[j].spatId, xyR[0], xyR[1], dataLight[i].heading - 90, type);
+                                xyR = L.addLight(viewer, dataLight[i].spats[j].spatId, xyR[0], xyR[1], dataLight[i].heading  , type);
                             }
 
                         }
@@ -62,7 +62,7 @@ window.initLight3D = {
                                 xyL = L.addLight(viewer, dataLight[i].spats[j].spatId, x - Math.sin(180 * (Math.PI / 180)) * 0.00003 * index, y - Math.cos(180 * (Math.PI / 180)) * 0.00003 * index);
                             }
                             else {
-                                xyL = L.addLight(viewer, dataLight[i].spats[j].spatId, xyL[0], xyL[1], dataLight[i].heading - 90, type);
+                                xyL = L.addLight(viewer, dataLight[i].spats[j].spatId, xyL[0], xyL[1], dataLight[i].heading  , type);
                             }
                         }
                         this.light3DList.push(L);
