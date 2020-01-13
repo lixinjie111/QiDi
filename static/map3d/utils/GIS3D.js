@@ -151,7 +151,7 @@ class GIS3D {
 
     }
     //添加事件
-    add3DInfoLabel(name, text, x, y, z = 0) {
+    add3DInfoLabel(name, text, x, y, z = 0, isShow = true) {
         if (name) {
             let positions = [];
             positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));

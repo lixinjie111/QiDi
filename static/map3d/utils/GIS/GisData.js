@@ -335,10 +335,10 @@ var GisData = {
     /**
      * 初始化感知杆模型
      */
-    initPoleModelDate(item, viewer) {
+    initPoleModelDate(item, viewer, isShow = true) {
         //var item = sessionStorage.getItem("sideList"); 
         if (item) {
-            this.initModel_pole(item, viewer);
+            this.initModel_pole(item, viewer, isShow);
         }
 
     },
@@ -453,7 +453,7 @@ var GisData = {
     /**
        * 加载感知杆
        */
-    initModel_pole(item, viewer)//初始化杆
+    initModel_pole(item, viewer, isShow = true)//初始化杆
     {
         var itemSide = null;
         if (typeof item == 'string') {
