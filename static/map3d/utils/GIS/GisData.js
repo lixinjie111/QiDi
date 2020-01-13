@@ -454,7 +454,7 @@ var GisData = {
        * 加载感知杆
        */
     initModel_pole(item, viewer, isShow = true)//初始化杆
-    {
+    { 
         var itemSide = null;
         if (typeof item == 'string') {
             itemSide = JSON.parse(item);
@@ -469,6 +469,7 @@ var GisData = {
             var labels = viewer.scene.primitives.add(new Cesium.LabelCollection());
             for (var i = 0; i < itemSide.length; i++) {
                 labels.add({
+                    show:isShow,
                     id:item.deviceId+"pole",
                     fillColor: Cesium.Color.WHITE,
                     backgroundColor: Cesium.Color.ROYALBLUE,
@@ -497,6 +498,7 @@ var GisData = {
             viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
                 url: '../../static/map3d/model/poleWith2Camera.glb',
                 instances: instances,
+                show:isShow
             }));
         }
     }
