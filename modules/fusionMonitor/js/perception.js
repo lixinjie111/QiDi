@@ -186,6 +186,28 @@ function getMessage() {
             let _currentExtent = getExtend(longitude,latitude,0.001);
             gis3d.updatePosition(_currentExtent);
         }
+        // 显示及隐藏图层
+        // platform 联网数据
+        // perception 感知数据
+        // warning 预警信息
+        // roadsidePoints 路侧点
+        // spat 信号灯
+        console.log(eventData);
+        if(eventData.type == 'platform') {
+
+        }
+        if(eventData.type == 'perception') {
+
+        }
+        if(eventData.type == 'warning') {
+            GisUtils.isShowEvents(gis3d.cesium.viewer, eventData.flag);
+        }
+        if(eventData.type == 'roadsidePoints') {
+            GisUtils.isShowPole(gis3d.cesium.viewer, eventData.flag);
+        }
+        if(eventData.type == 'spat') {
+            GisUtils.isShowLights(gis3d.cesium.viewer, eventData.flag);
+        }
     });
 }
 function init3DMap() {
