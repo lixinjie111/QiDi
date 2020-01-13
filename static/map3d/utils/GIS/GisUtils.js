@@ -51,6 +51,7 @@ let GisUtils = {
      */
     isShowPole(viewer, isShow) {
         this.isShowModels(viewer, "pole", isShow);
+        this.isShowLabelCollection(viewer, "pole", isShow);
     },
     /**
      * 是否显示模型，模型名称，是否显示
@@ -79,6 +80,28 @@ let GisUtils = {
                 if (entities[i].id.search(nameModels) != -1) {
                     entities[i].show = isShow;
                 }
+            }
+        }
+    },
+     /**
+     * 是否展示信息
+     * @param {三维} viewer 
+     * @param {名称} nameModels 
+     * @param {是否显示} isShow 
+     */
+    isShowLabelCollection(viewer, nameModels, isShow) {
+        var primitives = viewer.scene.primitives._primitives;
+        for (var i = 0; i < primitives.length; i++) {
+            if (primitives[i]._labels) {
+                if(primitives[i]._labels.length&&primitives[i]._labels.length>0)
+                {
+                    for(var k=0;k<primitives[i]._labels.length;k++)
+                    {
+                        if (primitives[i]._labels[k].id.search(nameModels) != -1) {
+                            primitives[i]._labels[k].show = isShow;
+                        }
+                    } 
+                } 
             }
         }
     },

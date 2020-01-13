@@ -469,6 +469,7 @@ var GisData = {
             var labels = viewer.scene.primitives.add(new Cesium.LabelCollection());
             for (var i = 0; i < itemSide.length; i++) {
                 labels.add({
+                    id:item.deviceId+"pole",
                     fillColor: Cesium.Color.WHITE,
                     backgroundColor: Cesium.Color.ROYALBLUE,
                     position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 6.8 + window.defualtZ),
@@ -479,7 +480,7 @@ var GisData = {
                     pixelOffset: new Cesium.Cartesian2(0.0, 0),
                     // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.0),
                     scaleByDistance: new Cesium.NearFarScalar(100, 1.3, 1000, 0)
-                });
+                }); 
                 var position = Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, window.defualtZ);
                 //  
                 var heading = Cesium.Math.toRadians(itemSide[i].heading);
