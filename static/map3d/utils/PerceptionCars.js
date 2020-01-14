@@ -16,6 +16,7 @@ class PerceptionCars {
     this.stepTime = '';
     this.count=0;
     this.perCars=[];
+    this.removeObj = {};
     // this.drawnObj = {};
   }
 
@@ -139,6 +140,7 @@ class PerceptionCars {
     }
   }
   processPerTrack(time, delayTime,platCars) {
+        // console.log("******");
         // let devList = [];
         let list = [];
         let obj = {
@@ -150,6 +152,13 @@ class PerceptionCars {
         for (let devId in this.cacheAndInterpolateDataByDevId){
             let devCacheData = this.cacheAndInterpolateDataByDevId[devId];
             if (devCacheData && devCacheData.cacheData.length > 0){
+              if(!this.removeObj[devId]){
+                  this.removeObj[devId] = {
+                    count:0,
+                    list:[]
+                  }
+              }
+                this.removeObj[devId].count=0;
                 let devData = this.getMinValue(devId, time, delayTime, devCacheData.cacheData);
                 if (!devData){
                     // console.log("没有找到相应的值")
@@ -164,19 +173,35 @@ class PerceptionCars {
                 drawObj[devId] = devData;
                 let fusionList = devData.data||[];
                 list.push.apply(list,fusionList);
-                // console.log("list:",list)
-                // devList.push(devData);
+                this.removeObj[devId].list = fusionList;
+            }else{
+                //消失机制
+                this.removeObj[devId].count++;
+                //超过5s没有缓存数就让消失
+                if (this.removeObj[devId].count > 125){
+                    console.log(devId, "到达5s，消失了");
+                    let lastList = this.removeObj[devId].list;
+                    if(lastList.length>0){
+                        lastList.forEach(item=>{
+                            this.removeModelPrimitives(item.vehicleId);
+                        })
+                    }
+                    delete this.removeObj[devId];
+                    delete this.cacheAndInterpolateDataByDevId[devId];
+                    delete this.devObj[devId];
+                }
             }
         }
         //如果本次没找见 则清除所有的模型
-        if(!drawObj){
-            this.count++;
-            if(this.count>=10){
-                this.clearAllModel();
-            }
-        }
+        // if(!drawObj){
+        //     this.count++;
+        //     if(this.count>=10){
+        //         this.clearAllModel();
+        //     }
+        // }
       //融合结果
 
+      let typeList = [0,1,2,3,5,7];
       if(list&&list.length>0&&platCars&&platCars.length>0){
           //遍历平台车
           for(let i=0;i<platCars.length;i++){
@@ -185,21 +210,23 @@ class PerceptionCars {
               let platHeading = platCars[i].heading;
               //遍历感知车
               for(let j=0;j<list.length;j++){
-                  let perLng = list[j].longitude;
-                  let perLat = list[j].latitude;
-                  let perHeading = list[j].heading;
-                  let lngDiff = Math.abs(perLng-platLng).toFixed(6);
-                  let latDiff = Math.abs(platLat-perLat).toFixed(6);
-                  let headingDiff = Math.abs(perHeading-platHeading);
-                  if((lngDiff<window.fusionLng&&latDiff<window.fusionLat)&&headingDiff<window.fusionHeading){
-                      obj.platFusionList.push(platCars[i]);
-                      let per = list.splice(j,1);
-                      obj.perFusionCars.push(per[0]);
-                     /* let per = list;
-                      list[j].td=1;
-                      console.log("************",list[j].vehicleId);*/
-                      // console.log(platCars[i].vehicleId,per[0].vehicleId);
-                      break;
+                  // console.log(list[j].vehicleId,list[j].devId,list[j].longitude,list[j].latitude)
+                  if(typeList.indexOf(list[j].targetType)!=-1){
+                      let perLng = list[j].longitude;
+                      let perLat = list[j].latitude;
+                      let perHeading = list[j].heading;
+                      let lngDiff = Math.abs(perLng-platLng).toFixed(6);
+                      let latDiff = Math.abs(platLat-perLat).toFixed(6);
+                      let headingDiff = Math.abs(perHeading-platHeading);
+                      if(lngDiff<window.fusionLng&&latDiff<window.fusionLat&&headingDiff<window.fusionHeading){
+                          obj.platFusionList.push(platCars[i]);
+                          let per = list.splice(j,1);
+                          // let per = list;
+                          obj.perFusionCars.push(per[0]);//左侧统计计数
+                          // console.log(list[j].vehicleId,platCars[i].plateNo,list[j].targetType);
+                          // console.log(platCars[i].vehicleId,per[0].vehicleId);
+                          break;
+                      }
                   }
               }
           }
@@ -320,7 +347,6 @@ class PerceptionCars {
       if (fusionList.length <= 0) return;
       for (let i = 0; i < fusionList.length; i++) {
         let d = fusionList[i];
- 
         // if (d.heading >=360) {
         //     // 不处理大于360的的数据
         //     continue;

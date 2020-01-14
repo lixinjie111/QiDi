@@ -64,3 +64,4 @@ window.fusionLat = 0.000025;
 // window.fusionLng = 0.001;
 // window.fusionLat = 0.001;
 window.fusionHeading = 10;
+window.frames = 2;

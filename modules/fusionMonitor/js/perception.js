@@ -337,7 +337,52 @@ function onPulseMessage(message){
                 let obj = perceptionCars.processPerTrack(result.timestamp,delayTime,platFusionList);
                 if(obj){
                     let perCars = obj.perList;
-                    platformCars.fusionList = obj.platFusionList;
+                    //保留两帧数据
+                    if(platformCars.fusionList.length>0){
+                        let tempList = [];
+                        for(let i=0;i<platformCars.fusionList.length;i++){
+                            let isExist = false;
+                            let vehicleId = platformCars.fusionList[i].vehicleId;
+                            if(obj.platFusionList.length>0){
+                                for(let j=0;j<obj.platFusionList.length;j++){
+                                    if(platformCars.fusionList[i].vehicleId==obj.platFusionList[j].vehicleId){
+                                        isExist=true;
+                                        break
+                                    }
+                                }
+                            }
+                            // console.log(vehicleId,isExist)
+                            //找到需要保留的帧
+                            if(!isExist){
+                                // console.log(platformCars.vehCountObj[vehicleId])
+                                //上次存在，这次不存在,则保留一帧
+                                if(typeof platformCars.vehCountObj[vehicleId]=='undefined'){
+                                    platformCars.vehCountObj[vehicleId]=0;
+                                    tempList.push(platformCars.fusionList[i]);
+                                    // console.log("保留第一帧：",vehicleId,platformCars.vehCountObj[vehicleId])
+                                }else{
+                                    platformCars.vehCountObj[vehicleId]++;
+                                    //保留两帧中的第二帧
+                                    if(platformCars.vehCountObj[vehicleId]<window.frames){
+                                        tempList.push(platformCars.fusionList[i]);
+                                        // console.log("保留第二帧：",vehicleId,platformCars.vehCountObj[vehicleId])
+                                    }else{
+                                        // console.log("删除：",vehicleId,platformCars.vehCountObj[vehicleId])
+                                        delete platformCars.vehCountObj[vehicleId];
+                                    }
+                                }
+                            }
+                        }
+                        if(obj.platFusionList.length>0){
+                            obj.platFusionList.forEach(item=>{
+                                tempList.push(item);
+                            })
+                        }
+                        platformCars.fusionList = tempList;
+                    }else{
+                        platformCars.fusionList = obj.platFusionList;
+                    }
+
                     if(perCars&&perCars.length>0){
                         //绘制感知车
                         perceptionCars.processPerceptionMesage(perCars);
@@ -347,7 +392,7 @@ function onPulseMessage(message){
                         let perData={};
                         // processPerData(cars[0]);
                         //绘制感知车辆的计数
-                        for (let i = 0; i < perCars.length; i++) {
+                        for (let i = 0; i < perCars.length; i++){
                             let obj = perCars[i];
                             if (obj.targetType == 0){
                                 persons++;
@@ -417,6 +462,7 @@ function onPulseMessage(message){
                     carList.forEach(carItem=>{
                         if(carItem.vehicleId==item.vehicleId){
                             carItem.isFusion=true;
+
                             // console.log("vehicleId:",carItem.vehicleId)
                         }
                     })
@@ -424,7 +470,6 @@ function onPulseMessage(message){
             }
             platformCars.moveCars(carList);
         }
-
         //取消告警
         if(Object.keys(processData.cancelWarning).length>0){
             let cancelData = [];
@@ -500,6 +545,7 @@ function onPulseMessage(message){
         }
     }
     staticPulseCount++;
+
 }
 function initPlatformWebSocket() {
     let _params = {
