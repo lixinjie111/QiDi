@@ -1,7 +1,7 @@
 /**
  * 三维公共方法类
  */
-window.GisUtils = {
+let GisUtils = {
     /**
      * 控制图层是否显示
      * @param {三维} viewer 
@@ -42,7 +42,7 @@ window.GisUtils = {
      * @param {是否显示，true，false} isShow 
      */
     isShowTree(viewer, isShow) {
-        this.isShowModels(viewer, "tree", isShow)
+        this.isShowModels(viewer, "tree", isShow);
     },
     /**
      * 是否显示感知杆
@@ -50,7 +50,8 @@ window.GisUtils = {
      * @param {是否显示，true，false} isShow 
      */
     isShowPole(viewer, isShow) {
-        this.isShowModels(viewer, "pole", isShow)
+        this.isShowModels(viewer, "pole", isShow);
+        this.isShowLabelCollection(viewer, "pole", isShow);
     },
     /**
      * 是否显示模型，模型名称，是否显示
@@ -59,8 +60,8 @@ window.GisUtils = {
         var primitives = viewer.scene.primitives;
         for (var i = 0; i < primitives.length; i++) {
             var primitive = primitives.get(i);
-            if (primitive._url.url) {
-                if (primitive._url.url.search(nameModels) != -1) {
+            if (primitive._url && primitive._url._url) {
+                if (primitive._url._url.search(nameModels) != -1) {
                     primitive.show = isShow;
                 }
             }
@@ -79,6 +80,28 @@ window.GisUtils = {
                 if (entities[i].id.search(nameModels) != -1) {
                     entities[i].show = isShow;
                 }
+            }
+        }
+    },
+     /**
+     * 是否展示信息
+     * @param {三维} viewer 
+     * @param {名称} nameModels 
+     * @param {是否显示} isShow 
+     */
+    isShowLabelCollection(viewer, nameModels, isShow) {
+        var primitives = viewer.scene.primitives._primitives;
+        for (var i = 0; i < primitives.length; i++) {
+            if (primitives[i]._labels) {
+                if(primitives[i]._labels.length&&primitives[i]._labels.length>0)
+                {
+                    for(var k=0;k<primitives[i]._labels.length;k++)
+                    {
+                        if (primitives[i]._labels[k].id.search(nameModels) != -1) {
+                            primitives[i]._labels[k].show = isShow;
+                        }
+                    } 
+                } 
             }
         }
     },

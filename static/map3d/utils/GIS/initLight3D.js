@@ -1,7 +1,7 @@
 /**
  * 初始化红路灯，并调用更新红路灯数据
  */
-window.initLight3D = {
+let initLight3D = {
     light3DList: [],//灯集合
     /**
      * 
@@ -21,7 +21,7 @@ window.initLight3D = {
      * 
      * @param {地图视图} viewer 
      */
-    initlight(viewer, dataLight) {
+    initlight(viewer, dataLight, isShow = true) {
         if (!dataLight) return;
         for (let i = 0; i < dataLight.length; i++) {
 

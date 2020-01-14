@@ -11,7 +11,6 @@ class GIS3D {
     }
     //初始化地图
     initload(id, isFXAA) {
-        document.getElementById(id);
         let cesiumContainer = document.getElementById(id);
         this.initCesium(cesiumContainer); // Initialize Cesium renderer  
         if (!isFXAA) {
@@ -152,12 +151,13 @@ class GIS3D {
 
     }
     //添加事件
-    add3DInfoLabel(name, text, x, y, z = 0) {
+      add3DInfoLabel(name, text, x, y, z = 0, isShow = true) {
         if (name) {
             let positions = [];
             positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 0));
             positions.push(Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5));
             let lableModel = this.cesium.viewer.entities.add({
+                show:isShow,
                 id: name + "Event",
                 position: Cesium.Cartesian3.fromDegrees(x, y, window.defualtZ + 7.5),
                 polyline: {

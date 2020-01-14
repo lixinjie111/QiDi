@@ -49,6 +49,13 @@ let perCacheCount = 0;
 let warningCacheCount = 0;
 let staticCacheCount = 0;
 
+//是否显示该图层
+let platformShow = true;
+let perceptionShow = true;
+let warningShow = true;
+let roadsidePointsShow = true;
+let spatShow = true;
+
 //统一循环数量
 let warning = 0;
 let spat = 0;
@@ -99,7 +106,7 @@ function getDevDis() {
             // console.log("获取路侧点位置成功",res);
             //初始化感知模型--杆
             platformCars.sideList = res.data;
-            GisData.initPoleModelDate(res.data,gis3d.cesium.viewer);
+            GisData.initPoleModelDate(res.data,gis3d.cesium.viewer, roadsidePointsShow);
         },
         error: function(err) {
             console.log("获取路侧点位置失败",err);
@@ -150,7 +157,7 @@ function typeRoadData() {
             let _data = res.data;
             if(_data.lampPole && _data.lampPole.length) {
                 //设置--红路灯杆
-                window.initLight3D.initlight(gis3d.cesium.viewer, _data.lampPole);
+                initLight3D.initlight(gis3d.cesium.viewer, _data.lampPole, spatShow);
             }
             // if(_data.signs && _data.signs.length) {
             //     //设置--标识牌
@@ -168,7 +175,7 @@ function getMessage() {
         if(eventData.type == 'updateSideList') {
             if(eventData.data) {
                 platformCars.sideList = eventData.data;
-                GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer);
+                GisData.initPoleModelDate(eventData.data,gis3d.cesium.viewer, roadsidePointsShow);
             }else {
                 // 获取路侧点位置
                 getDevDis();
@@ -185,6 +192,31 @@ function getMessage() {
         if(eventData.type == 'updatePosition') {
             let _currentExtent = getExtend(longitude,latitude,0.001);
             gis3d.updatePosition(_currentExtent);
+        }
+        // 显示及隐藏图层
+        // platform 联网数据
+        // perception 感知数据
+        // warning 预警信息
+        // roadsidePoints 路侧点
+        // spat 信号灯
+        console.log(eventData);
+        if(eventData.type == 'platform') {
+            platformShow = eventData.flag;
+        }
+        if(eventData.type == 'perception') {
+            perceptionShow = eventData.flag;
+        }
+        if(eventData.type == 'warning') {
+            warningShow = eventData.flag;
+            GisUtils.isShowEvents(gis3d.cesium.viewer, warningShow);
+        }
+        if(eventData.type == 'roadsidePoints') {
+            roadsidePointsShow = eventData.flag;
+            GisUtils.isShowPole(gis3d.cesium.viewer, roadsidePointsShow);
+        }
+        if(eventData.type == 'spat') {
+            spatShow = eventData.flag;
+            GisUtils.isShowLights(gis3d.cesium.viewer, spatShow);
         }
     });
 }
@@ -717,7 +749,7 @@ function processWarn(data){
                 longitude:data.longitude,
                 latitude:data.latitude
             }
-            gis3d.add3DInfoLabel(warnId,data.warnMsg,data.longitude,data.latitude,20);
+            gis3d.add3DInfoLabel(warnId,data.warnMsg,data.longitude,data.latitude,20, warningShow);
         }else{
             //判断是否需要更新
             if(data.longitude != warningData[warnId].longitude || data.latitude != warningData[warnId].latitude) {

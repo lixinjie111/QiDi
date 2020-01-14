@@ -335,10 +335,10 @@ var GisData = {
     /**
      * 初始化感知杆模型
      */
-    initPoleModelDate(item, viewer) {
+    initPoleModelDate(item, viewer, isShow = true) {
         //var item = sessionStorage.getItem("sideList"); 
         if (item) {
-            this.initModel_pole(item, viewer);
+            this.initModel_pole(item, viewer, isShow);
         }
 
     },
@@ -453,8 +453,8 @@ var GisData = {
     /**
        * 加载感知杆
        */
-    initModel_pole(item, viewer)//初始化杆
-    {
+    initModel_pole(item, viewer, isShow = true)//初始化杆
+    { 
         var itemSide = null;
         if (typeof item == 'string') {
             itemSide = JSON.parse(item);
@@ -469,6 +469,8 @@ var GisData = {
             var labels = viewer.scene.primitives.add(new Cesium.LabelCollection());
             for (var i = 0; i < itemSide.length; i++) {
                 labels.add({
+                    show:isShow,
+                    id:item.deviceId+"pole",
                     fillColor: Cesium.Color.WHITE,
                     backgroundColor: Cesium.Color.ROYALBLUE,
                     position: Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, 6.8 + window.defualtZ),
@@ -479,7 +481,7 @@ var GisData = {
                     pixelOffset: new Cesium.Cartesian2(0.0, 0),
                     // pixelOffsetScaleByDistance: new Cesium.NearFarScalar(1.5e2, 3.0, 1.5e7, 0.0),
                     scaleByDistance: new Cesium.NearFarScalar(100, 1.3, 1000, 0)
-                });
+                }); 
                 var position = Cesium.Cartesian3.fromDegrees(itemSide[i].longitude, itemSide[i].latitude, window.defualtZ);
                 //  
                 var heading = Cesium.Math.toRadians(itemSide[i].heading);
@@ -496,6 +498,7 @@ var GisData = {
             viewer.scene.primitives.add(new Cesium.ModelInstanceCollection({
                 url: '../../static/map3d/model/poleWith2Camera.glb',
                 instances: instances,
+                show:isShow
             }));
         }
     }
