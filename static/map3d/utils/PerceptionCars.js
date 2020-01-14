@@ -111,7 +111,8 @@ class PerceptionCars {
       }
       let deltaTime = cdata.nowRecieveData.gpsTime - cdata.lastRecieveData.gpsTime;
 
-      if(deltaTime>300000){
+      if(deltaTime>30000){
+          cdata.lastRecieveData = cdata.nowRecieveData;
           return;
       }
 
@@ -123,6 +124,7 @@ class PerceptionCars {
         let deltaLon = cdata.nowRecieveData.longitude - cdata.lastRecieveData.longitude;
         let deltaLat = cdata.nowRecieveData.latitude - cdata.lastRecieveData.latitude;
         if(deltaLon>0.1||deltaLat>0.1){
+            cdata.lastRecieveData = cdata.nowRecieveData;
             return;
         }
         // let steps = Math.floor(deltaTime / this.stepTime)-1;

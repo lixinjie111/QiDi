@@ -182,7 +182,8 @@ class ProcessCarTrack {
             }
             let deltaTime = cdata.nowReceiveData.gpsTime - cdata.lastReceiveData.gpsTime;
             //当时间超过5min，过滤
-            if(deltaTime>300000){
+            if(deltaTime>30000){
+                cdata.lastReceiveData = cdata.nowReceiveData;
                 return;
             }
             if (deltaTime <= this.stepTime) {
@@ -192,6 +193,7 @@ class ProcessCarTrack {
                 let deltaLon = cdata.nowReceiveData.longitude - cdata.lastReceiveData.longitude;
                 let deltaLat = cdata.nowReceiveData.latitude - cdata.lastReceiveData.latitude;
                 if(deltaLon>0.1||deltaLat>0.1){
+                    cdata.lastReceiveData = cdata.nowReceiveData;
                     return;
                 }
                 let delheading = cdata.nowReceiveData.heading - cdata.lastReceiveData.heading;
