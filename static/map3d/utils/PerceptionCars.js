@@ -110,6 +110,11 @@ class PerceptionCars {
         return;
       }
       let deltaTime = cdata.nowRecieveData.gpsTime - cdata.lastRecieveData.gpsTime;
+
+      if(deltaTime>300000){
+          return;
+      }
+
       if (deltaTime <= this.stepTime) {
         // cdata.cacheData.push(cdata.nowRecieveData);
       } else {
@@ -117,6 +122,9 @@ class PerceptionCars {
         //插值处理
         let deltaLon = cdata.nowRecieveData.longitude - cdata.lastRecieveData.longitude;
         let deltaLat = cdata.nowRecieveData.latitude - cdata.lastRecieveData.latitude;
+        if(deltaLon>0.1||deltaLat>0.1){
+            return;
+        }
         // let steps = Math.floor(deltaTime / this.stepTime)-1;
         let steps = Math.floor(deltaTime / this.stepTime);
         // let steps = 27;

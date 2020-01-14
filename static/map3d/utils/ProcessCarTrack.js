@@ -181,12 +181,19 @@ class ProcessCarTrack {
                 return;
             }
             let deltaTime = cdata.nowReceiveData.gpsTime - cdata.lastReceiveData.gpsTime;
+            //当时间超过5min，过滤
+            if(deltaTime>300000){
+                return;
+            }
             if (deltaTime <= this.stepTime) {
                 // cdata.cacheData.push(cdata.nowReceiveData);
             } else {
                 //插值处理
                 let deltaLon = cdata.nowReceiveData.longitude - cdata.lastReceiveData.longitude;
                 let deltaLat = cdata.nowReceiveData.latitude - cdata.lastReceiveData.latitude;
+                if(deltaLon>0.1||deltaLat>0.1){
+                    return;
+                }
                 let delheading = cdata.nowReceiveData.heading - cdata.lastReceiveData.heading;
                 // let steps = Math.floor(deltaTime / this.stepTime)-1;
                 let steps = Math.ceil(deltaTime / this.stepTime);
@@ -508,7 +515,7 @@ class ProcessCarTrack {
             }
         }
         // console.log("平台车最小索引:",vid,minIndex)
-        // console.log("平台车最小索引:",vid,minIndex,cacheData.length,minDiff);
+        // console.log("平台车最小索引:",vid,minIndex,cacheData.length,minDiff,minData);
         if (minDiff && minDiff > this.platMaxValue) {
             // console.log("plat找到最小值无效")
             return;
