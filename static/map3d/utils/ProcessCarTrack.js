@@ -231,7 +231,7 @@ class ProcessCarTrack {
         }
     }
     //平台车基础数据的处理
-    processPlatformCarsTrack(time, delayTime) {
+    processPlatformCarsTrack(time, delayTime, isShow = true) {
         let _this = this;
         let platVeh = 0;
         let v2xVeh = 0;
@@ -293,12 +293,14 @@ class ProcessCarTrack {
                 }
             }
         }
+        console.log("--------------",isShow);
+        this.isShowCars(isShow);
         vehData.platVeh = platVeh;
         vehData.v2xVeh = v2xVeh;
         platCars['vehData'] = vehData;
         return platCars;
     }
-    moveCars(list) {
+    moveCars(list, isShow = true, isRoadSideShow = true) {
         let _this = this;
         for (let i = 0; i < list.length; i++) {
             _this.moveCar(list[i]);
@@ -316,7 +318,12 @@ class ProcessCarTrack {
                         }
                     }
                     if (isV2X) {
-                        _this.poleToCar(list[i]);
+                        // 是否要画杆儿
+                        if(isShow && isRoadSideShow) {
+                            _this.poleToCar(list[i]);
+                        }else {
+                            _this.clearPole();
+                        }
                     }
                 }
             }
@@ -459,6 +466,17 @@ class ProcessCarTrack {
             }
         }
     }
+    clearPole() {
+        //移除连接线 
+        var entities = this.viewer.entities._entities._array;
+        for (var i = 0; i < entities.length; i++) {
+            if (entities[i].id) {
+                if (entities[i].id.indexOf("line") != -1) {
+                    entities[i].show=false;  
+                }
+            }
+        }
+    }
     getMinValue(vid, time, delayTime) {
         let cacheData = this.cacheAndInterpolateDataByVid[vid].cacheData;
         let rangeData = null;
@@ -590,7 +608,7 @@ class ProcessCarTrack {
             }
 
             let modelCar = this.viewer.scene.primitives.add(Cesium.Model.fromGltf({
-                id: vid + "car",
+                id: vid + "platformCar",
                 modelMatrix: modelMatrix,
                 url: url,
                 minimumPixelSize: 1,
@@ -662,7 +680,7 @@ class ProcessCarTrack {
             for (var k = 0; k < length; ++k) {
                 var p = primitives.get(k);
 
-                if (p.id == vid + "car") {
+                if (p.id == vid + "platformCar") {
                     carpt = p;
 
                     break;
@@ -901,7 +919,7 @@ class ProcessCarTrack {
         if (this.models[vehicleId]) {
             delete this.models[vehicleId]
         }
-        let carId = vehicleId + "car";
+        let carId = vehicleId + "platformCar";
         var primitives = this.viewer.scene.primitives;
         for (var i = 0; i < primitives.length; i++) {
             var primitive = primitives.get(i);
@@ -919,6 +937,31 @@ class ProcessCarTrack {
                 if (entities[i].id.indexOf(vehicleId) != -1) {
                     this.viewer.entities.remove(entities[i]);
                     i--;
+                }
+            }
+        }
+    }
+    /*
+    是否显示单车和线灯信息
+    */
+    isShowCars(isShow = true) { 
+        let carId = "platformCar";
+        var primitives = this.viewer.scene.primitives;
+        for (var i = 0; i < primitives.length; i++) {
+            var primitive = primitives.get(i);
+            if (primitive.id) {
+                if (primitive instanceof Cesium.Model && primitive.id.indexOf(carId) != -1) {
+                    primitive.show=isShow; 
+                }
+            }
+        }
+        // //移除连接线 
+        var entities = this.viewer.entities._entities._array;
+        for (var i = 0; i < entities.length; i++) {
+            if (entities[i].id) {
+                if (entities[i].id.indexOf("lblpt") != -1||entities[i].id.indexOf("billboard") != -1||entities[i].id.indexOf("ellipse") != -1
+                    ||entities[i].id.indexOf("line") != -1) {
+                    entities[i].show=isShow;  
                 }
             }
         }

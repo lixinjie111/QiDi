@@ -347,14 +347,13 @@ class PerceptionCars {
   }
   //************************************* */ 地图部分******************************
   //绘制感知车
-  processPerceptionMesage(fusionList, miniLabel=false,isShow=true) {
+  processPerceptionMesage(fusionList, miniLabel = false,isShow = true) {
     let _this = this;
     try {
       // _this.processPerceptionDataIntervalId = setInterval(() => {
       if (_this.deviceModels == undefined) return;
       // console.log("开始绘制");
-      if(isShow)
-      {
+      if(isShow) {
         this.clearModel(fusionList);
         if (fusionList.length <= 0) return;
         for (let i = 0; i < fusionList.length; i++) {
@@ -403,9 +402,8 @@ class PerceptionCars {
             this.addMoveLable(d, "trucklabel", 5,miniLabel);
           }
         }
-      }
-      else
-      {
+      }else {
+        fusionList = {};
         this.clearModel(fusionList);
       }
     }
