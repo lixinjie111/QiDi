@@ -82,12 +82,15 @@ $(function() {
     typeRoadData();
     // 接受数据
     getMessage();
+    // 发送click事件
+    sendMessage();
     // 初始化动态数据
     initWebsocketData();
     // 脉冲实时接口
     initPulseWebSocket();
     //判断当前标签页是否被隐藏
     document.addEventListener("visibilitychange",visiblityChange);
+
 });
 
 /** 方法 **/
@@ -219,6 +222,15 @@ function getMessage() {
             GisUtils.isShowLights(gis3d.cesium.viewer, spatShow);
         }
     });
+}
+function sendMessage(){
+    document.getElementById('cesiumContainer').onclick  = function(){
+        let msg = {
+            type:'mapClick',
+            data: '',
+        }
+        parent.postMessage(msg,"*");
+    }
 }
 function init3DMap() {
     gis3d.initload("cesiumContainer", false);  
@@ -355,7 +367,7 @@ function onPulseMessage(message){
 
         //平台车
         if(Object.keys(platformCars.cacheAndInterpolateDataByVid).length>0) {
-            platCars = platformCars.processPlatformCarsTrack(result.timestamp, delayTime);
+            platCars = platformCars.processPlatformCarsTrack(result.timestamp, delayTime, platformShow);
         }
 
         //感知车
@@ -366,7 +378,7 @@ function onPulseMessage(message){
                 if(platCars){
                     platFusionList = platCars.platCars;
                 }
-                let obj = perceptionCars.processPerTrack(result.timestamp,delayTime,platFusionList);
+                let obj = perceptionCars.processPerTrack(result.timestamp, delayTime, platFusionList);
                 if(obj){
                     let perCars = obj.perList;
                     //保留两帧数据
@@ -417,7 +429,7 @@ function onPulseMessage(message){
 
                     if(perCars&&perCars.length>0){
                         //绘制感知车
-                        perceptionCars.processPerceptionMesage(perCars);
+                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow);
                         let pernum = 0;
                         let persons = 0;
                         let nonNum = 0;
@@ -500,7 +512,7 @@ function onPulseMessage(message){
                     })
                 })
             }
-            platformCars.moveCars(carList);
+            platformCars.moveCars(carList, platformShow, roadsidePointsShow);
         }
         //取消告警
         if(Object.keys(processData.cancelWarning).length>0){
