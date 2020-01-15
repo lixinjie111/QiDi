@@ -293,7 +293,6 @@ class ProcessCarTrack {
                 }
             }
         }
-        console.log("--------------",isShow);
         this.isShowCars(isShow);
         vehData.platVeh = platVeh;
         vehData.v2xVeh = v2xVeh;
