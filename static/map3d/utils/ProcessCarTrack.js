@@ -129,6 +129,12 @@ class ProcessCarTrack {
             car.plateNo = '非注册';
         }
         let cdata = this.cacheAndInterpolateDataByVid[vid];
+        //当长度大于一万个点
+        if(cdata&&cdata.length>3000){
+            this.cacheAndInterpolateDataByVid[vid]=null;
+            console.log(vid,"插值长度大于3000个点");
+            return;
+        }
         let d = {
             vehicleId: vid,
             plateNo: car.plateNo,
@@ -184,6 +190,7 @@ class ProcessCarTrack {
             //当时间超过5min，过滤
             if(deltaTime>30000){
                 cdata.lastReceiveData = cdata.nowReceiveData;
+                console.log(vid,deltaTime);
                 return;
             }
             if (deltaTime <= this.stepTime) {
@@ -193,6 +200,7 @@ class ProcessCarTrack {
                 let deltaLon = cdata.nowReceiveData.longitude - cdata.lastReceiveData.longitude;
                 let deltaLat = cdata.nowReceiveData.latitude - cdata.lastReceiveData.latitude;
                 if(deltaLon>0.1||deltaLat>0.1){
+                    console.log(vid,deltaLon,deltaLat);
                     cdata.lastReceiveData = cdata.nowReceiveData;
                     return;
                 }

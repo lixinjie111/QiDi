@@ -81,6 +81,11 @@ class PerceptionCars {
   cacheAndInterpolatePerCar(device) {
     let devId = device.devId;
     let cdata = this.cacheAndInterpolateDataByDevId[devId];
+      if(cdata&&cdata.length>3000){
+          this.cacheAndInterpolateDataByDevId[devId]=null;
+          console.log(devId,"插值长度大于3000个点")
+          return;
+      }
     let d = {
       devId: devId,
       devType: device.devType,
