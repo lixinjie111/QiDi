@@ -352,7 +352,7 @@ class PerceptionCars {
   }
   //************************************* */ 地图部分******************************
   //绘制感知车
-  processPerceptionMesage(fusionList, miniLabel = false,isShow = true) {
+  processPerceptionMesage(fusionList, miniLabel = false,isShow = true,isShowLabel=false) {
     let _this = this;
     try {
       // _this.processPerceptionDataIntervalId = setInterval(() => {
@@ -374,12 +374,18 @@ class PerceptionCars {
           }
           if (d.targetType == 0) {//人
             this.addMoveModel(true, d, "person");
-            this.addMoveLable(d, "personlabel", 3,miniLabel);
+            if(isShowLabel)
+            {
+              this.addMoveLable(d, "personlabel", 3,miniLabel);
+            } 
           }
           else if (d.targetType == 1) //自行车
           {
             this.addMoveModel(true, d, "bicycle");
-            this.addMoveLable(d, "bicyclelabel", 3,miniLabel);
+            if(isShowLabel)
+            {
+              this.addMoveLable(d, "bicyclelabel", 3,miniLabel);
+            }
           }
           else if (d.targetType == 2) { //感知车
             // console.log(d.vehicleId)
@@ -387,24 +393,36 @@ class PerceptionCars {
             this.addMoveModel(false, d, "carbox");
             ///////////////////////////end
             //移动标签
-            this.addMoveLable(d, "carboxlabel", 3,miniLabel);
+            if(isShowLabel)
+            {
+              this.addMoveLable(d, "carboxlabel", 3,miniLabel);
+            }
           }
           else if (d.targetType == 3) //摩托车
           {
             this.addMoveModel(false, d, "motorbike");
-            this.addMoveLable(d, "motorbikelabel", 3,miniLabel);
+            if(isShowLabel)
+            {
+              this.addMoveLable(d, "motorbikelabel", 3,miniLabel);
+            }
           }
           else if (d.targetType == 5) //公交车
           {
             this.addMoveModel(false, d, "bus");
             //移动标签
-            this.addMoveLable(d, "buslabel", 5,miniLabel);
+            if(isShowLabel)
+            {
+              this.addMoveLable(d, "buslabel", 5,miniLabel);
+            }
           }
           else if (d.targetType == 7) //卡车
           {
             this.addMoveModel(false, d, "truck");
             //移动标签
-            this.addMoveLable(d, "trucklabel", 5,miniLabel);
+            if(isShowLabel)
+            {
+              this.addMoveLable(d, "trucklabel", 5,miniLabel);
+            }
           }
         }
       }else {
