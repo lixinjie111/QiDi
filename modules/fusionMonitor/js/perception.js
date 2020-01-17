@@ -421,7 +421,7 @@ function onPulseMessage(message){
 
                     if(perCars&&perCars.length>0){
                         //绘制感知车
-                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow);
+                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow, isShowMapElement);
                         let pernum = 0;
                         let persons = 0;
                         let nonNum = 0;
