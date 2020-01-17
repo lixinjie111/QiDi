@@ -18,6 +18,7 @@ let delayTime = parseFloat(getQueryVariable("delayTime")).toFixed(3)*1000;
 let extend = parseFloat(getQueryVariable("extend"));
 let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
+let isShowMapElement=getQueryVariable("isShowMapElement") == 'true' ? true : false;
 
 let currentExtent = getExtend(longitude,latitude,extend);
 let perExtent = getExtend(longitude,latitude,window.extend);
@@ -238,8 +239,10 @@ function init3DMap() {
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
     GisData.initServer(gis3d.cesium.viewer);
-    //初始化模型数据--树
-    GisData.initThreeData(gis3d.cesium.viewer);
+    if(isShowMapElement) {
+        //初始化模型数据--树
+        GisData.initThreeData(gis3d.cesium.viewer);
+    }
     // //初始化模型--红路灯
     // GisData.initLightModel(gis3d.cesium.viewer);
     // //初始化模型--红路灯牌
@@ -436,7 +439,7 @@ function onPulseMessage(message){
 
                     if(perCars&&perCars.length>0){
                         //绘制感知车
-                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow);
+                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow, isShowMapElement);
                         let pernum = 0;
                         let perCarNum = 0;
                         let perBusNum = 0;
@@ -544,7 +547,7 @@ function onPulseMessage(message){
                     })
                 })
             }
-            platformCars.moveCars(carList, platformShow, roadsidePointsShow);
+            platformCars.moveCars(carList, platformShow, roadsidePointsShow, isShowMapElement);
         }
         //取消告警
         if(Object.keys(processData.cancelWarning).length>0){
