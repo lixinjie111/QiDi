@@ -701,7 +701,7 @@ function initWarningWebSocket() {
                         },
                         "type":1
                     };
-    warningWebsocket = new WebSocketObj(window.config.socketUrl, _params, onWarningMessage);
+    warningWebsocket = new WebSocketObj(window.config.testUrl, _params, onWarningMessage);
 }
 function onWarningMessage(message) {
     let json = JSON.parse(message.data);
@@ -709,7 +709,7 @@ function onWarningMessage(message) {
     if(data&&data.length>0){
         data.forEach(rcuItem=>{
             let item = rcuItem.data;
-            let warnId = item.warnId.substring(0,item.warnId.lastIndexOf("_"));
+            // let warnId = item.warnId.substring(0,item.warnId.lastIndexOf("_"));
             //判断事件是否被取消 如果告警事件被画上 并且接收到取消 则不进行接收
             if(removeWarning.indexOf(item.warnId)==-1){
                 //如果是静态事件
@@ -725,7 +725,7 @@ function onWarningMessage(message) {
                     }
                     let warningMsg = JSON.stringify(warning);
                     warningWebsocket.sendMsg(warningMsg);
-                    item.warnId = warnId;
+                    // item.warnId = warnId;
                     let array = processData.staticWarning[item.warnId];
                     if(!array){
                         processData.staticWarning[item.warnId] = new Object();
@@ -737,7 +737,7 @@ function onWarningMessage(message) {
                     if(!array){
                         processData.dynamicWarning[warnId] = new Array();
                     }
-                    item.warnId = warnId;
+                    // item.warnId = warnId;
                     processData.dynamicWarning[warnId].push(item);
 
                 }
@@ -764,7 +764,7 @@ function initCancelWarningWebSocket() {
         "body":{"busType":"rsi"},
         "type":1
     };
-    cancelWarningWebsocket = new WebSocketObj(window.config.socketUrl, _params, onCancelWarningMessage);
+    cancelWarningWebsocket = new WebSocketObj(window.config.testUrl, _params, onCancelWarningMessage);
 }
 function onCancelWarningMessage(message) {
     let json = JSON.parse(message.data);
