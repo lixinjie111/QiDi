@@ -18,6 +18,7 @@ let delayTime = parseFloat(getQueryVariable("delayTime")).toFixed(3)*1000;
 let extend = parseFloat(getQueryVariable("extend"));
 let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
+let isShowMapElement=getQueryVariable("isShowMapElement") == 'true' ? true : false;
 
 let currentExtent = getExtend(longitude,latitude,extend);
 let perExtent = getExtend(longitude,latitude,window.extend);
@@ -200,7 +201,7 @@ function getMessage() {
         // warning 预警信息
         // roadsidePoints 路侧点
         // spat 信号灯
-        console.log(eventData);
+        // console.log(eventData);
         if(eventData.type == 'platform') {
             platformShow = eventData.flag;
         }
@@ -227,8 +228,10 @@ function init3DMap() {
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
     GisData.initServer(gis3d.cesium.viewer);
-    //初始化模型数据--树
-    GisData.initThreeData(gis3d.cesium.viewer);
+    if(isShowMapElement) {
+        //初始化模型数据--树
+        GisData.initThreeData(gis3d.cesium.viewer);
+    }
     // //初始化模型--红路灯
     // GisData.initLightModel(gis3d.cesium.viewer);
     // //初始化模型--红路灯牌
@@ -501,7 +504,7 @@ function onPulseMessage(message){
                     })
                 })
             }
-            platformCars.moveCars(carList, platformShow, roadsidePointsShow);
+            platformCars.moveCars(carList, platformShow, roadsidePointsShow, isShowMapElement);
         }
         //取消告警
         if(Object.keys(processData.cancelWarning).length>0){

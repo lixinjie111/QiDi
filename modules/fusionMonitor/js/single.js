@@ -13,6 +13,8 @@ let urlConfig = {
 /** 参数管理 **/
 let vehicleId = getQueryVariable("vehicleId");
 let delayTime = parseFloat(getQueryVariable("delayTime")).toFixed(3)*1000;
+let isShowMapElement=getQueryVariable("isShowMapElement") == 'true' ? true : false;
+
 //高德地图参数
 let distanceMap = null;
 let prevLastPoint = []; //上次请求的终点，
@@ -286,8 +288,10 @@ function init3DMap() {
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
     // GisData.initServer(gis3d.cesium.viewer);
-    //初始化模型数据--树
-    GisData.initThreeData(gis3d.cesium.viewer);
+    if(isShowMapElement) {
+        //初始化模型数据--树
+        GisData.initThreeData(gis3d.cesium.viewer);
+    }
     //初始化模型--红路灯杆
     GisData.initLightModel(gis3d.cesium.viewer);
     //初始化模型--红路灯牌

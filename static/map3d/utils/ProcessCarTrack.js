@@ -307,7 +307,7 @@ class ProcessCarTrack {
         platCars['vehData'] = vehData;
         return platCars;
     }
-    moveCars(list, isShow = true, isRoadSideShow = true) {
+    moveCars(list, isShow = true, isRoadSideShow = true, isShowMapElement = true) {
         let _this = this;
         for (let i = 0; i < list.length; i++) {
             _this.moveCar(list[i]);
@@ -326,7 +326,7 @@ class ProcessCarTrack {
                     }
                     if (isV2X) {
                         // 是否要画杆儿
-                        if(isShow && isRoadSideShow) {
+                        if(isShow && isRoadSideShow && isShowMapElement) {
                             _this.poleToCar(list[i]);
                         }else {
                             _this.clearPole();
