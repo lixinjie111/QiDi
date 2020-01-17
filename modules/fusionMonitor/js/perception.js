@@ -470,14 +470,13 @@ function onPulseMessage(message){
                             perData['veh']=pernum+fusionPernum;
                             perData['person'] = persons+fusionPersons;
                             perData['noMotor'] = nonNum+fusionNonNum;
-                            let _camData = {
-                                isParent: true,
-                                type: 'perceptionData',
-                                data: perData
-                            }
-                            parent.postMessage(_camData,"*");
                         }
-
+                        let _camData = {
+                            isParent: true,
+                            type: 'perceptionData',
+                            data: perData
+                        }
+                        parent.postMessage(_camData,"*");
                     }
                 }
             }
