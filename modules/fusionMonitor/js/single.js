@@ -572,7 +572,7 @@ function onPulseMessage(message){
                 })
             })
         }
-        platformCars.moveCars(carList);
+        platformCars.moveCars(carList, true, true, isShowMapElement);
     }
 
     //红绿灯  缓存400ms调用一次   pulseInterval为40   this.SPAT=10
