@@ -216,7 +216,7 @@ class PerceptionCars {
         // }
       //融合结果
 
-      let typeList = [0,1,2,3,5,7];
+      let typeList = [2,5,7];
       if(list&&list.length>0&&platCars&&platCars.length>0){
           //遍历平台车
           for(let i=0;i<platCars.length;i++){
