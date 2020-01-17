@@ -58,11 +58,11 @@ let roadsidePointsShow = true;
 let spatShow = true;
 
 let platEchartNum = 0;
-let platEchartCount = 40;
+let platEchartCount = 25;
 let perceptionEchartNum = 0;
-let perceptionEchartCount =20;
+let perceptionEchartCount =15;
 let spatEchartNum = 0;
-let spatEchartCount = 20;
+let spatEchartCount = 15;
 
 //统一循环数量
 let warning = 0;
