@@ -57,6 +57,13 @@ let warningShow = true;
 let roadsidePointsShow = true;
 let spatShow = true;
 
+let platEchartNum = 0;
+let platEchartCount = 40;
+let perceptionEchartNum = 0;
+let perceptionEchartCount =20;
+let spatEchartNum = 0;
+let spatEchartCount = 20;
+
 //统一循环数量
 let warning = 0;
 let spat = 0;
@@ -371,6 +378,20 @@ function onPulseMessage(message){
         //平台车
         if(Object.keys(platformCars.cacheAndInterpolateDataByVid).length>0) {
             platCars = platformCars.processPlatformCarsTrack(result.timestamp, delayTime, platformShow);
+            // console.log("平台车列表");
+            // console.log(platCars.platCars);
+            // console.log(platCars);
+            if(platEchartNum < platEchartCount) {
+                platEchartNum++; 
+            }else {
+                platEchartNum = 0;
+
+                let _platCarsList = {
+                    type: 'platCarsList',
+                    data: platCars
+                }
+                parent.postMessage(_platCarsList,"*");
+            }
         }
 
         //感知车
@@ -382,6 +403,8 @@ function onPulseMessage(message){
                     platFusionList = platCars.platCars;
                 }
                 let obj = perceptionCars.processPerTrack(result.timestamp, delayTime, platFusionList);
+                // console.log("感知车列表");
+                // console.log(obj.perList);
 
                 let _perCarList = {
                     type: 'perCarList',
@@ -528,6 +551,18 @@ function onPulseMessage(message){
                 }
 
                 parent.postMessage(_perCarList,"*");
+
+                if(perceptionEchartNum < perceptionEchartCount) {
+                    perceptionEchartNum++; 
+                }else {
+                    perceptionEchartNum = 0;
+
+                    let _perceptionCarsList = {
+                        type: 'perceptionCarsList',
+                        data: _perCarList.data
+                    }
+                    parent.postMessage(_perceptionCarsList,"*");
+                }
             }
         }
         perPulseCount++;
@@ -568,6 +603,21 @@ function onPulseMessage(message){
             spatPulseCount=1;
             if(Object.keys(processData.spatObj).length>0){
                 let data = processData.processSpatData(result.timestamp,delayTime);
+                console.log("红绿灯数据--------");
+                console.log(data);
+
+                if(spatEchartNum < spatEchartCount) {
+                    spatEchartNum++; 
+                }else {
+                    spatEchartNum = 0;
+
+                    let _spatList = {
+                        type: 'spatList',
+                        data: data || []
+                    }
+                    parent.postMessage(_spatList,"*");
+                }
+
                 if(data&&data.length>0){
                     drawnSpat(data);
                 }

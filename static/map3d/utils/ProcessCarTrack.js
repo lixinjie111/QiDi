@@ -145,6 +145,7 @@ class ProcessCarTrack {
             devType: car.devType,
             type: car.type,
             source: car.source,
+            updateTime: car.updateTime,
             isFusion: false
         };
         if (cdata == null)//没有该车的数据
@@ -197,6 +198,7 @@ class ProcessCarTrack {
                 // cdata.cacheData.push(cdata.nowReceiveData);
             } else {
                 //插值处理
+                let updateTime = cdata.nowReceiveData.updateTime - cdata.lastReceiveData.updateTime;
                 let deltaLon = cdata.nowReceiveData.longitude - cdata.lastReceiveData.longitude;
                 let deltaLat = cdata.nowReceiveData.latitude - cdata.lastReceiveData.latitude;
                 if(deltaLon>0.1||deltaLat>0.1){
@@ -212,6 +214,7 @@ class ProcessCarTrack {
                 // console.log(cdata.nowReceiveData.gpsTime, cdata.lastReceiveData.gpsTime,deltaTime,steps);
                 // let steps = 1;
                 let timeStep = deltaTime / steps;
+                let updateTimeStep = updateTime / steps;
                 let lonStep = deltaLon / steps;
                 let latStep = deltaLat / steps;
                 let headStep;
@@ -225,6 +228,7 @@ class ProcessCarTrack {
                     d2.longitude = cdata.lastReceiveData.longitude + lonStep * i;
                     d2.latitude = cdata.lastReceiveData.latitude + latStep * i;
                     d2.gpsTime = cdata.lastReceiveData.gpsTime + timeStep * i;
+                    d2.updateTime = cdata.lastReceiveData.updateTime + updateTimeStep * i;
                     d2.heading = cdata.lastReceiveData.heading + headStep * i;
                     d2.vehicleId = cdata.nowReceiveData.vehicleId;
                     d2.plateNo = cdata.nowReceiveData.plateNo;
