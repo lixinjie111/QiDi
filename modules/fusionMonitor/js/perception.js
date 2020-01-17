@@ -520,7 +520,6 @@ function onPulseMessage(message){
                         perData['truck'] = perTruckNum + fusionPerTruckNum;
 
                         let _camData = {
-                            // isParent: true,
                             type: 'perceptionData',
                             data: perData
                         }
