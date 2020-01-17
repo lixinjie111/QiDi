@@ -7,7 +7,7 @@ var GisData = {
      * @param {地图视图} viewer 
      */
     initServer(viewer) {
-        //业务数据
+        // //业务数据
         viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
             url: window.mapUrl,
             maximumLevel: 22,
@@ -86,8 +86,8 @@ var GisData = {
         // }); 
         // //道路面
         viewer.dataSources.add(Cesium.GeoJsonDataSource.load('../../static/map3d/data/01.js', {
-            fill: Cesium.Color.fromCssColorString('#626669').withAlpha(1),//.withAlpha(1)
-            stroke: Cesium.Color.fromCssColorString('#626669').withAlpha(1),// Cesium.Color.ORANGE, 
+            fill: Cesium.Color.fromCssColorString('#525455').withAlpha(1),//.withAlpha(1)
+            stroke: Cesium.Color.fromCssColorString('#525455').withAlpha(1),// Cesium.Color.ORANGE, 
             // markerSymbol: '?',
             // zIndex: 0,
             show: false

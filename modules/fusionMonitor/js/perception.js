@@ -18,6 +18,7 @@ let delayTime = parseFloat(getQueryVariable("delayTime")).toFixed(3)*1000;
 let extend = parseFloat(getQueryVariable("extend"));
 let longitude=parseFloat(getQueryVariable("lng"));
 let latitude=parseFloat(getQueryVariable("lat"));
+let isShowMapElement=getQueryVariable("isShowMapElement") == 'true' ? true : false;
 
 let currentExtent = getExtend(longitude,latitude,extend);
 let perExtent = getExtend(longitude,latitude,window.extend);
@@ -55,6 +56,13 @@ let perceptionShow = true;
 let warningShow = true;
 let roadsidePointsShow = true;
 let spatShow = true;
+
+let platEchartNum = 0;
+let platEchartCount = 25;
+let perceptionEchartNum = 0;
+let perceptionEchartCount =15;
+let spatEchartNum = 0;
+let spatEchartCount = 15;
 
 //统一循环数量
 let warning = 0;
@@ -238,8 +246,10 @@ function init3DMap() {
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
     GisData.initServer(gis3d.cesium.viewer);
-    //初始化模型数据--树
-    GisData.initThreeData(gis3d.cesium.viewer);
+    if(isShowMapElement) {
+        //初始化模型数据--树
+        GisData.initThreeData(gis3d.cesium.viewer);
+    }
     // //初始化模型--红路灯
     // GisData.initLightModel(gis3d.cesium.viewer);
     // //初始化模型--红路灯牌
@@ -368,6 +378,24 @@ function onPulseMessage(message){
         //平台车
         if(Object.keys(platformCars.cacheAndInterpolateDataByVid).length>0) {
             platCars = platformCars.processPlatformCarsTrack(result.timestamp, delayTime, platformShow);
+            // console.log("平台车列表");
+            // console.log(platCars.platCars);
+            // console.log(platCars);
+            if(platEchartNum < platEchartCount) {
+                platEchartNum++; 
+            }else {
+                if(!platCars || !platCars.platCars.length) {
+                    platEchartNum = platEchartCount;
+                }else {
+                    platEchartNum = 0;
+
+                    let _platCarsList = {
+                        type: 'platCarsList',
+                        data: platCars
+                    }
+                    parent.postMessage(_platCarsList,"*");
+                }
+            }
         }
 
         //感知车
@@ -379,6 +407,8 @@ function onPulseMessage(message){
                     platFusionList = platCars.platCars;
                 }
                 let obj = perceptionCars.processPerTrack(result.timestamp, delayTime, platFusionList);
+                // console.log("感知车列表");
+                // console.log(obj.perList);
 
                 let _perCarList = {
                     type: 'perCarList',
@@ -436,7 +466,7 @@ function onPulseMessage(message){
 
                     if(perCars&&perCars.length>0){
                         //绘制感知车
-                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow);
+                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow, isShowMapElement);
                         let pernum = 0;
                         let perCarNum = 0;
                         let perBusNum = 0;
@@ -517,7 +547,6 @@ function onPulseMessage(message){
                         perData['truck'] = perTruckNum + fusionPerTruckNum;
 
                         let _camData = {
-                            // isParent: true,
                             type: 'perceptionData',
                             data: perData
                         }
@@ -526,6 +555,22 @@ function onPulseMessage(message){
                 }
 
                 parent.postMessage(_perCarList,"*");
+
+                if(perceptionEchartNum < perceptionEchartCount) {
+                    perceptionEchartNum++; 
+                }else {
+                    if(!_perCarList.data || !_perCarList.data.length) {
+                        perceptionEchartNum = perceptionEchartCount;
+                    }else {
+                        perceptionEchartNum = 0;
+
+                        let _perceptionCarsList = {
+                            type: 'perceptionCarsList',
+                            data: _perCarList.data
+                        }
+                        parent.postMessage(_perceptionCarsList,"*");
+                    }
+                }
             }
         }
         perPulseCount++;
@@ -544,7 +589,7 @@ function onPulseMessage(message){
                     })
                 })
             }
-            platformCars.moveCars(carList, platformShow, roadsidePointsShow);
+            platformCars.moveCars(carList, platformShow, roadsidePointsShow, isShowMapElement);
         }
         //取消告警
         if(Object.keys(processData.cancelWarning).length>0){
@@ -566,6 +611,25 @@ function onPulseMessage(message){
             spatPulseCount=1;
             if(Object.keys(processData.spatObj).length>0){
                 let data = processData.processSpatData(result.timestamp,delayTime);
+                console.log("红绿灯数据--------");
+                console.log(data);
+
+                if(spatEchartNum < spatEchartCount) {
+                    spatEchartNum++; 
+                }else {
+                    if(!data || !data.length) {
+                        spatEchartNum = spatEchartCount;
+                    }else {
+                        spatEchartNum = 0;
+
+                        let _spatList = {
+                            type: 'spatList',
+                            data: data || []
+                        }
+                        parent.postMessage(_spatList,"*");
+                    }
+                }
+
                 if(data&&data.length>0){
                     drawnSpat(data);
                 }
