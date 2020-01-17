@@ -384,13 +384,17 @@ function onPulseMessage(message){
             if(platEchartNum < platEchartCount) {
                 platEchartNum++; 
             }else {
-                platEchartNum = 0;
+                if(!platCars || !platCars.platCars.length) {
+                    platEchartNum = platEchartCount;
+                }else {
+                    platEchartNum = 0;
 
-                let _platCarsList = {
-                    type: 'platCarsList',
-                    data: platCars
+                    let _platCarsList = {
+                        type: 'platCarsList',
+                        data: platCars
+                    }
+                    parent.postMessage(_platCarsList,"*");
                 }
-                parent.postMessage(_platCarsList,"*");
             }
         }
 
@@ -555,13 +559,17 @@ function onPulseMessage(message){
                 if(perceptionEchartNum < perceptionEchartCount) {
                     perceptionEchartNum++; 
                 }else {
-                    perceptionEchartNum = 0;
+                    if(!_perCarList.data || !_perCarList.data.length) {
+                        perceptionEchartNum = perceptionEchartCount;
+                    }else {
+                        perceptionEchartNum = 0;
 
-                    let _perceptionCarsList = {
-                        type: 'perceptionCarsList',
-                        data: _perCarList.data
+                        let _perceptionCarsList = {
+                            type: 'perceptionCarsList',
+                            data: _perCarList.data
+                        }
+                        parent.postMessage(_perceptionCarsList,"*");
                     }
-                    parent.postMessage(_perceptionCarsList,"*");
                 }
             }
         }
@@ -609,13 +617,17 @@ function onPulseMessage(message){
                 if(spatEchartNum < spatEchartCount) {
                     spatEchartNum++; 
                 }else {
-                    spatEchartNum = 0;
+                    if(!data || !data.length) {
+                        spatEchartNum = spatEchartCount;
+                    }else {
+                        spatEchartNum = 0;
 
-                    let _spatList = {
-                        type: 'spatList',
-                        data: data || []
+                        let _spatList = {
+                            type: 'spatList',
+                            data: data || []
+                        }
+                        parent.postMessage(_spatList,"*");
                     }
-                    parent.postMessage(_spatList,"*");
                 }
 
                 if(data&&data.length>0){
