@@ -384,7 +384,7 @@ function onPulseMessage(message){
                     type: 'perCarList',
                     data: []
                 }
-
+                
                 if(obj){
                     let perCars = obj.perList;
                     _perCarList.data = perCars;
