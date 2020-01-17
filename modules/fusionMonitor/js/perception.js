@@ -82,6 +82,8 @@ $(function() {
     typeRoadData();
     // 接受数据
     getMessage();
+    // 发送地图click事件
+    sendMessage();
     // 初始化动态数据
     initWebsocketData();
     // 脉冲实时接口
@@ -220,6 +222,15 @@ function getMessage() {
             GisUtils.isShowLights(gis3d.cesium.viewer, spatShow);
         }
     });
+}
+function sendMessage(){
+    document.getElementById('cesiumContainer').onclick  = function(){
+        let msg = {
+            type:'mapClick',
+            data: '',
+        }
+        parent.postMessage(msg,"*");
+    }
 }
 function init3DMap() {
     gis3d.initload("cesiumContainer", false);  
