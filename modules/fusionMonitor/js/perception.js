@@ -744,13 +744,13 @@ function onWarningMessage(message) {
                     }
                     processData.staticWarning[item.warnId]=item;
                 }else{
-                    let warnId = item.warnId.substring(0,item.warnId.lastIndexOf("_"));
-                    let array = processData.dynamicWarning[warnId];
+                    // let warnId = item.warnId.substring(0,item.warnId.lastIndexOf("_"));
+                    let array = processData.dynamicWarning[item.warnId];
                     if(!array){
-                        processData.dynamicWarning[warnId] = new Array();
+                        processData.dynamicWarning[item.warnId] = new Array();
                     }
                     // item.warnId = warnId;
-                    processData.dynamicWarning[warnId].push(item);
+                    processData.dynamicWarning[item.warnId].push(item);
 
                 }
             }
