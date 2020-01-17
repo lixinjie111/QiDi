@@ -332,6 +332,10 @@ class ProcessCarTrack {
                             _this.clearPole();
                         }
                     }
+                    else
+                    {
+                        _this.removLine(list[i].vehicleId);
+                    }
                 }
             }
         }
@@ -742,13 +746,17 @@ class ProcessCarTrack {
 
             // console.log(d.isFusion,d.plateNo)
             var carlabelpt = this.viewer.entities.getById(vid + "lblpt");
-            carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 3);
-            carlabelpt.label.text = plateNo;
-            //增加信号指示
-            let billboard = this.viewer.entities.getById(vid + "billboard");
-            if (billboard != null) {
-                billboard.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2);
+            if(carlabelpt)
+            {
+                carlabelpt.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 3);
+                carlabelpt.label.text = plateNo;
+                //增加信号指示
+                let billboard = this.viewer.entities.getById(vid + "billboard");
+                if (billboard != null) {
+                    billboard.position = Cesium.Cartesian3.fromDegrees(d.longitude, d.latitude, 2);
+                }
             }
+           
             // } 
 
         }
@@ -947,6 +955,23 @@ class ProcessCarTrack {
                 }
             }
         }
+    }
+    /**
+     * 移除连接线
+     * @param {编号}} vehicleId 
+     */
+    removLine(vehicleId)
+    {
+         // //移除连接线 
+         var entities = this.viewer.entities._entities._array;
+         for (var i = 0; i < entities.length; i++) {
+             if (entities[i].id) {
+                 if (entities[i].id.indexOf(vehicleId+"line") != -1) {
+                     this.viewer.entities.remove(entities[i]);
+                     i--;
+                 }
+             }
+         }
     }
     /*
     是否显示单车和线灯信息
