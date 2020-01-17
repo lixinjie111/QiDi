@@ -202,7 +202,7 @@ function getMessage() {
         // warning 预警信息
         // roadsidePoints 路侧点
         // spat 信号灯
-        console.log(eventData);
+        // console.log(eventData);
         if(eventData.type == 'platform') {
             platformShow = eventData.flag;
         }
@@ -367,7 +367,7 @@ function onPulseMessage(message){
 
         //平台车
         if(Object.keys(platformCars.cacheAndInterpolateDataByVid).length>0) {
-            platCars = platformCars.processPlatformCarsTrack(result.timestamp, delayTime);
+            platCars = platformCars.processPlatformCarsTrack(result.timestamp, delayTime, platformShow);
         }
 
         //感知车
@@ -378,9 +378,16 @@ function onPulseMessage(message){
                 if(platCars){
                     platFusionList = platCars.platCars;
                 }
-                let obj = perceptionCars.processPerTrack(result.timestamp,delayTime,platFusionList);
+                let obj = perceptionCars.processPerTrack(result.timestamp, delayTime, platFusionList);
+
+                let _perCarList = {
+                    type: 'perCarList',
+                    data: []
+                }
+
                 if(obj){
                     let perCars = obj.perList;
+                    _perCarList.data = perCars;
                     //保留两帧数据
                     if(platformCars.fusionList.length>0){
                         let tempList = [];
@@ -429,24 +436,35 @@ function onPulseMessage(message){
 
                     if(perCars&&perCars.length>0){
                         //绘制感知车
-                        perceptionCars.processPerceptionMesage(perCars);
+                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow);
                         let pernum = 0;
+                        let perCarNum = 0;
+                        let perBusNum = 0;
+                        let perTruckNum = 0;
                         let persons = 0;
                         let nonNum = 0;
                         let perData={};
-                        // processPerData(cars[0]);
-                        //绘制感知车辆的计数
+                        //绘制感知车辆的计数 0:人，1:自行车，2:汽车，3:摩托车，5:公共汽车，7:卡车
                         for (let i = 0; i < perCars.length; i++){
                             let obj = perCars[i];
-                            if (obj.targetType == 0){
+                            if (obj.targetType == 0){   // 人
                                 persons++;
                             }
 
-                            if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
+                            if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){  // 机动车
                                 pernum++;
+                                if (obj.targetType == 2){  // 汽车
+                                    perCarNum++;
+                                }
+                                if (obj.targetType == 5){  // 公共汽车
+                                    perBusNum++;
+                                }
+                                if (obj.targetType == 7){  // 卡车
+                                    perTruckNum++;
+                                }
                             }
 
-                            if(obj.targetType == 1 || obj.targetType == 3){
+                            if(obj.targetType == 1 || obj.targetType == 3){  // 非机动车
                                 nonNum++;
                             }
                         }
@@ -454,52 +472,66 @@ function onPulseMessage(message){
                         //融合车辆的计数
                         let perFusionCars = obj.perFusionCars;
                         let fusionPernum = 0;
+                        let fusionPerCarNum = 0;
+                        let fusionPerBusNum = 0;
+                        let fusionPerTruckNum = 0;
                         let fusionPersons = 0;
                         let fusionNonNum = 0;
                         if(perFusionCars.length>0){
+                            // console.log("-----------------------");
+                            // console.log(obj);
                             //判断的融合的类型
                             perFusionCars.forEach(item=>{
-                                if (item.targetType == 0){
+                                if (item.targetType == 0){   // 人
                                     fusionPersons++;
                                 }
 
-                                if (item.targetType == 2||item.targetType == 5 || item.targetType == 7){
+                                if (item.targetType == 2||item.targetType == 5 || item.targetType == 7){  // 机动车
                                     fusionPernum++;
+                                    if (item.targetType == 2){  // 汽车
+                                        fusionPerCarNum++;
+                                    }
+                                    if (item.targetType == 5){  // 公共汽车
+                                        fusionPerBusNum++;
+                                    }
+                                    if (item.targetType == 7){  // 卡车
+                                        fusionPerTruckNum++;
+                                    }
                                 }
 
-                                if(item.targetType == 1 || item.targetType == 3){
+                                if(item.targetType == 1 || item.targetType == 3){   // 非机动车
                                     fusionNonNum++;
                                 }
                             })
-                            perData['fusionVeh']=fusionPernum;
-                            perData['fusionPerson'] = fusionPersons;
-                            perData['fusionNoMotor'] = fusionNonNum;
-
-                            perData['veh']=pernum+fusionPernum;
-                            perData['person'] = persons+fusionPersons;
-                            perData['noMotor'] = nonNum+fusionNonNum;
-                            let _camData = {
-                                isParent: true,
-                                type: 'perceptionData',
-                                data: perData
-                            }
-                            parent.postMessage(_camData,"*");
                         }
+                        perData['fusionVeh'] = fusionPernum;
+                        perData['fusionPerson'] = fusionPersons;
+                        perData['fusionNoMotor'] = fusionNonNum;
+                        perData['platFusionList'] = obj.platFusionList;
 
+                        perData['veh']= pernum + fusionPernum;
+                        perData['person'] = persons + fusionPersons;
+                        perData['noMotor'] = nonNum + fusionNonNum;
+                        perData['car'] = perCarNum + fusionPerCarNum;
+                        perData['bus'] = perBusNum + fusionPerBusNum;
+                        perData['truck'] = perTruckNum + fusionPerTruckNum;
+
+                        let _camData = {
+                            // isParent: true,
+                            type: 'perceptionData',
+                            data: perData
+                        }
+                        parent.postMessage(_camData,"*");
                     }
                 }
+
+                parent.postMessage(_perCarList,"*");
             }
         }
         perPulseCount++;
 
         //融合后结果
         if (platCars){
-            let _camData = {
-                isParent: true,
-                type: 'vehData',
-                data: platCars['vehData']
-            }
-            parent.postMessage(_camData, "*");
             let carList = platCars.platCars; //所有的平台车
             if(platformCars.fusionList&&platformCars.fusionList.length>0){ //需要融合的平台车辆
                 platformCars.fusionList.forEach(item=>{
@@ -512,7 +544,7 @@ function onPulseMessage(message){
                     })
                 })
             }
-            platformCars.moveCars(carList);
+            platformCars.moveCars(carList, platformShow, roadsidePointsShow);
         }
         //取消告警
         if(Object.keys(processData.cancelWarning).length>0){
@@ -554,13 +586,6 @@ function onPulseMessage(message){
                     processWarn(data);
                 }
             }
-            //此次告警结束，将总数传递出去
-            let _camData = {
-                isParent: true,
-                type: 'warningCount',
-                data: warningCount
-            }
-            parent.postMessage(_camData,"*");
         }
     }
     warningPulseCount++;
@@ -579,13 +604,6 @@ function onPulseMessage(message){
                     })
                 }
             }
-            //此次告警结束，将总数传递出去
-            let _camData = {
-                isParent: true,
-                type: 'warningCount',
-                data: warningCount
-            }
-            parent.postMessage(_camData,"*");
         }
     }
     staticPulseCount++;
@@ -719,34 +737,6 @@ function onCancelWarningMessage(message) {
         processData.cancelWarning[warnId]=obj;
     }
 }
-function processPerData(cars){
-    if(cars.length>0) {
-        let pcarnum = 0;
-        let persons = 0;
-        let zcarnum = 0;
-        for (let i = 0; i < cars.length; i++) {
-            let obj = cars[i];
-            if (obj.type == 1) {
-                zcarnum++;
-                continue;
-            }
-            if (
-                obj.targetType == 0 ||
-                obj.targetType == 1 ||
-                obj.targetType == 3
-            ) {
-                persons++;
-            } else {
-                pcarnum++;
-            }
-        }
-        let _camData = {
-            type: 'statisticData',
-            data: "当前数据包：" + cars.length + "=" + zcarnum + "(平台车)+" + pcarnum + "(感知)+" + persons + "(人)"
-        }
-        parent.postMessage(_camData,"*");
-    }
-}
 function processWarn(data){
     let warnId = data.warnId;
     if(warnId){
@@ -759,9 +749,16 @@ function processWarn(data){
                 id:warnId,
                 msg:data.warnMsg,
                 longitude:data.longitude,
-                latitude:data.latitude
+                latitude:data.latitude,
+                eventType:data.eventType
             }
             gis3d.add3DInfoLabel(warnId,data.warnMsg,data.longitude,data.latitude,20, warningShow);
+
+            let _warningData = {
+                type: 'warningData',
+                data: warningData
+            }
+            parent.postMessage(_warningData,"*");
         }else{
             //判断是否需要更新
             if(data.longitude != warningData[warnId].longitude || data.latitude != warningData[warnId].latitude) {
@@ -775,15 +772,15 @@ function processCancelWarn(data){
         if (warningCount > 0) {
             warningCount--;
 
-            let _camData = {
-                isParent: true,
-                type: 'warningCount',
-                data: warningCount
-            }
-            parent.postMessage(_camData,"*");
-
             delete warningData[warnId];
-            console.log("移除事件："+warnId)
+            console.log("移除事件："+warnId);
+            
+            let _warningData = {
+                type: 'warningData',
+                data: warningData
+            }
+            parent.postMessage(_warningData,"*");
+
             gis3d.remove3DInforLabel(warnId);
             removeWarning.push(warnId);
             delete processData.cancelWarning[warnId];
