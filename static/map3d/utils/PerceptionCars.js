@@ -352,7 +352,7 @@ class PerceptionCars {
   }
   //************************************* */ 地图部分******************************
   //绘制感知车
-  processPerceptionMesage(fusionList, miniLabel = false,isShow = true,isShowLabel=false) {
+  processPerceptionMesage(fusionList, miniLabel = false,isShow = true,isShowLabel=true) {
     let _this = this;
     try {
       // _this.processPerceptionDataIntervalId = setInterval(() => {
