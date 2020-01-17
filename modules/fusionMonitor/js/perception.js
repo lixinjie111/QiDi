@@ -722,7 +722,6 @@ function onWarningMessage(message) {
     if(data&&data.length>0){
         data.forEach(rcuItem=>{
             let item = rcuItem.data;
-            // let warnId = item.warnId.substring(0,item.warnId.lastIndexOf("_"));
             //判断事件是否被取消 如果告警事件被画上 并且接收到取消 则不进行接收
             if(removeWarning.indexOf(item.warnId)==-1){
                 //如果是静态事件
@@ -745,6 +744,7 @@ function onWarningMessage(message) {
                     }
                     processData.staticWarning[item.warnId]=item;
                 }else{
+                    let warnId = item.warnId.substring(0,item.warnId.lastIndexOf("_"));
                     let array = processData.dynamicWarning[warnId];
                     if(!array){
                         processData.dynamicWarning[warnId] = new Array();
