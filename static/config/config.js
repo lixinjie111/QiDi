@@ -11,7 +11,8 @@ window.config = {
     // url: 'http://120.133.21.14:9093/monPlatApp/', //监控平台
     // socketUrl:'ws://120.133.21.14:49999/ws',  //影子系统
     // dlWmsUrl: 'http://117.114.144.227:8080/', //迪路
- 
+    // testUrl:'ws://172.17.1.16:19999/ws',
+
     //测试环境 内网
     // operateUrl: 'http://10.0.1.181:9090/operateApp/',    //运营平台
     // url: 'http://10.0.1.183:9093/monPlatApp/', //监控平台
