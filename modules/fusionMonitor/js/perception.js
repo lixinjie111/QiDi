@@ -463,14 +463,14 @@ function onPulseMessage(message){
                                     fusionNonNum++;
                                 }
                             })
-                            perData['fusionVeh']=fusionPernum;
-                            perData['fusionPerson'] = fusionPersons;
-                            perData['fusionNoMotor'] = fusionNonNum;
-
-                            perData['veh']=pernum+fusionPernum;
-                            perData['person'] = persons+fusionPersons;
-                            perData['noMotor'] = nonNum+fusionNonNum;
                         }
+                        perData['fusionVeh']=fusionPernum;
+                        perData['fusionPerson'] = fusionPersons;
+                        perData['fusionNoMotor'] = fusionNonNum;
+
+                        perData['veh']=pernum+fusionPernum;
+                        perData['person'] = persons+fusionPersons;
+                        perData['noMotor'] = nonNum+fusionNonNum;
                         let _camData = {
                             isParent: true,
                             type: 'perceptionData',
