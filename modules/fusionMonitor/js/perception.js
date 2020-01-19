@@ -419,7 +419,7 @@ function onPulseMessage(message){
                         platformCars.fusionList = obj.platFusionList;
                     }
 
-                    if(perCars&&perCars.length>0){
+                    if(perCars){
                         //绘制感知车
                         perceptionCars.processPerceptionMesage(perCars, false, perceptionShow, isShowMapElement);
                         let pernum = 0;
@@ -428,18 +428,20 @@ function onPulseMessage(message){
                         let perData={};
                         // processPerData(cars[0]);
                         //绘制感知车辆的计数
-                        for (let i = 0; i < perCars.length; i++){
-                            let obj = perCars[i];
-                            if (obj.targetType == 0){
-                                persons++;
-                            }
+                        if(perCars.length>0){
+                            for (let i = 0; i < perCars.length; i++){
+                                let obj = perCars[i];
+                                if (obj.targetType == 0){
+                                    persons++;
+                                }
 
-                            if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
-                                pernum++;
-                            }
+                                if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){
+                                    pernum++;
+                                }
 
-                            if(obj.targetType == 1 || obj.targetType == 3){
-                                nonNum++;
+                                if(obj.targetType == 1 || obj.targetType == 3){
+                                    nonNum++;
+                                }
                             }
                         }
 
@@ -464,6 +466,7 @@ function onPulseMessage(message){
                                 }
                             })
                         }
+                        // console.log(fusionNonNum,fusionPernum,fusionPersons)
                         perData['fusionVeh']=fusionPernum;
                         perData['fusionPerson'] = fusionPersons;
                         perData['fusionNoMotor'] = fusionNonNum;
