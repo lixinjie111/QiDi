@@ -409,15 +409,26 @@ function onPulseMessage(message){
                 let obj = perceptionCars.processPerTrack(result.timestamp, delayTime, platFusionList);
                 // console.log("感知车列表");
                 // console.log(obj.perList);
-
-                let _perCarList = {
-                    type: 'perCarList',
-                    data: []
-                }
                 
+                //感知数据
+                let pernum = 0;
+                let perCarNum = 0;
+                let perBusNum = 0;
+                let perTruckNum = 0;
+                let persons = 0;
+                let nonNum = 0;
+                let perData={};
+                //融合数据
+                let fusionPernum = 0;
+                let fusionPerCarNum = 0;
+                let fusionPerBusNum = 0;
+                let fusionPerTruckNum = 0;
+                let fusionPersons = 0;
+                let fusionNonNum = 0;
+
                 if(obj){
                     let perCars = obj.perList;
-                    _perCarList.data = perCars;
+                    perData = Object.assign({},obj);
                     //保留两帧数据
                     if(platformCars.fusionList.length>0){
                         let tempList = [];
@@ -463,17 +474,9 @@ function onPulseMessage(message){
                     }else{
                         platformCars.fusionList = obj.platFusionList;
                     }
-
                     if(perCars&&perCars.length>0){
                         //绘制感知车
                         perceptionCars.processPerceptionMesage(perCars, false, perceptionShow, isShowMapElement);
-                        let pernum = 0;
-                        let perCarNum = 0;
-                        let perBusNum = 0;
-                        let perTruckNum = 0;
-                        let persons = 0;
-                        let nonNum = 0;
-                        let perData={};
                         //绘制感知车辆的计数 0:人，1:自行车，2:汽车，3:摩托车，5:公共汽车，7:卡车
                         for (let i = 0; i < perCars.length; i++){
                             let obj = perCars[i];
@@ -501,12 +504,6 @@ function onPulseMessage(message){
 
                         //融合车辆的计数
                         let perFusionCars = obj.perFusionCars;
-                        let fusionPernum = 0;
-                        let fusionPerCarNum = 0;
-                        let fusionPerBusNum = 0;
-                        let fusionPerTruckNum = 0;
-                        let fusionPersons = 0;
-                        let fusionNonNum = 0;
                         if(perFusionCars.length>0){
                             // console.log("-----------------------");
                             // console.log(obj);
@@ -534,39 +531,39 @@ function onPulseMessage(message){
                                 }
                             })
                         }
-                        perData['fusionVeh'] = fusionPernum;
-                        perData['fusionPerson'] = fusionPersons;
-                        perData['fusionNoMotor'] = fusionNonNum;
-                        perData['platFusionList'] = obj.platFusionList;
-
-                        perData['veh']= pernum + fusionPernum;
-                        perData['person'] = persons + fusionPersons;
-                        perData['noMotor'] = nonNum + fusionNonNum;
-                        perData['car'] = perCarNum + fusionPerCarNum;
-                        perData['bus'] = perBusNum + fusionPerBusNum;
-                        perData['truck'] = perTruckNum + fusionPerTruckNum;
-
-                        let _camData = {
-                            type: 'perceptionData',
-                            data: perData
-                        }
-                        parent.postMessage(_camData,"*");
                     }
                 }
 
-                parent.postMessage(_perCarList,"*");
+                perData['fusionVeh'] = fusionPernum;
+                perData['fusionPerson'] = fusionPersons;
+                perData['fusionNoMotor'] = fusionNonNum;
+                perData['platFusionList'] = obj && obj.platFusionList ? obj.platFusionList : [];
+
+                perData['veh']= pernum + fusionPernum;
+                perData['person'] = persons + fusionPersons;
+                perData['noMotor'] = nonNum + fusionNonNum;
+                perData['car'] = perCarNum + fusionPerCarNum;
+                perData['bus'] = perBusNum + fusionPerBusNum;
+                perData['truck'] = perTruckNum + fusionPerTruckNum;
+
+                // console.log(perData);
+                let _camData = {
+                    type: 'perceptionData',
+                    data: perData
+                }
+                parent.postMessage(_camData,"*");
 
                 if(perceptionEchartNum < perceptionEchartCount) {
                     perceptionEchartNum++; 
                 }else {
-                    if(!_perCarList.data || !_perCarList.data.length) {
+                    if(!perData || !perData.perList) {
                         perceptionEchartNum = perceptionEchartCount;
                     }else {
                         perceptionEchartNum = 0;
 
                         let _perceptionCarsList = {
                             type: 'perceptionCarsList',
-                            data: _perCarList.data
+                            data: perData.perList ? perData.perList : []
                         }
                         parent.postMessage(_perceptionCarsList,"*");
                     }
