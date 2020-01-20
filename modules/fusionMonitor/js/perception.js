@@ -53,6 +53,7 @@ let staticCacheCount = 0;
 //是否显示该图层
 let platformShow = true;
 let perceptionShow = true;
+let perceptionLableShow = false;
 let warningShow = true;
 let roadsidePointsShow = true;
 let spatShow = true;
@@ -219,6 +220,9 @@ function getMessage() {
         }
         if(eventData.type == 'perception') {
             perceptionShow = eventData.flag;
+        }
+        if(eventData.type == 'perceptionLable') {
+            perceptionLableShow = eventData.flag;
         }
         if(eventData.type == 'warning') {
             warningShow = eventData.flag;
@@ -477,7 +481,8 @@ function onPulseMessage(message){
                     }
                     if(perCars&&perCars.length>0){
                         //绘制感知车
-                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow, isShowMapElement);
+                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow);
+                        perceptionCars.processPerceptionLableMesage(perCars, false, perceptionShow, perceptionLableShow);
                         //绘制感知车辆的计数 0:人，1:自行车，2:汽车，3:摩托车，5:公共汽车，7:卡车
                         for (let i = 0; i < perCars.length; i++){
                             let obj = perCars[i];
