@@ -481,7 +481,7 @@ function onPulseMessage(message){
                     }
                     if(perCars&&perCars.length>0){
                         //绘制感知车
-                        perceptionCars.processPerceptionMesage(perCars, false, perceptionShow);
+                        perceptionCars.processPerceptionMesage(perCars, perceptionShow);
                         perceptionCars.processPerceptionLableMesage(perCars, false, perceptionShow, perceptionLableShow);
                         //绘制感知车辆的计数 0:人，1:自行车，2:汽车，3:摩托车，5:公共汽车，7:卡车
                         for (let i = 0; i < perCars.length; i++){
