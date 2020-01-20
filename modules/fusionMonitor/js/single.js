@@ -551,7 +551,7 @@ function onPulseMessage(message){
                 platformCars.fusionList = obj.platFusionList;
                 if(perCars&&perCars.length>0){
                     //绘制感知车
-                    perceptionCars.processPerceptionMesage(perCars, false, true, isShowMapElement);
+                    perceptionCars.processPerceptionMesage(perCars, true);
                 }
             }
         }
