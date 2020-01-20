@@ -127,7 +127,8 @@ function getDevDis() {
 function findRSBindDevList() {
     let _params = JSON.stringify({
         "rsPtId": crossId,
-        "typeList": ["N","S"]
+        // "typeList": ["N","S"],
+        "typeList": ["N"]
     });
     $.ajax({
         type: "POST",
