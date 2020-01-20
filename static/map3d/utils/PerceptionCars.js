@@ -22,7 +22,8 @@ class PerceptionCars {
 
   //接受数据
   addPerceptionData(data, miniLabel) {
-    this.processPerceptionMesage(data, miniLabel);
+    this.processPerceptionMesage(data);
+    this.processPerceptionLableMesage(data, miniLabel);
   }
 
   addPerceptionOneFrame(fusionList) {
