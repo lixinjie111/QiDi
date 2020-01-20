@@ -21,8 +21,8 @@ function initMap3D(){
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
     GisData.initServer(gis3d.cesium.viewer);
-    //初始化模型数据--树
-    GisData.initThreeData(gis3d.cesium.viewer);
+    // //初始化模型数据--树
+    // GisData.initThreeData(gis3d.cesium.viewer);
 
     if(top.location == self.location){
       let {x, y, z, radius, pitch, yaw} = window.defaultMapParam;

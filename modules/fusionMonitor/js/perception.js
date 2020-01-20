@@ -140,12 +140,14 @@ function findRSBindDevList() {
         success: function(res) {
             let data = res.data; 
             let reg = /\;/g;
-            data.forEach(item=>{
-                if(item.sensingArea){
-                    let area = JSON.parse('['+item.sensingArea.replace(reg, ",")+']');
-                    gis3d.addPolygon(area);
-                 }
-            });
+            if(data && data.length) {
+                data.forEach(item=>{
+                    if(item.sensingArea){
+                        let area = JSON.parse('['+item.sensingArea.replace(reg, ",")+']');
+                        gis3d.addPolygon(area);
+                     }
+                });
+            }
         },
         error: function(err) {
             console.log("获取设备感知区域失败",err);
@@ -247,10 +249,8 @@ function init3DMap() {
     GisData.initRoadDate(gis3d.cesium.viewer);
     //初始化地图服务--上帝视角时使用
     GisData.initServer(gis3d.cesium.viewer);
-    if(isShowMapElement) {
-        //初始化模型数据--树
-        GisData.initThreeData(gis3d.cesium.viewer);
-    }
+    // //初始化模型数据--树
+    // GisData.initThreeData(gis3d.cesium.viewer);
     // //初始化模型--红路灯
     // GisData.initLightModel(gis3d.cesium.viewer);
     // //初始化模型--红路灯牌
