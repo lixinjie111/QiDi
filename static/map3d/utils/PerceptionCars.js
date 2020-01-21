@@ -95,6 +95,7 @@ class PerceptionCars {
       gpsTime: device.gpsTime,
       rcuId: device.rcuId,
       batchId: device.gpsTime,
+      updateTime: device.updateTime,
       data: device.data
     };
     if (cdata == null)//没有该车的数据
@@ -127,6 +128,7 @@ class PerceptionCars {
       } else {
 
         //插值处理
+        let updateTime = cdata.nowRecieveData.updateTime - cdata.lastRecieveData.updateTime;
         let deltaLon = cdata.nowRecieveData.longitude - cdata.lastRecieveData.longitude;
         let deltaLat = cdata.nowRecieveData.latitude - cdata.lastRecieveData.latitude;
         if(deltaLon>0.1||deltaLat>0.1){
@@ -140,9 +142,11 @@ class PerceptionCars {
         // console.log(cdata.nowRecieveData.gpsTime, cdata.lastRecieveData.gpsTime,deltaTime,steps);
         // let steps = 1;
         let timeStep = deltaTime / steps;
+        let updateTimeStep = updateTime / steps;
         for (let i = 1; i <= steps; i++) {
           let d2 = {};
           d2.gpsTime = cdata.lastRecieveData.gpsTime + timeStep * i;
+          d2.updateTime = cdata.lastRecieveData.updateTime + updateTimeStep * i;
           d2.batchId = d.gpsTime;
           d2.data = device.data;
           cdata.cacheData.push(d2);
