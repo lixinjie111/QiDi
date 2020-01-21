@@ -483,28 +483,30 @@ function onPulseMessage(message){
                         //绘制感知车
                         perceptionCars.processPerceptionMesage(perCars, perceptionShow);
                         perceptionCars.processPerceptionLableMesage(perCars, false, perceptionShow, perceptionLableShow);
-                        //绘制感知车辆的计数 0:人，1:自行车，2:汽车，3:摩托车，5:公共汽车，7:卡车
-                        for (let i = 0; i < perCars.length; i++){
-                            let obj = perCars[i];
-                            if (obj.targetType == 0){   // 人
-                                persons++;
-                            }
+                        if(perCars.length>0){
+                            //绘制感知车辆的计数 0:人，1:自行车，2:汽车，3:摩托车，5:公共汽车，7:卡车
+                            for (let i = 0; i < perCars.length; i++){
+                                let obj = perCars[i];
+                                if (obj.targetType == 0){   // 人
+                                    persons++;
+                                }
 
-                            if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){  // 机动车
-                                pernum++;
-                                if (obj.targetType == 2){  // 汽车
-                                    perCarNum++;
+                                if (obj.targetType == 2||obj.targetType == 5 || obj.targetType == 7){  // 机动车
+                                    pernum++;
+                                    if (obj.targetType == 2){  // 汽车
+                                        perCarNum++;
+                                    }
+                                    if (obj.targetType == 5){  // 公共汽车
+                                        perBusNum++;
+                                    }
+                                    if (obj.targetType == 7){  // 卡车
+                                        perTruckNum++;
+                                    }
                                 }
-                                if (obj.targetType == 5){  // 公共汽车
-                                    perBusNum++;
-                                }
-                                if (obj.targetType == 7){  // 卡车
-                                    perTruckNum++;
-                                }
-                            }
 
-                            if(obj.targetType == 1 || obj.targetType == 3){  // 非机动车
-                                nonNum++;
+                                if(obj.targetType == 1 || obj.targetType == 3){  // 非机动车
+                                    nonNum++;
+                                }
                             }
                         }
 
