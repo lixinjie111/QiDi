@@ -479,7 +479,7 @@ function onPulseMessage(message){
                     }else{
                         platformCars.fusionList = obj.platFusionList;
                     }
-                    if(perCars&&perCars.length>0){
+                    if(perCars){
                         //绘制感知车
                         perceptionCars.processPerceptionMesage(perCars, perceptionShow);
                         perceptionCars.processPerceptionLableMesage(perCars, false, perceptionShow, perceptionLableShow);

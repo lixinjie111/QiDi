@@ -779,36 +779,36 @@ class ProcessCarTrack {
             }
         }
     }
-    //添加光环
+   //添加光环
     addEllipse(vid, position, color) {
         //光环
-        var r1 = 0, r2 = 2.5, r3 = 5, r4 = 7.5;
+        var r1 =1, r2 = 2.5, r3 = 4, r4 = 5.5;
         function changeR1() { //这是callback，参数不能内传
-            r1 = r1 + 0.05;
-            if (r1 >= 10) {
-                r1 = 0;
+            r1 = r1 + 0.03;
+            if (r1 >= 7) {
+                r1 =1;
             }
             return r1;
         }
         //光环回调
         function changeR2() {
-            r2 = r2 + 0.05;
-            if (r2 >= 10) {
-                r2 = 0;
+            r2 = r2 + 0.03;
+            if (r2 >= 7) {
+                r2 = 1;
             }
             return r2;
         }
         function changeR3() {
-            r3 = r3 + 0.05;
-            if (r3 >= 10) {
-                r3 = 0;
+            r3 = r3 + 0.03;
+            if (r3 >= 7) {
+                r3 = 1;
             }
             return r3;
         }
         function changeR4() {
-            r4 = r4 + 0.05;
-            if (r4 >= 10) {
-                r4 = 0;
+            r4 = r4 + 0.03;
+            if (r4 >= 7) {
+                r4 = 1;
             }
             return r4;
         }
