@@ -818,6 +818,7 @@ function processWarn(data,distance){
         console.log("新增告警事件：",warnId,data.warnMsg);
         warningCount++;
         warningData[warnId] = {
+            alertType: data.alertType,
             warnId: warnId,
             id:warnId,
             warnMsg:data.warnMsg,
