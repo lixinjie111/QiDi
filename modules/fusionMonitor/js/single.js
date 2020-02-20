@@ -815,15 +815,15 @@ function processWarn(data,distance){
     }
     //如果告警第一次画
     if(!warningData[warnId]){
-        console.log("新增告警事件：",warnId,data.warnMsg);
+        console.log("新增告警事件：",warnId,data.warnMsg,data.eventType);
         warningCount++;
         warningData[warnId] = {
-            alertType: data.alertType,
             warnId: warnId,
             id:warnId,
             warnMsg:data.warnMsg,
             longitude:data.longitude,
-            latitude:data.latitude
+            latitude:data.latitude,
+            eventType:data.eventType
         }
         gis3d.add3DInfoLabel(warnId,warningMsg,data.longitude,data.latitude,20);
     }else{

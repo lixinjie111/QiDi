@@ -811,10 +811,9 @@ function processWarn(data){
     if(warnId){
         //如果告警第一次画
         if(!warningData[warnId]){
-            console.log("新增告警事件：",warnId,data.warnMsg);
+            console.log("新增告警事件：",warnId,data.warnMsg,data.eventType);
             warningCount++;
             warningData[warnId] = {
-                alertType: data.alertType,
                 warnId: warnId,
                 id:warnId,
                 msg:data.warnMsg,
